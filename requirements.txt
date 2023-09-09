@@ -4,4 +4,4 @@ pandas
 yahooquery
 yfinance
 plotly
-plotly.graph_objects
+matplotlib.pyplot
