@@ -22,7 +22,7 @@ if st.button("Submit"):
     if ticker_input:
         if ticker_input.isdigit():
             ticker_input = int(ticker_input)
-            if 1111 <= ticker_input <= 9999:
+            if 999 <= ticker_input <= 9999:
                 ticker = str(ticker_input) + '.SR'
             else:
                 st.write("ادخل رمز الشركة: ")
