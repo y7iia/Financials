@@ -2,3 +2,4 @@ streamlit
 numpy
 pandas
 yahooquery
+yfinance
