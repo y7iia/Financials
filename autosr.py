@@ -30,7 +30,7 @@ def calculate_pivot_points(high, low, close, method):
         raise ValueError("Invalid method. Use either 'standard', 'woodie', or 'camarilla'.")
     return P, R1, R2, R3, S1, S2, S3
 
-st.title('Pivot Point Calculator')
+st.title('حاسبة الدعوم والمقاومات Pivot Point Calculator')
 
 ticker = st.text_input("ادخل رمز السهم Enter the stock ticker: ")
 
