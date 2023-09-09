@@ -32,7 +32,7 @@ def calculate_pivot_points(high, low, close, method):
 
 st.title('Pivot Point Calculator')
 
-ticker = st.text_input("Enter the stock ticker: ")
+ticker = st.text_input("ادخل رمز السهم Enter the stock ticker: ")
 
 # if ticker is a number between 999 and 9999, add '.SR' to it
 try:
@@ -42,9 +42,9 @@ try:
 except ValueError:
     pass
 
-method = st.selectbox("Choose the calculation method:", ('standard', 'woodie', 'camarilla'))
+method = st.selectbox("اختر طريقة الحساب Choose the calculation method:", ('standard', 'woodie', 'camarilla'))
 
-if st.button('Calculate Pivot Points'):
+if st.button('أحسب Calculate Pivot Points'):
     # get historical market data
     data = yf.download(ticker, period="2d")
     high = data['High'][-2]
@@ -54,11 +54,10 @@ if st.button('Calculate Pivot Points'):
     P, R1, R2, R3, S1, S2, S3 = calculate_pivot_points(high, low, close, method)
 
     st.write(f"Ticker: {ticker}")
-    st.write(f"Pivot is: {P:.2f}")
-    st.write(f"R1 is: {R1:.2f}")
-    st.write(f"R2 is: {R2:.2f}")
-    st.write(f"R3 is: {R3:.2f}")
+    st.write(f"===============R3 is: {R3:.2f}")
+    st.write(f"==========R2 is: {R2:.2f}")
+    st.write(f"=====R1 is: {R1:.2f}")
     st.write(f"Close is: {close:.2f}")
-    st.write(f"S1 is: {S1:.2f}")
-    st.write(f"S2 is: {S2:.2f}")
-    st.write(f"S3 is: {S3:.2f}")
+    st.write(f"=====S1 is: {S1:.2f}")
+    st.write(f"==========S2 is: {S2:.2f}")
+    st.write(f"===============S3 is: {S3:.2f}")
