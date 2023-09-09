@@ -243,7 +243,7 @@ def get_retained_earnings(ticker):
                                 'asOfDate': ' Date : التاريخ' })
 
     data = code[['الرمز: symbol',' Date : التاريخ','Retained Income الأرباح المبقاة بالمليون']]
-    if '.SR' in i:
+    if '.SR' in i or i.isdigit():
       data['الشركة : Company'] = dict_df[i]
     else:
       data['الشركة : Company'] = i
