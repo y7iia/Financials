@@ -5,3 +5,4 @@ yahooquery
 yfinance
 plotly
 matplotlib.pyplot
+mplfinance
