@@ -1,38 +1,35 @@
 import streamlit as st
 import yfinance as yf
-import matplotlib.pyplot as plt
-import mplfinance as mpf
-from matplotlib.patches import Rectangle
-from matplotlib.collections import PatchCollection
+import plotly.graph_objects as go
 
 def calculate_pivot_points(high, low, close, method):
-    if method == "standard":
-        P = (high + low + close) / 3
-        R1 = (2 * P) - low
-        R2 = P + (high - low)
-        R3 = high + 2*(P - low)
-        S1 = (2 * P) - high
-        S2 = P - (high - low)
-        S3 = low - 2*(high - P)
-    elif method == "woodie":
-        P = (high + low + 2 * close) / 4
-        R1 = (2 * P) - low
-        R2 = P + (high - low)
-        R3 = R1 + (high - low)
-        S1 = (2 * P) - high
-        S2 = P - (high - low)
-        S3 = S1 - (high - low)
-    elif method == "camarilla":
-        P = (high + low + close) / 3
-        R1 = close + ((high - low) * 1.1 / 12)
-        R2 = close + ((high - low) * 1.1 / 6)
-        R3 = close + ((high - low) * 1.1 / 4)
-        S1 = close - ((high - low) * 1.1 / 12)
-        S2 = close - ((high - low) * 1.1 / 6)
-        S3 = close - ((high - low) * 1.1 / 4)
-    else:
-        raise ValueError("Invalid method. Use either 'standard', 'woodie', or 'camarilla'.")
-    return P, R1, R2, R3, S1, S2, S3
+if method == "standard":
+P = (high + low + close) / 3
+R1 = (2 * P) - low
+R2 = P + (high - low)
+R3 = high + 2*(P - low)
+S1 = (2 * P) - high
+S2 = P - (high - low)
+S3 = low - 2*(high - P)
+elif method == "woodie":
+P = (high + low + 2 * close) / 4
+R1 = (2 * P) - low
+R2 = P + (high - low)
+R3 = R1 + (high - low)
+S1 = (2 * P) - high
+S2 = P - (high - low)
+S3 = S1 - (high - low)
+elif method == "camarilla":
+P = (high + low + close) / 3
+R1 = close + ((high - low) * 1.1 / 12)
+R2 = close + ((high - low) * 1.1 / 6)
+R3 = close + ((high - low) * 1.1 / 4)
+S1 = close - ((high - low) * 1.1 / 12)
+S2 = close - ((high - low) * 1.1 / 6)
+S3 = close - ((high - low) * 1.1 / 4)
+else:
+raise ValueError("Invalid method. Use either 'standard', 'woodie', or 'camarilla'.")
+return P, R1, R2, R3, S1, S2, S3
 
 st.title('حاسبة الدعوم والمقاومات Pivot Point Calculator')
 
@@ -40,46 +37,47 @@ ticker = st.text_input("ادخل رمز السهم Enter the stock ticker: ")
 
 # if ticker is a number between 999 and 9999, add '.SR' to it
 try:
-    ticker_number = int(ticker)
-    if 999 < ticker_number < 9999:
-        ticker += '.SR'
+ticker_number = int(ticker)
+if 999 < ticker_number < 9999:
+ticker += '.SR'
 except ValueError:
-    pass
+pass
 
 method = st.selectbox("اختر طريقة الحساب Choose the calculation method:", ('standard', 'woodie', 'camarilla'))
 
 if st.button('أحسب Calculate Pivot Points'):
-    # get historical market data
-    data = yf.download(ticker, period="5d")
-    high = data['High'][-2]
-    low = data['Low'][-2]
-    close = data['Close'][-2]
+# get historical market data
+data = yf.download(ticker, period="2d")
+high = data['High'][-2]
+low = data['Low'][-2]
+close = data['Close'][-2]
 
-    P, R1, R2, R3, S1, S2, S3 = calculate_pivot_points(high, low, close, method)
+P, R1, R2, R3, S1, S2, S3 = calculate_pivot_points(high, low, close, method)
 
-    st.write(f"Ticker: {ticker}")
-    st.write(f"===============R3 is: {R3:.2f}")
-    st.write(f"==========R2 is: {R2:.2f}")
-    st.write(f"=====R1 is: {R1:.2f}")
-    st.write(f"Close is: {close:.2f}")
-    st.write(f"=====S1 is: {S1:.2f}")
-    st.write(f"==========S2 is: {S2:.2f}")
-    st.write(f"===============S3 is: {S3:.2f}")
+st.write(f"Ticker: {ticker}")
+st.write(f"===============R3 is: {R3:.2f}")
+st.write(f"==========R2 is: {R2:.2f}")
+st.write(f"=====R1 is: {R1:.2f}")
+st.write(f"Close is: {close:.2f}")
+st.write(f"=====S1 is: {S1:.2f}")
+st.write(f"==========S2 is: {S2:.2f}")
+st.write(f"===============S3 is: {S3:.2f}")
 
-    # Create candlestick chart
-    fig, ax = plt.subplots()
-    mpf.plot(data, type='candle', ax=ax)
 
-    # Draw support and resistance lines
-    ax.axhline(R3, color='red', label='R3')
-    ax.axhline(R2, color='orange', label='R2')
-    ax.axhline(R1, color='yellow', label='R1')
-    ax.axhline(P, color='blue', label='Pivot')
-    ax.axhline(S1, color='yellow', label='S1')
-    ax.axhline(S2, color='orange', label='S2')
-    ax.axhline(S3, color='red', label='S3')
-    
-    ax.legend()
+# Plot candlestick chart
+fig = go.Figure(data=[go.Candlestick(x=data.index,
+open=data['Open'],
+high=data['High'],
+low=data['Low'],
+close=data['Close'])])
 
-    # Show plot via streamlit
-    st.pyplot(fig)
+# Add support and resistance lines
+fig.add_shape(type="line",
+x0=data.index[0], y0=R3, x1=data.index[-1], y1=R3,
+line=dict(color="RoyalBlue", width=1)
+)
+
+fig.add_shape(type="line",
+x0=data.index[0], y0=R2, x1=data.index[-1], y1=R2,
+line=dict(color="RoyalBlue", width=1)
+)
