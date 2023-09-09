@@ -1,6 +1,6 @@
 import streamlit as st
 import yfinance as yf
-import plotly.graph_objects as go
+
 
 def calculate_pivot_points(high, low, close, method):
     if method == "standard":
@@ -63,22 +63,3 @@ if st.button('أحسب Calculate Pivot Points'):
     st.write(f"==========S2 is: {S2:.2f}")
     st.write(f"===============S3 is: {S3:.2f}")
 
-
-    # Plot candlestick chart
-    fig = go.Figure(data=[go.Candlestick(x=data.index,
-                                         open=data['Open'],
-                                         high=data['High'],
-                                         low=data['Low'],
-                                         close=data['Close'])])
-
-    # Add support and resistance lines
-    fig.add_shape(type="line",
-                  x0=data.index[0], y0=R3, x1=data.index[-1], y1=R3,
-                  line=dict(color="RoyalBlue", width=1)
-                 )
-
-    fig.add_shape(type="line",
-                  x0=data.index[0], y0=R2, x1=data.index[-1], y1=R2,
-                  line=dict(color="RoyalBlue", width=1)
-                 )
-    st.plotly_chart(fig)
