@@ -243,7 +243,7 @@ def get_retained_earnings(ticker):
                                 'asOfDate': ' Date : التاريخ' })
 
     data = code[['الرمز: symbol',' Date : التاريخ','Retained Income الأرباح المبقاة بالمليون']]
-    data['الشركة : Company'] = dict_df['4322.SR']
+    data['الشركة : Company'] = dict_df[ticker]
     data = data[['الشركة : Company', 'الرمز: symbol',' Date : التاريخ','Retained Income الأرباح المبقاة بالمليون']].copy()
     return data
 
