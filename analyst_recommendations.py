@@ -57,6 +57,7 @@ if st.button('Submit'):
 
         table['%'][6] = '-' 
         table['%'][2] = '-'
+        table.rename(columns={0: 'المستهدف'}, inplace=True)
 
         # Convert DataFrame to HTML and use inline style to control width
         html_table = table.to_html(classes='table table-striped', header="true", table_id="html_table").replace('<table ','<table style="width:100% !important;" ')
