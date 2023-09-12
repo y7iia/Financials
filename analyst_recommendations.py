@@ -23,11 +23,11 @@ if st.button('Submit'):
         df = pd.DataFrame.from_dict(info, orient='index').T
 
         # Define the columns to be selected
-        col = ['longBusinessSummary','recommendationKey','currentPrice','targetHighPrice','targetMeanPrice','targetLowPrice','numberOfAnalystOpinions']
+        col = ['shortName','recommendationKey','currentPrice','targetHighPrice','targetMeanPrice','targetLowPrice','numberOfAnalystOpinions']
 
         # Define the dictionary for renaming the columns
         col_dict = {
-        'longBusinessSummary': 'الشركة',
+        'shortName': 'الشركة',
         'recommendationKey': 'توصيات المحللين',
         'currentPrice': 'السعر الحالي',
         'targetHighPrice': 'أعلى سعر مستهدف',
