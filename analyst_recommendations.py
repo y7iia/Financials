@@ -51,6 +51,7 @@ def fetch_data(ticker_code):
             continue
 
     table['%'][2] = '-'
+    table['%'][6] = '-'
     table.rename(columns={0: 'المستهدف'}, inplace=True)
 
     return table
