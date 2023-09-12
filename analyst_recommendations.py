@@ -1,8 +1,9 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-
-pd.set_option('display.max_colwidth', 200)
+pd.set_option('display.max_colwidth', 100)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
 st.title('اراء المحللين - Analyst Recommendations')
 st.markdown('برمجة يحيى التلمساني - @telmisany')
