@@ -1,9 +1,6 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-pd.set_option('display.max_colwidth', 100)
-pd.set_option('display.max_columns', None)
-pd.set_option('display.max_rows', None)
 
 st.title('اراء المحللين - Analyst Recommendations')
 st.markdown('برمجة يحيى التلمساني - @telmisany')
@@ -36,7 +33,7 @@ if st.button('Submit'):
         'targetHighPrice': 'أعلى سعر مستهدف',
         'targetMeanPrice': 'متوسط السعر المستهدف',
         'targetLowPrice': 'أدني سعر مستهدف',
-        'numberOfAnalystOpinions': 'عدد آراء المحللين'
+        'numberOfAnalystOpinions': 'عدد آراء المحلين'
         }
 
         # Select the columns from the DataFrame
@@ -45,7 +42,7 @@ if st.button('Submit'):
         # Rename the columns
         renamed_df = selected_df.rename(columns=col_dict)
 
-        # Print the renamed DataFrame + Transpose the data
+        # Transpose the data
         table = renamed_df.T
         table['%'] = '-'
 
@@ -60,4 +57,9 @@ if st.button('Submit'):
 
         table['%'][6] = '-' 
         table['%'][2] = '-'
-        st.dataframe(table)
+
+        # Convert DataFrame to HTML and use inline style to control width
+        html_table = table.to_html(classes='table table-striped', header="true", table_id="html_table").replace('<table ','<table style="width:100% !important;" ')
+        
+        # Display the HTML table in Streamlit
+        st.markdown(html_table, unsafe_allow_html=True)
