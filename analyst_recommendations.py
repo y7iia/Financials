@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 
 st.title('اراء المحللين - Analyst Recommendations')
-st.markdown('برمجة يحيى التلمساني - @telmisany')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # Define the ticker code
 code = st.text_input('ادخل رمز السهم')
