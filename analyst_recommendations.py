@@ -1,6 +1,9 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
+pd.set_option('display.max_colwidth', 100)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
 
 st.title('اراء المحللين - Analyst Recommendations')
 st.markdown('برمجة يحيى التلمساني - @telmisany')
@@ -42,7 +45,7 @@ if st.button('Submit'):
         # Rename the columns
         renamed_df = selected_df.rename(columns=col_dict)
 
-        # Transpose the data
+        # Print the renamed DataFrame + Transpose the data
         table = renamed_df.T
         table['%'] = '-'
 
@@ -57,7 +60,4 @@ if st.button('Submit'):
 
         table['%'][6] = '-' 
         table['%'][2] = '-'
-
-        # Convert DataFrame to markdown and display using st.markdown()
-        markdown_table = table.to_markdown()
-        st.markdown(markdown_table, unsafe_allow_html=True)
+        st.dataframe(table)
