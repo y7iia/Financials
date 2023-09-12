@@ -19,48 +19,52 @@ if st.button('Submit'):
         ticker = yf.Ticker(code)
         info = ticker.info
 
-        # Convert the data into a DataFrame
-        df = pd.DataFrame.from_dict(info, orient='index').T
+        # Check if info is empty
+        if not info:
+            st.error('No financial information for this ticker, select another one')
+        else:
+            # Convert the data into a DataFrame
+            df = pd.DataFrame.from_dict(info, orient='index').T
 
-        # Define the columns to be selected
-        col = ['shortName','recommendationKey','currentPrice','targetHighPrice','targetMeanPrice','targetLowPrice','numberOfAnalystOpinions']
+            # Define the columns to be selected
+            col = ['shortName','recommendationKey','currentPrice','targetHighPrice','targetMeanPrice','targetLowPrice','numberOfAnalystOpinions']
 
-        # Define the dictionary for renaming the columns
-        col_dict = {
-        'shortName': 'الشركة',
-        'recommendationKey': 'توصيات المحللين',
-        'currentPrice': 'السعر الحالي',
-        'targetHighPrice': 'أعلى سعر مستهدف',
-        'targetMeanPrice': 'متوسط السعر المستهدف',
-        'targetLowPrice': 'أدني سعر مستهدف',
-        'numberOfAnalystOpinions': 'عدد آراء المحلين'
-        }
+            # Define the dictionary for renaming the columns
+            col_dict = {
+            'shortName': 'الشركة',
+            'recommendationKey': 'توصيات المحللين',
+            'currentPrice': 'السعر الحالي',
+            'targetHighPrice': 'أعلى سعر مستهدف',
+            'targetMeanPrice': 'متوسط السعر المستهدف',
+            'targetLowPrice': 'أدني سعر مستهدف',
+            'numberOfAnalystOpinions': 'عدد آراء المحلين'
+            }
 
-        # Select the columns from the DataFrame
-        selected_df = df[col]
+            # Select the columns from the DataFrame
+            selected_df = df[col]
 
-        # Rename the columns
-        renamed_df = selected_df.rename(columns=col_dict)
+            # Rename the columns
+            renamed_df = selected_df.rename(columns=col_dict)
 
-        # Transpose the data
-        table = renamed_df.T
-        table['%'] = '-'
+            # Transpose the data
+            table = renamed_df.T
+            table['%'] = '-'
 
-        for i , n in enumerate(table[0]):
-            try:
-                if  round((table[0][i] / table[0][2]-1)*100,2) > 0:
-                    table['%'][i] = '+' + str(round((table[0][i] / table[0][2]-1)*100,1)) + '%'
-                else:
-                    table['%'][i] = str(round((table[0][i] / table[0][2]-1)*100,1)) + '%'
-            except:
-                continue
+            for i , n in enumerate(table[0]):
+                try:
+                    if  round((table[0][i] / table[0][2]-1)*100,2) > 0:
+                        table['%'][i] = '+' + str(round((table[0][i] / table[0][2]-1)*100,1)) + '%'
+                    else:
+                        table['%'][i] = str(round((table[0][i] / table[0][2]-1)*100,1)) + '%'
+                except:
+                    continue
 
-        table['%'][6] = '-' 
-        table['%'][2] = '-'
-        table.rename(columns={0: 'المستهدف'}, inplace=True)
+            table['%'][6] = '-' 
+            table['%'][2] = '-'
+            table.rename(columns={0: 'المستهدف'}, inplace=True)
 
-        # Convert DataFrame to HTML and use inline style to control width
-        html_table = table.to_html(classes='table table-striped', header="true", table_id="html_table").replace('<table ','<table style="width:100% !important;" ')
-        
-        # Display the HTML table in Streamlit
-        st.markdown(html_table, unsafe_allow_html=True)
+            # Convert DataFrame to HTML and use inline style to control width
+            html_table = table.to_html(classes='table table-striped', header="true", table_id="html_table").replace('<table ','<table style="width:100% !important;" ')
+            
+            # Display the HTML table in Streamlit
+            st.markdown(html_table, unsafe_allow_html=True)
