@@ -80,6 +80,8 @@ if st.button('Submit'):
         except Exception as e:
             st.error(f'Error fetching data: {e}')
 
+st.write('\n')
+st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://support-resistance-levels.streamlit.app/)')
 # Add three empty lines for spacing
 st.write('\n\n\n')
 
