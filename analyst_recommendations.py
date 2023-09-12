@@ -79,3 +79,12 @@ if st.button('Submit'):
             st.markdown(html_table, unsafe_allow_html=True)
         except Exception as e:
             st.error(f'Error fetching data: {e}')
+
+# Display the HTML table in Streamlit
+st.markdown(html_table, unsafe_allow_html=True)
+
+# Add three empty lines for spacing
+st.write('\n\n\n')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[Follow me on Twitter](https://twitter.com/telmisany)')
