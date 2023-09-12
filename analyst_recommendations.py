@@ -82,8 +82,11 @@ if st.button('Submit'):
 
 st.write('\n')
 st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://support-resistance-levels.streamlit.app/)')
+st.write('\n')
+st.markdown('[أنظر ايضا: الأرباح المبقاة](https://retainedincome.streamlit.app/)')
+
 # Add three empty lines for spacing
 st.write('\n\n\n')
 
 # Add a hyperlink to your Twitter account
-st.markdown('[Follow me on Twitter](https://twitter.com/telmisany)')
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
