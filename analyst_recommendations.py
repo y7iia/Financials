@@ -2,7 +2,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 
-pd.set_option('display.max_colwidth', 100)
+pd.set_option('display.max_colwidth', 200)
 
 st.title('اراء المحللين - Analyst Recommendations')
 st.markdown('برمجة يحيى التلمساني - @telmisany')
