@@ -232,6 +232,9 @@ dict_df = {'2222.SR': 'أرامكو السعودية',
  '4082.SR': 'مرنة',
  '2283.SR': 'المطاحن الأولى'}
 
+st.title('الأرباح المبقاة Retained Income')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
+
 def get_retained_earnings(ticker):
     code = Ticker(ticker)
     code = code.all_financial_data(frequency = 'q').reset_index()
@@ -266,3 +269,17 @@ if st.button("Submit"):
 
         df = get_retained_earnings(ticker)
         st.dataframe(df)
+
+
+
+st.write('\n')
+st.markdown('[أنظر ايضا: آراء المحللين](https://twitter.com/telmisany/status/1701640774138445878)')
+st.write('\n')
+st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
+
+# Add three empty lines for spacing
+st.write('\n\n\n')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+
