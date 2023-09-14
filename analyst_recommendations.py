@@ -22,13 +22,13 @@ def fetch_data(ticker_code):
 
     # Define the dictionary for renaming the columns
     col_dict = {
-    'shortName': 'الشركة',
-    'recommendationKey': 'توصيات المحللين',
-    'currentPrice': 'السعر الحالي',
-    'targetHighPrice': 'أعلى سعر مستهدف',
-    'targetMeanPrice': 'متوسط السعر المستهدف',
-    'targetLowPrice': 'أدني سعر مستهدف',
-    'numberOfAnalystOpinions': 'عدد آراء المحلين'
+    'shortName': 'Company الشركة',
+    'recommendationKey': 'Recommendation توصيات المحللين',
+    'currentPrice': 'Current Price السعر الحالي',
+    'targetHighPrice': 'Target High أعلى سعر مستهدف',
+    'targetMeanPrice': 'Target Mean متوسط السعر المستهدف',
+    'targetLowPrice': 'Target Low أدني سعر مستهدف',
+    'numberOfAnalystOpinions': 'Analyst Opinions عدد آراء المحلين'
     }
 
     # Select the columns from the DataFrame
@@ -60,7 +60,7 @@ st.title('اراء المحللين - Analyst Recommendations')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # Define the ticker code
-code = st.text_input('ادخل رمز السهم')
+code = st.text_input('Enter Ticker ادخل رمز السهم')
 
 # Add a button for the user to click when they are ready to submit
 if st.button('Submit'):
