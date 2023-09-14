@@ -32,6 +32,7 @@ def calculate_pivot_points(high, low, close, method):
     return P, R1, R2, R3, S1, S2, S3
 
 st.title('حاسبة الدعوم والمقاومات Pivot Point Calculator')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 ticker = st.text_input("ادخل رمز السهم Enter the stock ticker: ")
 
