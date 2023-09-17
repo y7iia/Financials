@@ -254,9 +254,6 @@ companies = {'2222.SR': 'أرامكو السعودية',
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-import warnings
-
-warnings.filterwarnings('ignore')  # Ignore warnings
 
 def calculate_graham_number(stock, graham_factor):
     """Calculate and print the Graham number for a given stock."""
