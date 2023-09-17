@@ -316,8 +316,9 @@ for stock in tasi[user_selected_sector]:
         row["EPS_Type"] = eps_type
         row["Current_Price"] = current_price
     graham_numbers = graham_numbers.append(row, ignore_index=True)
- except:
-   continue
+ except Exception as e:
+    print(f"An exception occurred with stock {stock}: {e}")
+    continue
    
 # Filter the DataFrame
 graham_numbers = graham_numbers[graham_numbers['Graham_22.5'] != '-']
