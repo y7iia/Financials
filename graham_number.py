@@ -377,8 +377,5 @@ for stock in tasi[sectors[selected_sector]]:
 # Filter the DataFrame
 graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
 
-#It seems my previous response got cut off. Here's the continuation of the Streamlit script:
-
-```python
 # Display the DataFrame
 st.dataframe(graham_numbers)
