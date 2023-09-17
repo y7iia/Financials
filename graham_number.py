@@ -321,7 +321,7 @@ def get_data_for_sector(sector):
         return styled_df
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
-        return pd.DataFrame()
+        return round(pd.DataFrame(),2)
      
 # Streamlit code
 st.title('Financials Analysis Application')
