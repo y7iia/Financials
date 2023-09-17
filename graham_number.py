@@ -296,7 +296,7 @@ def get_data_for_sector(sector):
         stock_codes = tasi[sector]
         data = [fetch_data_for_stock(code) for code in stock_codes]
         df = pd.concat(data, ignore_index=True)
-        columns_to_select = ['symbol', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice']
+        columns_to_select = ['symbol','trailingEps','forwardEps','bookValue', 'currentPrice']
         df = df[[col for col in columns_to_select if col in df.columns]]
         # Add 'company' column
         df['company'] = df['symbol'].copy()
@@ -309,8 +309,6 @@ def get_data_for_sector(sector):
         df = df.dropna(subset=['Graham_22.5'])
         # Reorder columns
         df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
-        # Round all floating-point numbers to two decimal places
-        df = df.round(2)
         # Rename columns
         column_names = {
             'symbol': 'الشركة',
@@ -324,6 +322,8 @@ def get_data_for_sector(sector):
             'Graham_50': 'تقييم متساهل جدا'
         }
         df = df.rename(columns=column_names)
+        # Round all floating-point numbers to two decimal places
+        df = df.round({col: 2 for col in df.select_dtypes(float).columns})
         # Apply styling
         def color_cells(row):
             color = {}
