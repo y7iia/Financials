@@ -368,9 +368,10 @@ def main():
             row[f"Graham_{factor}"] = graham_number
             row["EPS_Type"] = eps_type
             row["Current_Price"] = current_price
+        print(type(graham_numbers))  # print type here
+        print(row)  # print row here
         graham_numbers = graham_numbers.append(row, ignore_index=True)
 
-    
     # Filter the DataFrame
     graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
 
@@ -388,11 +389,5 @@ def main():
     # Display the DataFrame
     st.dataframe(graham_numbers)
 
-graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
-print(type(graham_numbers))
-print(row)
-graham_numbers = graham_numbers.append(row, ignore_index=True)
-
-graham_numbers = graham_numbers.append(row, ignore_index=True)
 if __name__ == "__main__":
     main()
