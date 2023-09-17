@@ -338,6 +338,8 @@ graham_factors = [22.5, 30, 50]
 st.title('Calculate Graham Number')
 
 selected_sector = st.selectbox('Please select a sector', list(sectors.values()))
+graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
+
 
 # Assuming tasi and companies are global variables or fetched from a function
 for stock in tasi[selected_sector]:
