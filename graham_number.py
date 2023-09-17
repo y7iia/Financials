@@ -388,6 +388,9 @@ def main():
 
     # Display the DataFrame
     st.dataframe(graham_numbers)
+print(type(graham_numbers))
+print(row)
 
+graham_numbers = graham_numbers.append(row, ignore_index=True)
 if __name__ == "__main__":
     main()
