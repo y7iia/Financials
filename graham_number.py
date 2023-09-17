@@ -303,10 +303,6 @@ sectors_reversed = {
 }
 
 
-import pandas as pd
-import yfinance as yf
-import warnings
-
 warnings.filterwarnings('ignore')  # Ignore warnings
 
 def calculate_graham_number(stock, graham_factor):
