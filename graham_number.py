@@ -322,16 +322,13 @@ def get_data_for_sector(sector):
             'Graham_50': 'تقييم متساهل جدا'
         }
         df = df.rename(columns=column_names)
-        # Convert to float and round all floating-point numbers to two decimal places
-        for col in df.select_dtypes(include=['float64', 'int64']).columns:
-            df[col] = df[col].astype(float).round(2)
         # Apply styling
         def color_cells(row):
             color = {}
             for col in ['تقييم متشدد', 'تقييم متساهل', 'تقييم متساهل جدا']:
-                color[col] = 'background-color: LightGreen' if row['السعر الحالي'] > row[col] else 'background-color: LightCoral'
+                color[col] = 'background-color: LightGreen' if row['السعر الحالي'] < row[col] else 'background-color: LightCoral'
             return pd.Series(color)
-        styled_df = df.style.apply(color_cells, axis=1)
+        styled_df = df.style.apply(color_cells, axis=1).format("{:.2f}")
         return styled_df
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
