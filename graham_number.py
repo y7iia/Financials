@@ -388,6 +388,10 @@ def main():
     # Display the DataFrame
     st.dataframe(graham_numbers)
 
+graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
+print(type(graham_numbers))
+print(row)
+graham_numbers = graham_numbers.append(row, ignore_index=True)
 
 graham_numbers = graham_numbers.append(row, ignore_index=True)
 if __name__ == "__main__":
