@@ -302,6 +302,9 @@ sectors_reversed = {
     'الإعلام والترفيه': 22
 }
 
+import pandas as pd
+import yfinance as yf
+import warnings
 
 warnings.filterwarnings('ignore')  # Ignore warnings
 
