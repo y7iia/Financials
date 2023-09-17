@@ -319,7 +319,13 @@ st.title('Financials Analysis Application')
 
 # User input
 sector = st.selectbox('Please select a sector', options=list(tasi.keys()))
+def color_cells(row):
+    color = {}
+    for col in ['Graham_22.5', 'Graham_30', 'Graham_50']:
+        color[col] = 'background-color: green' if row['currentPrice'] > row[col] else 'background-color: red'
+    return pd.Series(color)
 
+styled_df = df.style.apply(color_cells, axis=1)
 # Fetch and display data
 sector_data = get_data_for_sector(sector)
 st.dataframe(sector_data)
