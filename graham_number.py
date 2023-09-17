@@ -277,6 +277,63 @@ sectors = {
     22: 'الإعلام والترفيه'
 }
 
+
+import streamlit as st
+import pandas as pd
+import yfinance as yf
+import warnings
+import logging
+
+warnings.filterwarnings('ignore')  # Ignore warnings
+
+# Set up logging
+logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def calculate_graham_number(stock, graham_factor):
+    """Calculate and print the Graham number for a given stock."""
+    try:
+        data = yf.Ticker(stock).info
+        df = pd.DataFrame(data).T[0]
+        eps_forward = df.get('forwardEps')
+        eps_trailing = df.get('trailingEps')
+
+        # Choose EPS type
+        if eps_forward is not None:
+            eps = eps_forward
+            eps_type = "forward"
+        elif eps_trailing is not None:
+            eps = eps_trailing
+            eps_type = "trailing"
+        else:
+            return '-', 'unknown', None
+
+        book_value = df['bookValue']
+        current_price = df['currentPrice']
+
+        # Check if EPS is negative
+        if eps < 0:
+            return '-', eps_type, current_price
+        else:
+            graham_number = round((graham_factor * eps * book_value) ** 0.5,2)
+
+            # Check if the Graham number is far below the current price by 50% or more
+            if graham_number < current_price * 0.5:
+                return '-', eps_type, current_price
+            else:
+                return graham_number, eps_type, current_price
+    except Exception as e:
+        # Map the stock symbol to a company name
+        company_name = companies.get(stock, "Unknown Company")
+        error_message = f"An error occurred when processing {company_name} ({stock}): {e}"
+        print(error_message)
+        st.error(error_message)  # Display the error message in the Streamlit UI
+        logger.error(error_message)  # Log the error
+        return None, 'unknown', None  # Return None if an exception occurs
+
+# List of Graham factors
+graham_factors = [22.5, 30, 50]
+
 sectors_reversed = {
     'البتروكيماويات': 1,
     'الإتصالات': 2,
@@ -302,94 +359,26 @@ sectors_reversed = {
     'الإعلام والترفيه': 22
 }
 
-import streamlit as st
-import pandas as pd
-import yfinance as yf
-import warnings
+st.title('Calculate Graham Number')
+selected_sector = st.selectbox('Please select a sector', list(sectors_reversed.keys()))
 
-print(pd.__version__)
+# Assuming tasi and companies are global variables or fetched from a function
+for stock in tasi[sectors[selected_sector]]:
+    row = {"Stock": stock}
+    # Get company name from dictionary
+    row["Company"] = companies.get(stock, "Unknown Company")
+    for factor in graham_factors:
+        graham_number, eps_type, current_price = calculate_graham_number(stock, factor)
+        row[f"Graham_{factor}"] = graham_number
+        row["EPS_Type"] = eps_type
+        row["Current_Price"] = current_price
+    graham_numbers = graham_numbers.append(row, ignore_index=True)
 
-warnings.filterwarnings('ignore')  # Ignore warnings
+# Filter the DataFrame
+graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
 
-def calculate_graham_number(stock, graham_factor):
-    """Calculate and print the Graham number for a given stock."""
-    try:
-        data = yf.Ticker(stock).info
-        df = pd.DataFrame(data).T[0]
-        eps_forward = df.get('forwardEps')
-        eps_trailing = df.get('trailingEps')
-        
-        # Choose EPS type
-        if eps_forward is not None:
-            eps = eps_forward
-            eps_type = "forward"
-        elif eps_trailing is not None:
-            eps = eps_trailing
-            eps_type = "trailing"
-        else:
-            return '-', 'unknown', None
-        
-        book_value = df['bookValue']
-        current_price = df['currentPrice']
+#It seems my previous response got cut off. Here's the continuation of the Streamlit script:
 
-        # Check if EPS is negative
-        if eps < 0:
-            return '-', eps_type, current_price
-        else:
-            graham_number = round((graham_factor * eps * book_value) ** 0.5,2)
-
-            # Check if the Graham number is far below the current price by 50% or more
-            if graham_number < current_price * 0.5:
-                return '-', eps_type, current_price
-            else:
-                return graham_number, eps_type, current_price
-    except Exception as e:
-        # Map the stock symbol to a company name
-        company_name = companies.get(stock, "Unknown Company")
-        print(f"An error occurred when processing {company_name} ({stock}): {e}")
-        return None, 'unknown', None  # Return None if an exception occurs
-
-def main():
-    st.title("Graham Number Calculator")
-
-    # Let the user select a sector
-    user_selected_sector = st.selectbox("Please select a sector:", list(sectors_reversed.keys()))
-
-    # List of Graham factors
-    graham_factors = [22.5, 30, 50]
-
-    # Create a DataFrame to store the Graham numbers
-    graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
-
-    for stock in tasi[sectors[sectors_reversed[user_selected_sector]]]:
-        row = {"Stock": stock}
-        # Get company name from dictionary
-        row["Company"] = companies.get(stock, "Unknown Company")
-        for factor in graham_factors:
-            graham_number, eps_type, current_price = calculate_graham_number(stock, factor)
-            row[f"Graham_{factor}"] = graham_number
-            row["EPS_Type"] = eps_type
-            row["Current_Price"] = current_price
-        print(row)
-        print(graham_numbers)
-        graham_numbers = graham_numbers.append(row)
-   
- # Filter the DataFrame
-    graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
-
-    # Rename the columns
-    graham_numbers = graham_numbers.rename(columns={
-        'Stock': 'الرمز',
-        'Company': 'الشركة',
-        'EPS_Type': 'EPS_Type',
-        'Graham_22.5': 'قيمة متحفظة',
-        'Graham_30': 'قيمة متساهلة',
-        'Graham_50': 'قيمة متساهلة جدا',
-        'Current_Price': 'السعر الحالي'
-    })
-
-    # Display the DataFrame
-    st.dataframe(graham_numbers)
-
-if __name__ == "__main__":
-    main()
+```python
+# Display the DataFrame
+st.dataframe(graham_numbers)
