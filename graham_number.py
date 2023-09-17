@@ -360,7 +360,7 @@ sectors_reversed = {
 }
 
 st.title('Calculate Graham Number')
-selected_sector = st.selectbox('Please select a sector', list(sectors_reversed.keys()))
+selected_sector = st.selectbox('Please select a sector', list(sectors.values()))
 
 # Assuming tasi and companies are global variables or fetched from a function
 for stock in tasi[selected_sector]:
