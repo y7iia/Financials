@@ -255,80 +255,42 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '2283.SR': 'المطاحن الأولى',
  '4323.SR': 'سمو'}
 
-def calculate_graham_number(stock, graham_factor):
-    """Calculate and print the Graham number for a given stock."""
+import streamlit as st
+import pandas as pd
+import yfinance as yf
+import numpy as np
+import logging
+
+# Setup logging
+logging.basicConfig(filename='app.log', level=logging.ERROR)
+
+def fetch_data_for_stock(stock):
     try:
+        # Fetch data for a stock using yfinance
         data = yf.Ticker(stock).info
-        df = pd.DataFrame(data).T[0]
-        eps_forward = df.get('forwardEps')
-        eps_trailing = df.get('trailingEps')
-        
-        # Choose EPS type
-        if eps_forward is not None:
-            eps = eps_forward
-            eps_type = "forward"
-        elif eps_trailing is not None:
-            eps = eps_trailing
-            eps_type = "trailing"
-        else:
-            return '-', 'unknown', None
-        
-        book_value = df['bookValue']
-        current_price = df['currentPrice']
-
-        # Check if EPS is negative
-        if eps < 0:
-            return '-', eps_type, current_price
-        else:
-            graham_number = round((graham_factor * eps * book_value) ** 0.5,2)
-
-            # Check if the Graham number is far below the current price by 50% or more
-            if graham_number < current_price * 0.5:
-                return '-', eps_type, current_price
-            else:
-                return graham_number, eps_type, current_price
+        # Convert the dictionary into a DataFrame
+        df = pd.DataFrame([data])
+        return df
     except Exception as e:
-        # Map the stock symbol to a company name
-        company_name = companies.get(stock, "Unknown Company")
-        print(f"An error occurred when processing {company_name} ({stock}): {e}")
-        return None, 'unknown', None  # Return None if an exception occurs
+        logging.error(f"Error fetching data for stock {stock}: {e}")
+        return pd.DataFrame()
+
+def get_data_for_sector(sector):
+    try:
+        stock_codes = tasi[sector]
+        data = [fetch_data_for_stock(code) for code in stock_codes]
+        df = pd.concat(data, ignore_index=True)
+        return df
+    except Exception as e:
+        logging.error(f"Error getting data for sector {sector}: {e}")
+        return pd.DataFrame()
 
 # Streamlit code
 st.title('Financials Analysis Application')
 
 # User input
-user_selected_sector = st.selectbox('Please select a sector', options=list(tasi.keys()))
+sector = st.selectbox('Please select a sector', options=list(tasi.keys()))
 
-# List of Graham factors
-graham_factors = [22.5, 30, 50]
-
-# Create a DataFrame to store the Graham numbers
-graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
-
-for stock in tasi[user_selected_sector]:
-    row = {"Stock": stock}
-    # Get company name from dictionary
-    row["Company"] = companies.get(stock, "Unknown Company")
-    for factor in graham_factors:
-        graham_number, eps_type, current_price = calculate_graham_number(stock, factor)
-        row[f"Graham_{factor}"] = graham_number
-        row["EPS_Type"] = eps_type
-        row["Current_Price"] = current_price
-    graham_numbers = graham_numbers.append(row, ignore_index=True)
-   
-# Filter the DataFrame
-graham_numbers = graham_numbers[graham_numbers['Graham_22.5'] != '-']
-
-# Rename the columns
-graham_numbers = graham_numbers.rename(columns={
-    'Stock': 'الرمز',
-    'Company': 'الشركة',
-    'EPS_Type': 'EPS_Type',
-    'Graham_22.5': 'قيمة متحفظة',
-    'Graham_30': 'قيمة متساهلة',
-    'Graham_50': 'قيمة متساهلة جدا',
-    'Current_Price': 'السعر الحالي'
-})
-
-# Display the DataFrame
-st.write(graham_numbers)
+# Fetch and display data
+sector_data = get_data_for_sector(sector)
+st.dataframe(sector_data)
