@@ -266,8 +266,8 @@ logger = logging.getLogger(__name__)
 def fetch_data_for_stock(stock):
     # Fetch data for a stock using yfinance
     data = yf.Ticker(stock).info
-    # Convert the dictionary into a DataFrame and Transpose it
-    df = pd.DataFrame(data, index=[0])
+    # Convert the dictionary into a DataFrame
+    df = pd.DataFrame([data])  # Wrapping data in a list to ensure it is treated as a single row
     return df
 
 def calculate_graham_number(stock, graham_factor):
