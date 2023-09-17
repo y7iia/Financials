@@ -296,7 +296,7 @@ def get_data_for_sector(sector):
         stock_codes = tasi[sector]
         data = [fetch_data_for_stock(code) for code in stock_codes]
         df = pd.concat(data, ignore_index=True)
-        columns_to_select = ['symbol','trailingEps','forwardEps','bookValue']
+        columns_to_select = ['symbol','trailingEps','forwardEps','bookValue','currentPrice']
         df = df[[col for col in columns_to_select if col in df.columns]]
         # Add 'company' column
         df['company'] = df['symbol'].copy()
