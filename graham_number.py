@@ -309,6 +309,7 @@ graham_factors = [22.5, 30, 50]
 graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
 
 for stock in tasi[user_selected_sector]:
+ try:
     row = {"Stock": stock}
     # Get company name from dictionary
     row["Company"] = companies.get(stock, "Unknown Company")
@@ -318,7 +319,9 @@ for stock in tasi[user_selected_sector]:
         row["EPS_Type"] = eps_type
         row["Current_Price"] = current_price
     graham_numbers = graham_numbers.append(row, ignore_index=True)
-
+  except:
+   continue
+   
 # Filter the DataFrame
 graham_numbers = graham_numbers[graham_numbers['Graham_22.5'] != '-']
 
