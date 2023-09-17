@@ -1,3 +1,7 @@
+import streamlit as st
+import pandas as pd
+import yfinance as yf
+
 #check the tasi dic again later
 tasi = {
  'إدارة وتطوير العقارات': ['4300.SR',  '4310.SR',  '4020.SR',  '4150.SR',  '4230.SR',  '4320.SR',  '4100.SR',  '4090.SR',  '4321.SR',  '4250.SR',  '4220.SR',  '4322.SR',  '4323.SR'],
@@ -251,10 +255,6 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '2283.SR': 'المطاحن الأولى',
  '4323.SR': 'سمو'}
 
-import streamlit as st
-import pandas as pd
-import yfinance as yf
-
 def calculate_graham_number(stock, graham_factor):
     """Calculate and print the Graham number for a given stock."""
     try:
@@ -306,7 +306,6 @@ graham_factors = [22.5, 30, 50]
 graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
 
 for stock in tasi[user_selected_sector]:
- try:
     row = {"Stock": stock}
     # Get company name from dictionary
     row["Company"] = companies.get(stock, "Unknown Company")
@@ -316,9 +315,6 @@ for stock in tasi[user_selected_sector]:
         row["EPS_Type"] = eps_type
         row["Current_Price"] = current_price
     graham_numbers = graham_numbers.append(row, ignore_index=True)
- except Exception as e:
-    print(f"An exception occurred with stock {stock}: {e}")
-    continue
    
 # Filter the DataFrame
 graham_numbers = graham_numbers[graham_numbers['Graham_22.5'] != '-']
