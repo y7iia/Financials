@@ -277,11 +277,28 @@ def fetch_data_for_stock(stock):
 
 def calculate_graham_number(row, factor):
     try:
-        # Assuming that the Graham number is calculated as sqrt(22.5 * trailingEps * bookValue)
-        return np.sqrt(factor * row['trailingEps'] * row['bookValue'])
+        # Use forward EPS if available, else use trailing EPS
+        eps = row['forwardEps'] if not pd.isna(row['forwardEps']) else row['trailingEps']
+        # Calculate Graham number and round to 2 decimal places
+        return round(np.sqrt(factor * eps * row['bookValue']), 2)
     except Exception as e:
         logging.error(f"Error calculating Graham number for row {row['symbol']}: {e}")
         return np.nan
+
+def get_data_for_sector(sector):
+    try:
+        stock_codes = tasi[sector]
+        data = [fetch_data_for_stock(code) for code in stock_codes]
+        df = pd.concat(data, ignore_index=True)
+        columns_to_select = ['symbol','shortName','trailingEps','forwardEps','bookValue']
+        df = df[[col for col in columns_to_select if col in df.columns]]
+        # Calculate Graham numbers and add new columns
+        for factor in [22.5, 30, 50]:
+            df[f'Graham_{factor}'] = df.apply(lambda row: calculate_graham_number(row, factor), axis=1)
+        return df
+    except Exception as e:
+        logging.error(f"Error getting data for sector {sector}: {e}")
+        return pd.DataFrame()
 
 def get_data_for_sector(sector):
     try:
