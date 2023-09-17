@@ -307,6 +307,8 @@ import pandas as pd
 import yfinance as yf
 import warnings
 
+print(pd.__version__)
+
 warnings.filterwarnings('ignore')  # Ignore warnings
 
 def calculate_graham_number(stock, graham_factor):
@@ -368,11 +370,11 @@ def main():
             row[f"Graham_{factor}"] = graham_number
             row["EPS_Type"] = eps_type
             row["Current_Price"] = current_price
-        print(type(graham_numbers))  # print type here
-        print(row)  # print row here
-        graham_numbers = graham_numbers.append(row, ignore_index=True)
-
-    # Filter the DataFrame
+        print(row)
+        print(graham_numbers)
+        graham_numbers = graham_numbers.append(row)
+   
+ # Filter the DataFrame
     graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
 
     # Rename the columns
