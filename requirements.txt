@@ -7,3 +7,4 @@ plotly
 mplfinance
 matplotlib
 warnings
+logging
