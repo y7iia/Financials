@@ -334,32 +334,9 @@ def calculate_graham_number(stock, graham_factor):
 # List of Graham factors
 graham_factors = [22.5, 30, 50]
 
-sectors_reversed = {
-    'البتروكيماويات': 1,
-    'الإتصالات': 2,
-    'الخدمات الإستهلاكية': 3,
-    'الطاقة': 4,
-    'تجزئة السلع الكمالية': 5,
-    'المواد الأساسية': 6,
-    'السلع طويلة الاجل': 7,
-    'الرعاية الصحية': 8,
-    'التطبيقات وخدمات التقنية': 9,
-    'البنوك': 10,
-    'تجزئة الأغذية': 11,
-    'السلع الرأسمالية': 12,
-    'الخدمات التجارية والمهنية': 13,
-    'إدارة وتطوير العقارات': 14,
-    'النقل': 15,
-    'المرافق العامة': 16,
-    'إنتاج الأغذية': 17,
-    'الأسمنت': 18,
-    'التأمين': 19,
-    'الإستثمار والتمويل': 20,
-    'الادوية': 21,
-    'الإعلام والترفيه': 22
-}
 
 st.title('Calculate Graham Number')
+
 selected_sector = st.selectbox('Please select a sector', list(sectors.values()))
 
 # Assuming tasi and companies are global variables or fetched from a function
@@ -372,7 +349,7 @@ for stock in tasi[selected_sector]:
         row[f"Graham_{factor}"] = graham_number
         row["EPS_Type"] = eps_type
         row["Current_Price"] = current_price
-    graham_numbers = graham_numbers.append(row, ignore_index=True)
+    graham_numbers = graham_numbers.append(row)
 
 # Filter the DataFrame
 graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
