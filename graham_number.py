@@ -340,8 +340,6 @@ st.title('Calculate Graham Number')
 selected_sector = st.selectbox('Please select a sector', list(sectors.values()))
 graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
 
-
-# Assuming tasi and companies are global variables or fetched from a function
 for stock in tasi[selected_sector]:
     row = {"Stock": stock}
     # Get company name from dictionary
@@ -351,10 +349,10 @@ for stock in tasi[selected_sector]:
         row[f"Graham_{factor}"] = graham_number
         row["EPS_Type"] = eps_type
         row["Current_Price"] = current_price
-    graham_numbers = graham_numbers.append(row)
+    graham_numbers = graham_numbers.append(row, ignore_index=True)
 
 # Filter the DataFrame
-graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
+graham_numbers = graham_numbers[graham_numbers['Graham_22.5'] != '-']
 
 # Display the DataFrame
 st.dataframe(graham_numbers)
