@@ -328,7 +328,7 @@ def get_data_for_sector(sector):
         def color_cells(row):
             color = {}
             for col in ['تقييم متشدد', 'تقييم متساهل', 'تقييم متساهل جدا']:
-                color[col] = 'background-color: LightGreen' if row['السعر الحالي'] > row[col] else 'background-color: LightCoral'
+                color[col] = 'background-color: LightGreen' if row['السعر الحالي'] < row[col] else 'background-color: LightCoral'
             return pd.Series(color)
         styled_df = df.style.apply(color_cells, axis=1)
         return styled_df
