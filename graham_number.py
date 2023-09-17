@@ -370,8 +370,7 @@ def main():
             row["Current_Price"] = current_price
         graham_numbers = graham_numbers.append(row, ignore_index=True)
 
-    # Drop the 'Graham_70' column
-    graham_numbers = graham_numbers.drop(columns=[f'Graham_{factor}' for factor in graham_factors if factor > 50])
+    
     # Filter the DataFrame
     graham_numbers = round(graham_numbers[graham_numbers['Graham_22.5'] != '-'],2)
 
@@ -388,8 +387,7 @@ def main():
 
     # Display the DataFrame
     st.dataframe(graham_numbers)
-print(type(graham_numbers))
-print(row)
+
 
 graham_numbers = graham_numbers.append(row, ignore_index=True)
 if __name__ == "__main__":
