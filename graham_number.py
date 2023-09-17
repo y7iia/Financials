@@ -288,7 +288,7 @@ def get_data_for_sector(sector):
         stock_codes = tasi[sector]
         data = [fetch_data_for_stock(code) for code in stock_codes]
         df = pd.concat(data, ignore_index=True)
-        columns_to_select = ['symbol','shortName','trailingEps','forwardEps','bookValue']
+        columns_to_select = ['symbol','shortName','currentPrice','trailingEps','forwardEps','bookValue']
         df = df[[col for col in columns_to_select if col in df.columns]]
         # Calculate Graham numbers and add new columns
         for factor in [22.5, 30, 50]:
