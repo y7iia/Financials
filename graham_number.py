@@ -280,6 +280,9 @@ def get_data_for_sector(sector):
         stock_codes = tasi[sector]
         data = [fetch_data_for_stock(code) for code in stock_codes]
         df = pd.concat(data, ignore_index=True)
+        # Select only the desired columns that exist in the DataFrame
+        columns_to_select = ['symbol','shortName','trailingEps','forwardEps','bookValue']
+        df = df[[col for col in columns_to_select if col in df.columns]]
         return df
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
