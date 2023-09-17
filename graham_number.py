@@ -310,8 +310,17 @@ graham_factors = [22.5, 30, 50]
 
 st.title('Calculate Graham Number')
 
-selected_sector = st.selectbox('Please select a sector', list(tasi.keys()))
-graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
+def get_data_for_sector(sector):
+    stock_codes = tasi[sector]
+    # Assuming you have a function to fetch data for a stock code
+    data = [fetch_data_for_stock(code) for code in stock_codes]
+    df = pd.DataFrame(data)
+    return df
+
+sector = st.selectbox('Select sector', list(tasi.keys()))
+data = get_data_for_sector(sector)
+
+st.write(data)
 
 for stock in tasi[selected_sector]:
     row = {"Stock": stock}
@@ -328,4 +337,97 @@ for stock in tasi[selected_sector]:
 graham_numbers = graham_numbers[graham_numbers['Graham_22.5'] != '-']
 
 # Display the DataFrame
+st.dataframe(graham_numbers)
+========================================================
+
+
+import streamlit as st
+import pandas as pd
+import yfinance as yf
+import warnings
+import logging
+
+warnings.filterwarnings('ignore')  # Ignore warnings
+
+# Set up logging
+logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def fetch_data_for_stock(stock):
+    # Fetch data for a stock using yfinance
+    data = yf.Ticker(stock).info
+    # Convert the dictionary into a DataFrame and Transpose it
+    df = pd.DataFrame(data, index=[0])
+    return df
+
+def calculate_graham_number(stock, graham_factor):
+    """Calculate and print the Graham number for a given stock."""
+    try:
+        data = yf.Ticker(stock).info
+        df = pd.DataFrame(data).T[0]
+        eps_forward = df.get('forwardEps')
+        eps_trailing = df.get('trailingEps')
+
+        # Choose EPS type
+        if eps_forward is not None:
+            eps = eps_forward
+            eps_type = "forward"
+        elif eps_trailing is not None:
+            eps = eps_trailing
+            eps_type = "trailing"
+        else:
+            return '-', 'unknown', None
+
+        book_value = df['bookValue']
+        current_price = df['currentPrice']
+
+        # Check if EPS is negative
+        if eps < 0:
+            return '-', eps_type, current_price
+        else:
+            graham_number = round((graham_factor * eps * book_value) ** 0.5,2)
+
+            # Check if the Graham number is far below the current price by 50% or more
+            if graham_number < current_price * 0.5:
+                return '-', eps_type, current_price
+            else:
+                return graham_number, eps_type, current_price
+    except Exception as e:
+        # Map the stock symbol to a company name
+        company_name = companies.get(stock, "Unknown Company")
+        error_message = f"An error occurred when processing {company_name} ({stock}): {e}"
+        print(error_message)
+        st.error(error_message)  # Display the error message in the Streamlit UI
+        logger.error(error_message)  # Log the error
+        return None, 'unknown', None  # Return None if an exception occurs
+# List of Graham factors
+graham_factors = [22.5, 30, 50]
+
+st.title('Calculate Graham Number')
+
+def get_data_for_sector(sector):
+    stock_codes = tasi[sector]
+    data = [fetch_data_for_stock(code) for code in stock_codes]
+    df = pd.DataFrame(data)
+    return df
+
+sector = st.selectbox('Select sector', list(tasi.keys()))
+data = get_data_for_sector(sector)
+
+st.write(data)
+
+# Define your graham_numbers DataFrame here
+graham_numbers = pd.DataFrame()
+
+for stock in tasi[sector]:
+    row = {"Stock": stock}
+    row["Company"] = companies.get(stock, "Unknown Company")
+    for factor in graham_factors:
+        graham_number, eps_type, current_price = calculate_graham_number(stock, factor)
+        row[f"Graham_{factor}"] = graham_number
+        row["EPS_Type"] = eps_type
+        row["Current_Price"] = current_price
+    graham_numbers = graham_numbers.append(row, ignore_index=True)
+
+graham_numbers = graham_numbers[graham_numbers['Graham_22.5'] != '-']
 st.dataframe(graham_numbers)
