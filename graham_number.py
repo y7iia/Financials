@@ -296,7 +296,7 @@ def get_data_for_sector(sector):
         stock_codes = tasi[sector]
         data = [fetch_data_for_stock(code) for code in stock_codes]
         df = pd.concat(data, ignore_index=True)
-        columns_to_select = ['symbol','trailingEps','forwardEps','bookValue', 'currentPrice']
+        columns_to_select = ['symbol', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice']
         df = df[[col for col in columns_to_select if col in df.columns]]
         # Add 'company' column
         df['company'] = df['symbol'].copy()
@@ -311,11 +311,24 @@ def get_data_for_sector(sector):
         df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
         # Round all floating-point numbers to two decimal places
         df = df.round(2)
+        # Rename columns
+        column_names = {
+            'symbol': 'الشركة',
+            'company': 'الرمز',
+            'trailingEps': 'ربحية السهم الحالية',
+            'forwardEps': 'ربحية السهم المتوقعة',
+            'bookValue': 'القيمة الدفترية',
+            'currentPrice': 'السعر الحالي',
+            'Graham_22.5': 'تقييم متشدد',
+            'Graham_30': 'تقييم متساهل',
+            'Graham_50': 'تقييم متساهل جدا'
+        }
+        df = df.rename(columns=column_names)
         # Apply styling
         def color_cells(row):
             color = {}
-            for col in ['Graham_22.5', 'Graham_30', 'Graham_50']:
-                color[col] = 'background-color: LightGreen' if row['currentPrice'] < row[col] else 'background-color: LightCoral'
+            for col in ['تقييم متشدد', 'تقييم متساهل', 'تقييم متساهل جدا']:
+                color[col] = 'background-color: LightGreen' if row['السعر الحالي'] > row[col] else 'background-color: LightCoral'
             return pd.Series(color)
         styled_df = df.style.apply(color_cells, axis=1)
         return styled_df
