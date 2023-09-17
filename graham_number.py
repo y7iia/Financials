@@ -251,33 +251,6 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '2283.SR': 'المطاحن الأولى',
  '4323.SR': 'سمو'}
 
-
-sectors = {
-    1: 'البتروكيماويات',
-    2: 'الإتصالات',
-    3: 'الخدمات الإستهلاكية',
-    4: 'الطاقة',
-    5: 'تجزئة السلع الكمالية',
-    6: 'المواد الأساسية',
-    7: 'السلع طويلة الاجل',
-    8: 'الرعاية الصحية',
-    9: 'التطبيقات وخدمات التقنية',
-    10: 'البنوك',
-    11: 'تجزئة الأغذية',
-    12: 'السلع الرأسمالية',
-    13: 'الخدمات التجارية والمهنية',
-    14: 'إدارة وتطوير العقارات',
-    15: 'النقل',
-    16: 'المرافق العامة',
-    17: 'إنتاج الأغذية',
-    18: 'الأسمنت',
-    19: 'التأمين',
-    20: 'الإستثمار والتمويل',
-    21: 'الادوية',
-    22: 'الإعلام والترفيه'
-}
-
-
 import streamlit as st
 import pandas as pd
 import yfinance as yf
@@ -337,7 +310,7 @@ graham_factors = [22.5, 30, 50]
 
 st.title('Calculate Graham Number')
 
-selected_sector = st.selectbox('Please select a sector', list(sectors.values()))
+selected_sector = st.selectbox('Please select a sector', list(tasi.keys()))
 graham_numbers = pd.DataFrame(columns=["Stock", "Company", "EPS_Type", "Current_Price"] + [f"Graham_{factor}" for factor in graham_factors])
 
 for stock in tasi[selected_sector]:
