@@ -297,16 +297,16 @@ def get_data_for_sector(sector):
         data = [fetch_data_for_stock(code) for code in stock_codes]
         df = pd.concat(data, ignore_index=True)
         columns_to_select = ['symbol','trailingEps','forwardEps','bookValue']
+        df = df[[col for col in columns_to_select if col in df.columns]]
         # Add 'company' column
         df['company'] = df['symbol'].copy()
         # Replace symbols with company names
         df['symbol'] = df['symbol'].replace(companies)
-        # Remove 'shortName' column
-        df = df.drop('shortName', axis=1)   
-        df = df[[col for col in columns_to_select if col in df.columns]]
         # Calculate Graham numbers and add new columns
         for factor in [22.5, 30, 50]:
             df[f'Graham_{factor}'], df['EPS_Type'] = zip(*df.apply(lambda row: calculate_graham_number_and_eps_type(row, factor), axis=1))
+        # Drop rows with missing 'Graham_22.5' values
+        df = df.dropna(subset=['Graham_22.5'])
         return df
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
