@@ -275,18 +275,29 @@ def fetch_data_for_stock(stock):
         logging.error(f"Error fetching data for stock {stock}: {e}")
         return pd.DataFrame()
 
+def calculate_graham_number(row, factor):
+    try:
+        # Assuming that the Graham number is calculated as sqrt(22.5 * trailingEps * bookValue)
+        return np.sqrt(factor * row['trailingEps'] * row['bookValue'])
+    except Exception as e:
+        logging.error(f"Error calculating Graham number for row {row['symbol']}: {e}")
+        return np.nan
+
 def get_data_for_sector(sector):
     try:
         stock_codes = tasi[sector]
         data = [fetch_data_for_stock(code) for code in stock_codes]
         df = pd.concat(data, ignore_index=True)
-        # Select only the desired columns that exist in the DataFrame
         columns_to_select = ['symbol','shortName','trailingEps','forwardEps','bookValue']
         df = df[[col for col in columns_to_select if col in df.columns]]
+        # Calculate Graham numbers and add new columns
+        for factor in [22.5, 30, 50]:
+            df[f'Graham_{factor}'] = df.apply(lambda row: calculate_graham_number(row, factor), axis=1)
         return df
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
         return pd.DataFrame()
+
 
 # Streamlit code
 st.title('Financials Analysis Application')
