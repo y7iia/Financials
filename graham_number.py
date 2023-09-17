@@ -298,10 +298,8 @@ def get_data_for_sector(sector):
         df = pd.concat(data, ignore_index=True)
         columns_to_select = ['symbol','trailingEps','forwardEps','bookValue']
         df = df[[col for col in columns_to_select if col in df.columns]]
-        # Add 'company' column
-        df['company'] = df['symbol'].copy()
         # Replace symbols with company names
-        df['symbol'] = df['symbol'].replace(companies)   
+        df['Company'] = df['symbol'].replace(companies)   
         # Calculate Graham numbers and add new columns
         for factor in [22.5, 30, 50]:
             df[f'Graham_{factor}'], df['EPS_Type'] = zip(*df.apply(lambda row: calculate_graham_number_and_eps_type(row, factor), axis=1))
