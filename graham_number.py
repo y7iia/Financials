@@ -313,7 +313,7 @@ def get_data_for_sector(sector):
         def color_cells(row):
             color = {}
             for col in ['Graham_22.5', 'Graham_30', 'Graham_50']:
-                color[col] = 'background-color: green' if row['currentPrice'] > row[col] else 'background-color: red'
+                color[col] = 'background-color: LightGreen' if row['currentPrice'] < row[col] else 'background-color: LightCoral'
             return pd.Series(color)
         styled_df = df.style.apply(color_cells, axis=1)
         return styled_df
