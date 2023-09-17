@@ -322,8 +322,9 @@ def get_data_for_sector(sector):
             'Graham_50': 'تقييم متساهل جدا'
         }
         df = df.rename(columns=column_names)
-        # Round all floating-point numbers to two decimal places
-        df = df.round({col: 2 for col in df.select_dtypes(float).columns})
+        # Convert to float and round all floating-point numbers to two decimal places
+        for col in df.select_dtypes(include=['float64', 'int64']).columns:
+            df[col] = df[col].astype(float).round(2)
         # Apply styling
         def color_cells(row):
             color = {}
