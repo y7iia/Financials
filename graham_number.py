@@ -357,7 +357,7 @@ if st.button('Submit'):
 
 # Fetch and display data
 sector_data = get_data_for_sector(sector)
-st.dataframe(sector_data)
+
 
 st.write('\n')
 st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
