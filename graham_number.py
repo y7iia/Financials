@@ -313,10 +313,9 @@ def get_data_for_sector(sector):
         df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
         # Set 'symbol' as index
         df = df.set_index('symbol')
-        # Rename index
-        df.index.names = ['الشركة']
         # Rename columns
         column_names = {
+            'symbol': 'الشركة',
             'company': 'الرمز',
             'trailingEps': 'ربحية السهم الحالية',
             'forwardEps': 'ربحية السهم المتوقعة',
@@ -340,7 +339,6 @@ def get_data_for_sector(sector):
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
         return pd.DataFrame()
-
 
 st.write('\n')
 st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
