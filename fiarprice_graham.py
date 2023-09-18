@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import numpy as np
-import logging
+
 
 #check the tasi dic again later
 tasi = {
@@ -259,9 +259,6 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '2283.SR': 'المطاحن الأولى',
  '4323.SR': 'سمو'}
 
-# Setup logging
-logging.basicConfig(filename='app.log', level=logging.ERROR)
-
 def fetch_data_for_stock(stock):
     try:
         # Fetch data for a stock using yfinance
@@ -270,7 +267,6 @@ def fetch_data_for_stock(stock):
         df = pd.DataFrame([data])
         return df
     except Exception as e:
-        logging.error(f"Error fetching data for stock {stock}: {e}")
         return pd.DataFrame()
 
 def calculate_graham_number_and_eps_type(row, factor):
@@ -286,7 +282,6 @@ def calculate_graham_number_and_eps_type(row, factor):
         graham_number = round(np.sqrt(factor * eps * row['bookValue']), 2)
         return graham_number, eps_type
     except Exception as e:
-        logging.error(f"Error calculating Graham number for row {row['symbol']}: {e}")
         return np.nan, None
 
 def get_data_for_sector(sector):
@@ -334,7 +329,6 @@ def get_data_for_sector(sector):
         styled_df = df.style.apply(color_cells, axis=1)
         return styled_df
     except Exception as e:
-        logging.error(f"Error getting data for sector {sector}: {e}")
         return pd.DataFrame()
      
      
