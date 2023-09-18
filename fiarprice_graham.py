@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-import numpy as np
-import logging
 
 #check the tasi dic again later
 tasi = {
@@ -259,6 +257,12 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '2283.SR': 'المطاحن الأولى',
  '4323.SR': 'سمو'}
 
+import streamlit as st
+import pandas as pd
+import yfinance as yf
+import numpy as np
+import logging
+
 # Setup logging
 logging.basicConfig(filename='app.log', level=logging.ERROR)
 
@@ -335,33 +339,11 @@ def get_data_for_sector(sector):
         return pd.DataFrame()
      
 # Streamlit code
-st.title('حساب القيمة العادلة بأستخدام طريقة جراهام')
-st.markdown(' @telmisany - برمجة يحيى التلمساني')
-
+st.title('Financials Analysis Application')
 
 # User input
-sector = st.selectbox('اختار القطاع المطلوب', options=[''] + list(tasi.keys()))
-
-# Submit button
-if st.button('Submit'):
-    if sector:
-        # Fetch and display data
-        sector_data = get_data_for_sector(sector)
-        st.dataframe(sector_data)
-    else:
-        st.write(":أختار القطاع المطلوب")
+sector = st.selectbox('Please select a sector', options=list(tasi.keys()))
 
 # Fetch and display data
 sector_data = get_data_for_sector(sector)
-
-
-st.write('\n')
-st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
-st.write('\n')
-st.markdown('[أنظر ايضا: الأرباح المبقاة](https://twitter.com/telmisany/status/1700128870349811959)')
-
-# Add three empty lines for spacing
-st.write('\n\n\n')
-
-# Add a hyperlink to your Twitter account
-st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+st.dataframe(sector_data)
