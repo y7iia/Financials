@@ -1,7 +1,3 @@
-import streamlit as st
-import pandas as pd
-import yfinance as yf
-
 #check the tasi dic again later
 tasi = {
  'إدارة وتطوير العقارات': ['4300.SR',  '4310.SR',  '4020.SR',  '4150.SR',  '4230.SR',  '4320.SR',  '4100.SR',  '4090.SR',  '4321.SR',  '4250.SR',  '4220.SR',  '4322.SR',  '4323.SR'],
