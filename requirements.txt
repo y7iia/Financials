@@ -1,10 +1,6 @@
 streamlit
 numpy
 pandas
-yahooquery
 yfinance
-plotly
-mplfinance
 matplotlib
-warnings
 logging
