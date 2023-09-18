@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 
 def fetch_data(ticker_code):
-    # Fetch data
+   # Fetch data
     ticker = yf.Ticker(ticker_code)
     info = ticker.info
 
@@ -41,21 +41,22 @@ def fetch_data(ticker_code):
     table = renamed_df.T
     table['%'] = '-'
     
-    for i , n in enumerate(table[0]):
-        try:
-            if  round((table[0][i] / table[0][2]-1)*100,2) > 0:
-                table['%'][i] = '+' + str(round((table[0][i] / table[0][2]-1)*100,1)) + '%'
-            else:
-                table['%'][i] = str(round((table[0][i] / table[0][2]-1)*100,1)) + '%'
-        except:
-            continue
-
-    table['%'][2] = '-'
-    table['%'][6] = '-'
+    # Calculate the percentage change
+    pct_change = (table[0] / table[0][2] - 1) * 100
+    
+    # Format the percentage change
+    pct_change = pct_change.apply(lambda x: '+' + str(round(x, 1)) + '%' if x > 0 else str(round(x, 1)) + '%')
+    
+    # Assign the percentage change to the DataFrame
+    table['%'] = pct_change
+    
+    # Correct the rows that shouldn't have a percentage change
+    table.loc[['Current Price السعر الحالي', 'Analyst Opinions عدد آراء المحلين'], '%'] = '-'
+    
     table.rename(columns={0: 'المستهدف'}, inplace=True)
 
     return table
-
+    
 st.title('اراء المحللين - Analyst Recommendations')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
