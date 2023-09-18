@@ -272,10 +272,18 @@ def fetch_data_for_stock(stock):
         data = yf.Ticker(stock).info
         # Convert the dictionary into a DataFrame
         df = pd.DataFrame([data])
+
+        # Format the numerical values as per your requirement
+        numerical_cols = ['currentPrice', 'targetHighPrice', 'targetMeanPrice', 'targetLowPrice']
+        for col in numerical_cols:
+            if col in df.columns:
+                df[col] = df[col].apply(lambda x: '{:.2f}'.format(x))
+
         return df
     except Exception as e:
         logging.error(f"Error fetching data for stock {stock}: {e}")
         return pd.DataFrame()
+     
 
 def calculate_graham_number_and_eps_type(row, factor):
     try:
