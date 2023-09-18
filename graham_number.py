@@ -307,26 +307,29 @@ def get_data_for_sector(sector):
         # Calculate Graham numbers and add new columns
         for factor in [22.5, 30, 50]:
             df[f'Graham_{factor}'], df['EPS_Type'] = zip(*df.apply(lambda row: calculate_graham_number_and_eps_type(row, factor), axis=1))
-        # Drop rows with missing 'Graham_22.5' values
-        df = df.dropna(subset=['Graham_22.5'])
-        # Reorder columns
-        df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
-        # Rename columns
-        column_names = {
-            'symbol': 'الشركة',
-            'company': 'الرمز',
-            'trailingEps': 'ربحية السهم الحالية',
-            'forwardEps': 'ربحية السهم المتوقعة',
-            'bookValue': 'القيمة الدفترية',
-            'currentPrice': 'السعر الحالي',
-            'Graham_22.5': 'تقييم متشدد',
-            'Graham_30': 'تقييم متساهل',
-            'Graham_50': 'تقييم متساهل جدا'
-        }
-        df = df.rename(columns=column_names)
-        # Round all floating-point numbers to two decimal places
-        df = df.round({col: 2 for col in df.select_dtypes(float).columns})
-        # Apply styling
+            # Drop rows with missing 'Graham_22.5' values
+            df = df.dropna(subset=['Graham_22.5'])
+            # Reorder columns
+            df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
+            # Set 'symbol' as index
+            df = df.set_index('symbol')
+            # Rename index
+            df.index.names = ['الشركة']
+            # Rename columns
+            column_names = {
+               'company': 'الرمز',
+               'trailingEps': 'ربحية السهم الحالية',
+               'forwardEps': 'ربحية السهم المتوقعة',
+               'bookValue': 'القيمة الدفترية',
+               'currentPrice': 'السعر الحالي',
+               'Graham_22.5': 'تقييم متشدد',
+               'Graham_30': 'تقييم متساهل',
+               'Graham_50': 'تقييم متساهل جدا'
+            }
+            df = df.rename(columns=column_names)
+            # Round all floating-point numbers to two decimal places
+            df = df.round({col: 2 for col in df.select_dtypes(float).columns})
+            # Apply styling
         def color_cells(row):
             color = {}
             for col in ['تقييم متشدد', 'تقييم متساهل', 'تقييم متساهل جدا']:
@@ -337,6 +340,7 @@ def get_data_for_sector(sector):
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
         return pd.DataFrame()
+     
      
 # Streamlit code
 st.title('حساب القيمة العادلة بأستخدام طريقة جراهام')
