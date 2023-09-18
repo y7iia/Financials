@@ -344,7 +344,7 @@ st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 
 # User input
-sector = st.selectbox('Please select a sector', options=[''] + list(tasi.keys()))
+sector = st.selectbox('اختار القطاع المطلوب', options=[''] + list(tasi.keys()))
 
 # Submit button
 if st.button('Submit'):
@@ -358,3 +358,14 @@ if st.button('Submit'):
 # Fetch and display data
 sector_data = get_data_for_sector(sector)
 st.dataframe(sector_data)
+
+st.write('\n')
+st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
+st.write('\n')
+st.markdown('[أنظر ايضا: الأرباح المبقاة](https://twitter.com/telmisany/status/1700128870349811959)')
+
+# Add three empty lines for spacing
+st.write('\n\n\n')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
