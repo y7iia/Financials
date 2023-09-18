@@ -339,10 +339,21 @@ def get_data_for_sector(sector):
         return pd.DataFrame()
      
 # Streamlit code
-st.title('Financials Analysis Application')
+st.title('حساب القيمة العادلة بأستخدام طريقة جراهام')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
+
 
 # User input
-sector = st.selectbox('Please select a sector', options=list(tasi.keys()))
+sector = st.selectbox('Please select a sector', options=[''] + list(tasi.keys()))
+
+# Submit button
+if st.button('Submit'):
+    if sector:
+        # Fetch and display data
+        sector_data = get_data_for_sector(sector)
+        st.dataframe(sector_data)
+    else:
+        st.write(":أختار القطاع المطلوب")
 
 # Fetch and display data
 sector_data = get_data_for_sector(sector)
