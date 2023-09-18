@@ -364,6 +364,8 @@ sector_data = get_data_for_sector(sector)
 
 
 st.write('\n')
+st.markdown('[أنظر ايضا: آراء المحللين](https://twitter.com/telmisany/status/1701640774138445878)')
+st.write('\n')
 st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
 st.write('\n')
 st.markdown('[أنظر ايضا: الأرباح المبقاة](https://twitter.com/telmisany/status/1700128870349811959)')
