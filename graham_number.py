@@ -313,9 +313,10 @@ def get_data_for_sector(sector):
         df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
         # Set 'symbol' as index
         df = df.set_index('symbol')
+        # Rename index
+        df.index.names = ['الشركة']
         # Rename columns
         column_names = {
-            'symbol': 'الشركة',
             'company': 'الرمز',
             'trailingEps': 'ربحية السهم الحالية',
             'forwardEps': 'ربحية السهم المتوقعة',
@@ -339,26 +340,6 @@ def get_data_for_sector(sector):
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
         return pd.DataFrame()
-     
-# Streamlit code
-st.title('حساب القيمة العادلة بأستخدام طريقة جراهام')
-st.markdown(' @telmisany - برمجة يحيى التلمساني')
-
-
-# User input
-sector = st.selectbox('اختار القطاع المطلوب', options=[''] + list(tasi.keys()))
-
-# Submit button
-if st.button('Submit'):
-    if sector:
-        # Fetch and display data
-        sector_data = get_data_for_sector(sector)
-        st.dataframe(sector_data)
-    else:
-        st.write(":أختار القطاع المطلوب")
-
-# Fetch and display data
-sector_data = get_data_for_sector(sector)
 
 
 st.write('\n')
