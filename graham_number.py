@@ -311,6 +311,8 @@ def get_data_for_sector(sector):
         df = df.dropna(subset=['Graham_22.5'])
         # Reorder columns
         df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
+        # Set 'symbol' as index
+        df = df.set_index('symbol')
         # Rename columns
         column_names = {
             'symbol': 'الشركة',
