@@ -311,9 +311,12 @@ def get_data_for_sector(sector):
         df = df.dropna(subset=['Graham_22.5'])
         # Reorder columns
         df = df[['symbol', 'company', 'trailingEps', 'forwardEps', 'bookValue', 'currentPrice', 'Graham_22.5', 'Graham_30', 'Graham_50']]
+        # Set 'symbol' as index
+        df = df.set_index('symbol')
+        # Rename index
+        df.index.names = ['الشركة']
         # Rename columns
         column_names = {
-            'symbol': 'الشركة',
             'company': 'الرمز',
             'trailingEps': 'ربحية السهم الحالية',
             'forwardEps': 'ربحية السهم المتوقعة',
@@ -338,6 +341,7 @@ def get_data_for_sector(sector):
         logging.error(f"Error getting data for sector {sector}: {e}")
         return pd.DataFrame()
      
+     
 # Streamlit code
 st.title('حساب القيمة العادلة بأستخدام طريقة جراهام')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
@@ -359,6 +363,8 @@ if st.button('Submit'):
 sector_data = get_data_for_sector(sector)
 
 
+st.write('\n')
+st.markdown('[أنظر ايضا: آراء المحللين](https://twitter.com/telmisany/status/1701640774138445878)')
 st.write('\n')
 st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
 st.write('\n')
