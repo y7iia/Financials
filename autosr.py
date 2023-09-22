@@ -54,8 +54,8 @@ if st.button('أحسب Calculate Pivot Points'):
     
     #Fetch accurate close prices
     data2 = yf.Ticker(ticker).info
-    df = pd.DataFrame(data2).T[0]
-    close = df['currentPrice']
+    df = pd.DataFrame(data2, index=[0])
+    close = df.get('currentPrice')[0]
     
 
     P, R1, R2, R3, S1, S2, S3 = calculate_pivot_points(high, low, close, method)
