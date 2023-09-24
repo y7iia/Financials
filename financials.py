@@ -331,9 +331,12 @@ if st.button("Submit"):
         df = df.div(1000000)  # Divide all numbers in the DataFrame by 1,000,000
         st.write(df.T)
      
+        # Set pandas display option
+        pd.set_option('display.float_format', '{:.2f}'.format)
+   
         # Apply conditional formatting
-        df_styled = df.style.background_gradient(subset=df.columns, cmap='RdYlGn').set_precision(2).to_html()
-    
+        df_styled = df.style.background_gradient(subset=df.columns, cmap='RdYlGn').to_html()
+   
         # Display the DataFrame as HTML
         st.markdown(df_styled, unsafe_allow_html=True)
     else:
