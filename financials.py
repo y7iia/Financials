@@ -335,10 +335,10 @@ if st.button("Submit"):
         pd.set_option('display.float_format', '{:.2f}'.format)
    
         # Apply conditional formatting
-        df_styled = df.style.background_gradient(subset=df.columns, cmap='RdYlGn').to_html()
-   
+        df_styled = df.T.style.background_gradient(subset=df.T.columns, cmap=cmap).to_html()
+       
         # Display the DataFrame as HTML
-        st.markdown(df_styled.T, unsafe_allow_html=True)
+        st.markdown(df_styled, unsafe_allow_html=True)
     else:
         st.error("تعذر جلب البيانات")
 
