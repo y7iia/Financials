@@ -310,10 +310,10 @@ st.markdown(' @telmisany - برمجة يحيى التلمساني')
 selected_sector = st.selectbox('Select sector', [''] + list(tasi.keys()))
 
 # Dropdown for selecting the financial type
-financial_type = st.selectbox('Enter financial type', ['income statement', 'balance sheet', 'cash flow'])
+financial_type = st.selectbox('Enter financial type', [''] + ['income statement', 'balance sheet', 'cash flow'])
 
 # Dropdown for selecting the frequency
-frequency = st.selectbox('Enter frequency', ['yearly', 'quarterly'])
+frequency = st.selectbox('Enter frequency', [''] + ['yearly', 'quarterly'])
 
 # Button for submitting the input
 if st.button("Submit"):
