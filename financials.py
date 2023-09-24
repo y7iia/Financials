@@ -329,8 +329,13 @@ if st.button("Submit"):
         df = df.rename(index=companies)
         df = df.round(2)  # Round all numbers in the DataFrame to 2 decimal places
         df = df.div(1000000)  # Divide all numbers in the DataFrame by 1,000,000
-
         st.write(df.T)
+     
+        # Apply conditional formatting
+        df_styled = df.style.background_gradient(subset=df.columns, cmap='RdYlGn').render()
+
+        # Display the DataFrame as HTML
+        st.markdown(df_styled, unsafe_allow_html=True)
     else:
         st.error("تعذر جلب البيانات")
 
