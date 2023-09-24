@@ -332,8 +332,8 @@ if st.button("Submit"):
         st.write(df.T)
      
         # Apply conditional formatting
-        df_styled = df.style.background_gradient(subset=df.columns, cmap='RdYlGn').render()
-
+        df_styled = df.style.background_gradient(subset=df.columns, cmap='RdYlGn').set_precision(2).to_html()
+    
         # Display the DataFrame as HTML
         st.markdown(df_styled, unsafe_allow_html=True)
     else:
