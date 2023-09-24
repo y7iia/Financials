@@ -302,7 +302,9 @@ tasi = {
 }
 
 
-st.title('Financial Data Fetcher')
+# Streamlit code
+st.title('القوائم المالية لقطاعات سوق الأسهم السعودي')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # Dropdown for selecting the sector
 selected_sector = st.selectbox('Select sector', list(tasi.keys()))
@@ -314,7 +316,7 @@ financial_type = st.selectbox('Enter financial type', ['income statement', 'bala
 frequency = st.selectbox('Enter frequency', ['yearly', 'quarterly'])
 
 # Button for submitting the input
-if st.button("Fetch Data"):
+if st.button("Submit"):
     # Get the list of tickers for the selected sector
     tickers = tasi[selected_sector]
 
@@ -330,4 +332,24 @@ if st.button("Fetch Data"):
 
         st.write(df.T)
     else:
-        st.error("Unable to fetch data.")
+        st.error("تعذر جلب البيانات")
+
+
+
+
+
+st.write('\n')
+st.markdown('[أنظر ايضا: آراء المحللين](https://twitter.com/telmisany/status/1701640774138445878)')
+st.write('\n')
+st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
+st.write('\n')
+st.markdown('[أنظر ايضا: الأرباح المبقاة](https://twitter.com/telmisany/status/1700128870349811959)')
+st.write('\n')
+st.markdown('[أنظر ايضا: القيمة العادلة للسهم بطريقة جراهام](https://twitter.com/telmisany/status/1703795674410590680)')
+
+# Add three empty lines for spacing
+st.write('\n\n\n')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+
