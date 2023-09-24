@@ -307,7 +307,7 @@ st.title('القوائم المالية لقطاعات سوق الأسهم ال�
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # Dropdown for selecting the sector
-selected_sector = st.selectbox('Select sector', list(tasi.keys()))
+selected_sector = st.selectbox('Select sector', [''] + list(tasi.keys()))
 
 # Dropdown for selecting the financial type
 financial_type = st.selectbox('Enter financial type', ['income statement', 'balance sheet', 'cash flow'])
@@ -329,17 +329,8 @@ if st.button("Submit"):
         df = df.rename(index=companies)
         df = df.round(2)  # Round all numbers in the DataFrame to 2 decimal places
         df = df.div(1000000)  # Divide all numbers in the DataFrame by 1,000,000
-        #st.write(df.T)
-     
-        # Set pandas display option
-        pd.set_option('display.float_format', '{:.2f}'.format)
-   
-        # Apply conditional formatting
-        df_styled = df.T
-        df_styled = df_styled.style.background_gradient(subset=df.T.columns, cmap=cmap).to_html()
-       
-        # Display the DataFrame as HTML
-        st.markdown(df_styled, unsafe_allow_html=True)
+        st.write(df.T)
+             
     else:
         st.error("تعذر جلب البيانات")
 
