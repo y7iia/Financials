@@ -317,10 +317,10 @@ dic = {
 }
 
 # Dropdown for selecting the financial type
-financial_type = st.selectbox('اختار القائمة المالية', [''] + list(dic.values())
+financial_type_ARABIC = st.selectbox('اختار القائمة المالية', [''] + list(dic.values())
 
 # Find the corresponding English term:
-financial_type = [k for k, v in dic.items() if v == financial_type][0]
+financial_type = [k for k, v in dic.items() if v == financial_type_ARABIC][0]
               
  
 # Dropdown for selecting the frequency
