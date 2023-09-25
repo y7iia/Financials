@@ -309,9 +309,20 @@ st.markdown(' @telmisany - برمجة يحيى التلمساني')
 # Dropdown for selecting the sector
 selected_sector = st.selectbox('Select sector', [''] + list(tasi.keys()))
 
-# Dropdown for selecting the financial type
-financial_type = st.selectbox('Enter financial type', [''] + ['income statement', 'balance sheet', 'cash flow'])
+# Define a dictionary for English-Arabic financial type
+dic = {
+    'income statement': 'قائمة الدخل', 
+    'balance sheet': 'قائمة المركز المالي', 
+    'cash flow': 'التدفقات النقدية'
+}
 
+# Dropdown for selecting the financial type
+financial_type = st.selectbox('اختار القائمة المالية', [''] + list(dic.values())
+
+# Find the corresponding English term:
+financial_type = [k for k, v in dic.items() if v == financial_type][0]
+              
+ 
 # Dropdown for selecting the frequency
 frequency = st.selectbox('Enter frequency', [''] + ['yearly', 'quarterly'])
 
