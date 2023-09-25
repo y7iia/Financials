@@ -307,7 +307,7 @@ st.title('القوائم المالية لقطاعات سوق الأسهم ال�
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # Dropdown for selecting the sector
-selected_sector = st.selectbox('Select sector', [''] + list(tasi.keys()))
+selected_sector = st.selectbox('اختر القطاع', [''] + list(tasi.keys()))
 
 # Define a dictionary for English-Arabic financial type
 dic = {
@@ -317,13 +317,20 @@ dic = {
 }
 
 # Dropdown for selecting the financial type in Arabic
-financial_type_ARABIC = st.selectbox('اختار القائمة المالية', [''] + list(dic.values()))
+financial_type_ARABIC = st.selectbox('اختر القائمة المالية', [''] + list(dic.values()))
 
 # Find the corresponding English term
 financial_type = [k for k, v in dic.items() if v == financial_type_ARABIC][0] if financial_type_ARABIC else ""
 
-# Dropdown for selecting the frequency
-frequency = st.selectbox('Enter frequency', [''] + ['yearly', 'quarterly'])
+# Define a dictionary for English-Arabic frequency
+dic_frq = {'yearly': 'سنوي', 'quarterly': 'ربع سنوي'}
+
+# Dropdown for selecting the frequency in Arabic
+frequency_ARABIC = st.selectbox('اختر الفترة', [''] + list(dic_frq.values()))
+
+# Find the corresponding English term
+frequency = [k for k, v in dic_frq.items() if v == frequency_ARABIC][0] if frequency_ARABIC else ""
+
 
 # Button for submitting the input
 if st.button("Submit"):
