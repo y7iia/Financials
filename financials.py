@@ -317,7 +317,7 @@ dic = {
 }
 
 # Dropdown for selecting the financial type in Arabic
-financial_type_ARABIC = st.selectbox('اختار القائمة المالية', [''] + list(dic.keys()))
+financial_type_ARABIC = st.selectbox('اختار القائمة المالية', [''] + list(dic.values()))
 
 # Find the corresponding English term
 financial_type = [k for k, v in dic.items() if v == financial_type_ARABIC][0]
