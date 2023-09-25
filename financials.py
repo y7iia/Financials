@@ -355,7 +355,7 @@ if st.button("Submit"):
 
 
 # Add a statement
-st.write("جميع الأرقام في الجداول بالمليون ريال سعودي")
+st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي** ")
 st.write('\n')
 st.markdown('[أنظر ايضا: آراء المحللين](https://twitter.com/telmisany/status/1701640774138445878)')
 st.write('\n')
