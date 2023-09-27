@@ -310,6 +310,21 @@ if st.button('Submit'):
     # display the dividends DataFrame
     st.write(dividends)
 
-# footer
-st.markdown('---')
-st.markdown('© 2023 Dividends Data Fetcher')
+
+
+# Add a statement
+st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي** ")
+st.write('\n')
+st.markdown('[أنظر ايضا: آراء المحللين](https://twitter.com/telmisany/status/1701640774138445878)')
+st.write('\n')
+st.markdown('[أنظر ايضا: حاسبة الدعوم والمقاومات](https://twitter.com/telmisany/status/1700897237096640791)')
+st.write('\n')
+st.markdown('[أنظر ايضا: الأرباح المبقاة](https://twitter.com/telmisany/status/1700128870349811959)')
+st.write('\n')
+st.markdown('[أنظر ايضا: القيمة العادلة للسهم بطريقة جراهام](https://twitter.com/telmisany/status/1703795674410590680)')
+
+# Add three empty lines for spacing
+st.write('\n\n\n')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
