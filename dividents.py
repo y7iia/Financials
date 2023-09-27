@@ -293,7 +293,6 @@ def fetch_dividends(tickers):
 
     return dividends
 
-
 # title
 st.title('TASI Dividends for Sector')
 
@@ -302,16 +301,15 @@ sector = st.selectbox('Select a sector', list(tasi.keys()))
 
 # submit button
 if st.button('Submit'):
-# fetch tickers for the selected sector
-tickers = tasi[sector]
+    # fetch tickers for the selected sector
+    tickers = tasi[sector]
 
-# fetch dividends
-dividends = fetch_dividends(tickers)
+    # fetch dividends
+    dividends = fetch_dividends(tickers)
 
-# display the dividends DataFrame
-st.write(dividends)
+    # display the dividends DataFrame
+    st.write(dividends)
 
 # footer
 st.markdown('---')
 st.markdown('© 2023 Dividends Data Fetcher')
-
