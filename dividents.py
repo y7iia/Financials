@@ -269,7 +269,7 @@ def fetch_dividends(tickers):
         try:
             stock = yf.Ticker(ticker)
             div = stock.dividends
-            if len(div) > 0:
+            if not div.empty:
                 # add the ticker as a column to the dividends DataFrame
                 div = div.to_frame(name='dividends')
                 div['ticker'] = ticker
@@ -280,7 +280,7 @@ def fetch_dividends(tickers):
             logging.error(f"Error fetching data for {ticker}: {e}")
 
     # concatenate all the dividends DataFrames
-    dividends = pd.concat(dividends)
+    dividends = pd.concat(dividends) if dividends else pd.DataFrame()
 
     # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
@@ -289,7 +289,7 @@ def fetch_dividends(tickers):
     dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
 
     # replace NaN values with '-' and round to 2 decimal places
-    dividends = dividends.fillna('-').round(2)
+    dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
 
