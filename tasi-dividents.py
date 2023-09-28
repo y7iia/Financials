@@ -291,8 +291,18 @@ def fetch_dividends(tickers):
     # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
 
-    # pivot the DataFrame and group by year
-    dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
+    if 'fancy' in tickers:
+        # pivot the DataFrame and group by year
+        dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
+
+        # Calculate total dividends for each company
+        dividends['total'] = dividends.sum(axis=1)
+
+        # Sort by total dividends and keep only the top 30
+        dividends = dividends.sort_values('total', ascending=False).head(30)
+    else:
+        # pivot the DataFrame and group by year
+        dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
 
     # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
