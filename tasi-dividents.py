@@ -305,15 +305,18 @@ sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
 
 # submit button
 if st.button('Submit'):
-    # fetch tickers for the selected sector
-    tickers = tasi[sector]
+    if sector == '':
+        st.warning('الرجاء اختيار قطاع.')
+    else:
+        # fetch tickers for the selected sector
+        tickers = tasi[sector]
 
-    # fetch dividends
-    dividends = fetch_dividends(tickers)
+        # fetch dividends
+        dividends = fetch_dividends(tickers)
 
-    # display the dividends DataFrame
-    st.write(dividends)
-
+        # display the dividends DataFrame
+        st.write(dividends)
+     
 
 # Add a statement
 st.write("> ** ملاحظة مهمة: الأرباح في الجدول مجمعة حسب سنة التوزيع وليس بحسب السنة المالية** ")
