@@ -301,16 +301,6 @@ def fetch_dividends(tickers):
 
     return dividends
 
-# Fetch dividends
-dividends = fetch_dividends(tickers)
-
-# Sort the DataFrame by 'مجموع التوزيعات' in descending order
-sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
-
-# Display the sorted DataFrame in Streamlit
-st.dataframe(sorted_dividends)
- 
- 
 # Streamlit app
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
