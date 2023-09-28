@@ -287,6 +287,7 @@ def fetch_dividends(tickers):
     # concatenate all the dividends DataFrames
     dividends = pd.concat(dividends) if dividends else pd.DataFrame()
 
+ 
     # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
 
