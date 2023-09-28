@@ -296,8 +296,8 @@ def fetch_dividends(tickers):
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
 
-    if 'أفضل 30 سهم من حيث مجموع التوزيعات' in tickers:
-        # Sort by total dividends and keep only the top 30
+    if 'أفضل 30 سهم من حيث التوزيعات' in tickers:
+        # Sort by total dividends in descending order and keep only the top 30
         dividends = dividends.sort_values('مجموع التوزيعات', ascending=False).head(30)
 
     # replace NaN values with '-' and round to 2 decimal places
