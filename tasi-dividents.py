@@ -287,27 +287,24 @@ def fetch_dividends(tickers):
     # concatenate all the dividends DataFrames
     dividends = pd.concat(dividends) if dividends else pd.DataFrame()
 
- 
     # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
 
+    # pivot the DataFrame and group by year
+    dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
+
+    # Calculate total dividends for each company and create a new column
+    dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
+
     if 'أفضل 30 سهم من حيث التوزيعات' in tickers:
-        # pivot the DataFrame and group by year
-        dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
-
-        # Calculate total dividends for each company
-        dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
-
         # Sort by total dividends and keep only the top 30
         dividends = dividends.sort_values('مجموع التوزيعات', ascending=False).head(30)
-    else:
-        # pivot the DataFrame and group by year
-        dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
 
     # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
+ 
  
 # Streamlit app
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
