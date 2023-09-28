@@ -316,7 +316,7 @@ if st.button('Submit'):
 
 
 # Add a statement
-st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي** ")
+st.write("> ** ملاحظة مهمة: الأرباح في الجدول مجمعة حسب تاريخ التوزيع وليس بحسب السنة المالية** ")
 st.write('\n')
 st.markdown('[تطبيقات أخرى قد تعجبك:](https://twitter.com/telmisany/status/1702641486792159334)')
 
