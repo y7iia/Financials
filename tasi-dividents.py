@@ -298,6 +298,7 @@ def fetch_dividends(tickers):
  
 # Streamlit app
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # dropdown menu
 sector = st.selectbox('أختر قطاع', list(tasi.keys()))
@@ -312,3 +313,16 @@ if st.button('Submit'):
 
     # display the dividends DataFrame
     st.write(dividends)
+
+
+# Add a statement
+st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي** ")
+st.write('\n')
+st.markdown('[تطبيقات أخرى قد تعجبك:](https://twitter.com/telmisany/status/1702641486792159334)')
+
+
+# Add three empty lines for spacing
+st.write('\n\n\n')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
