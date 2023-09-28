@@ -258,9 +258,8 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
 'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
-'أفضل 30 سهم توزيعا': list(companies.keys())
+'أفضل 30 سهم من حيث التوزيعات': list(companies.keys())
        }
-
 
 def fetch_dividends(tickers):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
@@ -272,7 +271,7 @@ def fetch_dividends(tickers):
             if 'Dividends' in hist.columns:
                 # Filter out the rows where Dividends is 0
                 div = hist[hist['Dividends'] != 0]['Dividends']
-                
+
                 if not div.empty:
                     # add the ticker as a column to the dividends DataFrame
                     div = div.to_frame(name='dividends')
@@ -291,7 +290,7 @@ def fetch_dividends(tickers):
     # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
 
-    if 'fancy' in tickers:
+    if 'أفضل 30 سهم من حيث التوزيعات' in tickers:
         # pivot the DataFrame and group by year
         dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
 
