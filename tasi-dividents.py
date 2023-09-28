@@ -297,10 +297,10 @@ def fetch_dividends(tickers):
     return dividends
  
 # Streamlit app
-st.title('TASI Dividends for Sector')
+st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
 
 # dropdown menu
-sector = st.selectbox('Select a sector', list(tasi.keys()))
+sector = st.selectbox('أختر قطاع', list(tasi.keys()))
 
 # submit button
 if st.button('Submit'):
