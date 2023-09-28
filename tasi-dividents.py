@@ -288,7 +288,12 @@ def fetch_dividends(tickers):
                     for year in div.index.year.unique():
                         avg_price = hist.loc[hist.index.year==year, 'Close'].mean()
                         div[f'avg stock price in {year}'] = avg_price
-                    
+                    # After the loop, you can rearrange the columns to put 'latest stock price' before 'مجموع التوزيعات'
+                   if 'latest stock price' in dividends.columns:
+                       cols = dividends.columns.tolist()
+                       cols.insert(-1, cols.pop(cols.index('latest stock price')))
+                       dividends = dividends[cols]
+ 
                     dividends.append(div)
                 else:
                     logging.warning(f"No dividends data found for {ticker}")
