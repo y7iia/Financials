@@ -326,18 +326,15 @@ if st.button('Submit'):
         # Fetch tickers for the selected sector
         tickers = tasi[sector]
 
-        try:
-            # Fetch dividends
-            dividends = fetch_dividends(tickers)
+        # Fetch dividends
+        dividends = fetch_dividends(tickers)
 
-            # Sort the DataFrame by 'مجموع التوزيعات' in descending order
-            sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
+        # Sort the DataFrame by 'مجموع التوزيعات' in descending order
+        sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
 
-            # Display the sorted DataFrame in Streamlit
-            st.dataframe(sorted_dividends)
-        except NameError as e:
-            st.error(f"An error occurred: {e}")
-         
+        # Display the sorted DataFrame in Streamlit
+        st.dataframe(sorted_dividends)
+     
 # Add a statement
 st.write("> ** ملاحظة مهمة: الأرباح في الجدول مجمعة حسب سنة التوزيع وليس بحسب السنة المالية** ")
 st.write('\n')
