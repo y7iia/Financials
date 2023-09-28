@@ -259,21 +259,26 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '4323.SR': 'سمو'}
 
 
-# Function to fetch dividends
 def fetch_dividends(tickers):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
     dividends = []
     for ticker in tickers:
         try:
             stock = yf.Ticker(ticker)
-            div = stock.dividends
-            if not div.empty:
-                # add the ticker as a column to the dividends DataFrame
-                div = div.to_frame(name='dividends')
-                div['ticker'] = ticker
-                dividends.append(div)
+            hist = stock.history(period="max")  # Fetch all available historical data
+            if 'Dividends' in hist.columns:
+                # Filter out the rows where Dividends is 0
+                div = hist[hist['Dividends'] != 0]['Dividends']
+                
+                if not div.empty:
+                    # add the ticker as a column to the dividends DataFrame
+                    div = div.to_frame(name='dividends')
+                    div['ticker'] = ticker
+                    dividends.append(div)
+                else:
+                    logging.warning(f"No dividends data found for {ticker}")
             else:
-                logging.warning(f"No dividends data found for {ticker}")
+                logging.warning(f"No dividends column found for {ticker}")
         except Exception as e:
             logging.error(f"Error fetching data for {ticker}: {e}")
 
@@ -290,7 +295,7 @@ def fetch_dividends(tickers):
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
-
+ 
 # Streamlit app
 st.title('TASI Dividends for Sector')
 
