@@ -301,7 +301,7 @@ st.title('التوزيعات النقدية لسوق الأسهم السعودي
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # dropdown menu
-sector = st.selectbox('أختر قطاع', list(tasi.keys()))
+sector = st.selectbox('أختر قطاع', list([''] + tasi.keys()))
 
 # submit button
 if st.button('Submit'):
