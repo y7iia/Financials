@@ -3,8 +3,8 @@ import pandas as pd
 import yfinance as yf
 import logging
 
-# Dictionary mapping sectors to tickers
-tasi = {
+# TASI dictionary (Always Update this dict)
+tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],        
 'البتروكيماويات': ['2350.SR',  '1211.SR',  '2310.SR',  '2380.SR',  '2001.SR',  '2330.SR',  '2060.SR',  '2010.SR',  '2170.SR',  '2250.SR',  '2290.SR',  '2210.SR',  '1210.SR',  '2020.SR',  '2223.SR'],
 'الأسمنت': ['3020.SR',  '3040.SR',  '3030.SR',  '3090.SR',  '3091.SR',  '3005.SR',  '3004.SR',  '3003.SR',  '3080.SR',  '3050.SR',  '3010.SR',  '3002.SR',  '3001.SR',  '3060.SR'],
 'البنوك': ['1180.SR',  '1010.SR',  '1150.SR',  '1050.SR',  '1140.SR',  '1020.SR',  '1182.SR',  '1120.SR',  '1030.SR',  '1080.SR',  '1060.SR',  '1183.SR'],
@@ -25,11 +25,8 @@ tasi = {
 'النقل': ['4261.SR', '4260.SR', '4031.SR', '4040.SR', '4110.SR', '2190.SR'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
-'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR']
+'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
 }
-
-
-# Dictionary mapping tickers to Arabic company names
 
 companies = {'2222.SR': 'أرامكو السعودية',
  '1180.SR': 'الأهلي السعودي',
@@ -262,6 +259,7 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '4323.SR': 'سمو'}
 
 
+# Function to fetch dividends
 def fetch_dividends(tickers):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
     dividends = []
@@ -293,7 +291,7 @@ def fetch_dividends(tickers):
 
     return dividends
 
-# title
+# Streamlit app
 st.title('TASI Dividends for Sector')
 
 # dropdown menu
@@ -306,6 +304,6 @@ if st.button('Submit'):
 
     # fetch dividends
     dividends = fetch_dividends(tickers)
-    
+
     # display the dividends DataFrame
     st.write(dividends)
