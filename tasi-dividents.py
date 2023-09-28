@@ -268,6 +268,10 @@ def fetch_dividends(tickers):
         try:
             stock = yf.Ticker(ticker)
             hist = stock.history(period="max")  # Fetch all available historical data
+            
+            # Fetch current stock price
+            currentPrice = stock.info['currentPrice']
+            
             if 'Dividends' in hist.columns:
                 # Filter out the rows where Dividends is 0
                 div = hist[hist['Dividends'] != 0]['Dividends']
@@ -277,6 +281,12 @@ def fetch_dividends(tickers):
                     div = div.to_frame(name='dividends')
                     div['ticker'] = ticker
                     dividends.append(div)
+                    
+                    # Calculate average stock price for each year and add it to DataFrame
+                    for year in div.index.year.unique():
+                        avg_price = hist.loc[hist.index.year==year, 'Close'].mean()
+                        div[f'avg stock price in {year}'] = avg_price
+                    
                 else:
                     logging.warning(f"No dividends data found for {ticker}")
             else:
@@ -292,6 +302,9 @@ def fetch_dividends(tickers):
 
     # pivot the DataFrame and group by year
     dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
+
+    # Add latest stock price before 'مجموع التوزيعات' column
+    dividends.insert(loc=len(dividends.columns)-1, column='Latest Stock Price', value=currentPrice)
 
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
