@@ -280,13 +280,16 @@ def fetch_dividends(tickers):
                     # add the ticker as a column to the dividends DataFrame
                     div = div.to_frame(name='dividends')
                     div['ticker'] = ticker
-                    dividends.append(div)
+                    
+                    # Add current stock price to the dividends DataFrame
+                    div['latest stock price'] = currentPrice
                     
                     # Calculate average stock price for each year and add it to DataFrame
                     for year in div.index.year.unique():
                         avg_price = hist.loc[hist.index.year==year, 'Close'].mean()
                         div[f'avg stock price in {year}'] = avg_price
                     
+                    dividends.append(div)
                 else:
                     logging.warning(f"No dividends data found for {ticker}")
             else:
@@ -303,8 +306,10 @@ def fetch_dividends(tickers):
     # pivot the DataFrame and group by year
     dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
 
-    # Add latest stock price before 'مجموع التوزيعات' column
-    dividends.insert(loc=len(dividends.columns)-1, column='Latest Stock Price', value=currentPrice)
+    # Arrange the columns to put 'latest stock price' before 'مجموع التوزيعات'
+    cols = dividends.columns.tolist()
+    cols.insert(-1, cols.pop(cols.index('latest stock price')))
+    dividends = dividends[cols]
 
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
@@ -313,6 +318,7 @@ def fetch_dividends(tickers):
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
+
 
 # Streamlit app
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
