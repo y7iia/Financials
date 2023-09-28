@@ -307,8 +307,8 @@ if st.button('Submit'):
     # fetch dividends
     dividends = fetch_dividends(tickers)
 
-    # display the dividends DataFrame
-    st.write(dividends)
+# display the dividends DataFrame
+st.write(dividends)
 
 
 
