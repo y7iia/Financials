@@ -296,37 +296,44 @@ def fetch_dividends(tickers):
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
 
-    if 'أفضل 30 سهم من حيث التوزيعات' in tickers:
-        # Sort by total dividends in descending order and keep only the top 30
-        dividends = dividends.sort_values('مجموع التوزيعات', ascending=False).head(30)
-
     # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
+
+# Fetch dividends
+dividends = fetch_dividends(tickers)
+
+# Sort the DataFrame by 'مجموع التوزيعات' in descending order
+sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
+
+# Display the sorted DataFrame in Streamlit
+st.dataframe(sorted_dividends)
  
  
 # Streamlit app
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
-# dropdown menu
+# Dropdown menu
 sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
 
-# submit button
+# Submit button
 if st.button('Submit'):
     if sector == '':
         st.warning('الرجاء اختيار قطاع.')
     else:
-        # fetch tickers for the selected sector
+        # Fetch tickers for the selected sector
         tickers = tasi[sector]
 
-        # fetch dividends
+        # Fetch dividends
         dividends = fetch_dividends(tickers)
 
-        # display the dividends DataFrame
-        st.write(dividends)
-     
+        # Sort the DataFrame by 'مجموع التوزيعات' in descending order
+        sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
+
+        # Display the sorted DataFrame in Streamlit
+        st.dataframe(sorted_dividends)
 
 # Add a statement
 st.write("> ** ملاحظة مهمة: الأرباح في الجدول مجمعة حسب سنة التوزيع وليس بحسب السنة المالية** ")
