@@ -3,7 +3,6 @@ import pandas as pd
 import yfinance as yf
 import logging
 
-
 # TASI dictionary (Always Update this dict)
 tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],        
 'البتروكيماويات': ['2350.SR',  '1211.SR',  '2310.SR',  '2380.SR',  '2001.SR',  '2330.SR',  '2060.SR',  '2010.SR',  '2170.SR',  '2250.SR',  '2290.SR',  '2210.SR',  '1210.SR',  '2020.SR',  '2223.SR'],
@@ -27,7 +26,6 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
 'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
-'fancy': list(companies.keys())
 }
 
 companies = {'2222.SR': 'أرامكو السعودية',
@@ -290,18 +288,8 @@ def fetch_dividends(tickers):
     # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
 
-    if 'fancy' in tickers:
-        # pivot the DataFrame and group by year
-        dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
-
-        # Calculate total dividends for each company
-        dividends['total'] = dividends.sum(axis=1)
-
-        # Sort by total dividends and keep only the top 30
-        dividends = dividends.sort_values('total', ascending=False).head(30)
-    else:
-        # pivot the DataFrame and group by year
-        dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
+    # pivot the DataFrame and group by year
+    dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
 
     # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
