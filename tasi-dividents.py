@@ -258,7 +258,7 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
 'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
-'أفضل 30 سهم من حيث التوزيعات': list(companies.keys())
+'أفضل 30 سهم من حيث مجموع التوزيعات': list(companies.keys())
        }
 
 def fetch_dividends(tickers):
@@ -296,7 +296,7 @@ def fetch_dividends(tickers):
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
 
-    if 'أفضل 30 سهم من حيث التوزيعات' in tickers:
+    if 'أفضل 30 سهم من حيث مجموع التوزيعات' in tickers:
         # Sort by total dividends and keep only the top 30
         dividends = dividends.sort_values('مجموع التوزيعات', ascending=False).head(30)
 
