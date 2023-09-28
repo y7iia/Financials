@@ -267,20 +267,24 @@ def fetch_dividends(tickers):
     for ticker in tickers:
         try:
             stock = yf.Ticker(ticker)
-            hist = stock.history(period="max")  # Fetch all available historical data
-            if 'Dividends' in hist.columns:
-                # Filter out the rows where Dividends is 0
-                div = hist[hist['Dividends'] != 0]['Dividends']
+            div = stock.dividends  # Fetch all available dividends data
 
-                if not div.empty:
-                    # add the ticker as a column to the dividends DataFrame
-                    div = div.to_frame(name='dividends')
-                    div['ticker'] = ticker
-                    dividends.append(div)
-                else:
-                    logging.warning(f"No dividends data found for {ticker}")
+            if not div.empty:
+                # Resample the dividends data by month
+                monthly_dividends = div.resample('M').sum()
+
+                # Remove duplicate dividend values that appear in consecutive months
+                monthly_dividends = monthly_dividends.loc[monthly_dividends.shift() != monthly_dividends]
+
+                # Resample the cleaned monthly data by year and sum it
+                annual_dividends = monthly_dividends.resample('Y').sum()
+
+                # add the ticker as a column to the dividends DataFrame
+                annual_dividends = annual_dividends.to_frame(name='dividends')
+                annual_dividends['ticker'] = ticker
+                dividends.append(annual_dividends)
             else:
-                logging.warning(f"No dividends column found for {ticker}")
+                logging.warning(f"No dividends data found for {ticker}")
         except Exception as e:
             logging.error(f"Error fetching data for {ticker}: {e}")
 
@@ -300,6 +304,7 @@ def fetch_dividends(tickers):
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
+ 
 
 # Streamlit app
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
