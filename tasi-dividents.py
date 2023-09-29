@@ -281,7 +281,7 @@ def fetch_dividends(tickers, sector):
                 # Resample the cleaned monthly data by year and sum it
                 annual_dividends = monthly_dividends.resample('Y').sum()
 
-                if sector == "Dividends Kings":
+                if sector == 'Dividends Kings':
                     # Calculate the number of years with 0 dividends for years 2017 or more
                     zero_dividend_years = (annual_dividends[annual_dividends.index.year >= 2017] == 0).count()
 
