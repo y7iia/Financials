@@ -302,25 +302,21 @@ def fetch_dividends(tickers, sector):
 
     if sector == "Dividends Kings":
         # replace NaN values with '-'
-        dividends = dividends.fillna('-')
+        dividends_filled = dividends.fillna('-')
 
         # Count the number of "-" in the last 5 years
-        dividends["count"] = dividends.apply(lambda row: sum(row[-5:] == "-"), axis=1)
+        dividends_filled["count"] = dividends_filled.apply(lambda row: sum(row[-5:] == "-"), axis=1)
 
         # Drop the companies with 5 or more "-"
-        dividends = dividends[dividends["count"] < 5]
-
-        # Drop the 'count' column as we don't need it anymore
-        dividends = dividends.drop(columns="count")
+        dividends = dividends[dividends_filled["count"] < 5]
 
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
 
-    # replace '-' back to NaN and round to 2 decimal places
-    dividends = dividends.replace('-', np.nan).applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
+    # replace NaN values with '-' and round to 2 decimal places
+    dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
-
 
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
