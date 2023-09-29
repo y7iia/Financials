@@ -264,6 +264,8 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
        }
 
 
+import numpy as np
+
 def fetch_dividends(tickers, sector):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
     dividends = []
@@ -300,21 +302,21 @@ def fetch_dividends(tickers, sector):
     # pivot the DataFrame and group by year
     dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
 
-    if sector == "Dividends Kings":
-        # replace NaN values with '-'
-        dividends_filled = dividends.fillna('-')
-
-        # Count the number of "-" in the last 5 years
-        dividends_filled["count"] = dividends_filled.apply(lambda row: sum(row[-5:] == "-"), axis=1)
-
-        # Drop the companies with 5 or more "-"
-        dividends = dividends[dividends_filled["count"] < 5]
-
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
 
     # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
+
+    if sector == "Dividends Kings":
+        # Count the number of "-" in the last 10 years
+        dividends["Count of '-'"] = dividends.iloc[:, -10:].apply(lambda row: sum(row == "-"), axis=1)
+
+        # Drop the companies with 5 or more "-"
+        dividends = dividends[dividends["Count of '-'"] >= 5]
+
+        # Drop the 'Count of "-"' column as it's no longer needed
+        dividends = dividends.drop(columns="Count of '-'")
 
     return dividends
 
