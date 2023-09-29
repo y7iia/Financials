@@ -313,7 +313,7 @@ def fetch_dividends(tickers, sector):
         dividends["Count of '-'"] = dividends.iloc[:, -10:].apply(lambda row: sum(row == "-"), axis=1)
 
         # Drop the companies with 5 or more "-"
-        dividends = dividends[dividends["Count of '-'"] >= 5]
+        dividends = dividends[dividends["Count of '-'"] <= 4]
 
         # Drop the 'Count of "-"' column as it's no longer needed
         dividends = dividends.drop(columns="Count of '-'")
