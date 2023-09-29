@@ -4,8 +4,6 @@ import yfinance as yf
 import numpy as np
 import logging
 
-
-
 companies = {'2222.SR': 'أرامكو السعودية',
  '1180.SR': 'الأهلي السعودي',
  '2082.SR': 'أكوا باور',
