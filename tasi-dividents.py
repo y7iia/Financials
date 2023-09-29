@@ -324,7 +324,7 @@ if st.button('Submit'):
         st.warning('الرجاء اختيار قطاع.')
     else:
         tickers = tasi[sector]
-        check_dividend_history = sector == 'Dividents Kings'
+        check_dividend_history = sector == 'Dividends Kings'
         dividends = fetch_dividends(tickers, check_dividend_history)
         sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
         st.dataframe(sorted_dividends)
