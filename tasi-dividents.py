@@ -316,7 +316,7 @@ def fetch_dividends(tickers, sector):
         dividends = dividends[dividends["Count of '-'"] <= 4]
 
         # Drop the 'Count of "-"' column as it's no longer needed
-        dividends = dividends.drop(columns="Count of '-'")
+        #dividends = dividends.drop(columns="Count of '-'")
 
     return dividends
 
