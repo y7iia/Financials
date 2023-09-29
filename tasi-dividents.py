@@ -276,26 +276,21 @@ def fetch_dividends(tickers, sector):
                 # Remove only consecutive duplicate dividend values, keep one of them
                 monthly_dividends = monthly_dividends.loc[(monthly_dividends.shift() != monthly_dividends) | (monthly_dividends.shift(-1) != monthly_dividends)]
 
-                # Resample the cleaned monthly data by year and sum it, then convert it to a DataFrame
-                annual_dividends = monthly_dividends.resample('Y').sum().to_frame(name='dividends')
-
-                # Fill in missing years with 0 dividends
-                annual_dividends = annual_dividends.reindex(pd.date_range(start='2017', end='2023', freq='Y'), fill_value=0)
+                # Resample the cleaned monthly data by year and sum it
+                annual_dividends = monthly_dividends.resample('Y').sum()
 
                 append_data = True  # Flag for appending data
 
                 if sector == 'Dividends Kings':
-                    # Add a 'count' column that is 1 where the dividend is zero, and 0 otherwise
-                    annual_dividends['count'] = (annual_dividends['dividends'] == 0).astype(int)
+                    # Calculate the number of years with 0 dividends for years 2017 or more
+                    zero_dividend_years = (annual_dividends[annual_dividends.index.year >= 2017] == 0).sum()
 
-                    # Calculate the sum of 'count' for years 2017 or more
-                    zero_dividend_years = annual_dividends.loc[annual_dividends.index.year >= 2017, 'count'].sum()
-
-                    # If the sum of 'count' is 5 or more, do not append this company's data
+                    # If the number of years with 0 dividends is 5 or more, do not append this company's data
                     if zero_dividend_years >= 5:
                         append_data = False
 
                 # add the ticker as a column to the dividends DataFrame
+                annual_dividends = annual_dividends.to_frame(name='dividends')
                 annual_dividends['ticker'] = ticker
 
                 if append_data:  # Check flag before appending data
@@ -321,7 +316,6 @@ def fetch_dividends(tickers, sector):
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
- 
  
  
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
