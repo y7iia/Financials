@@ -276,11 +276,8 @@ def fetch_dividends(tickers, sector):
                 # Remove only consecutive duplicate dividend values, keep one of them
                 monthly_dividends = monthly_dividends.loc[(monthly_dividends.shift() != monthly_dividends) | (monthly_dividends.shift(-1) != monthly_dividends)]
 
-                # Resample the cleaned monthly data by year and sum it, then convert it to a DataFrame
-                annual_dividends = monthly_dividends.resample('Y').sum().to_frame(name='dividends')
-
-                # Fill in missing years with 0 dividends
-                annual_dividends = annual_dividends.reindex(pd.date_range(start='2017', end='2023', freq='Y'), fill_value=0)
+                # Resample the cleaned monthly data by year and sum it
+                annual_dividends = monthly_dividends.resample('Y').sum()
 
                 append_data = True  # Flag for appending data
 
@@ -296,6 +293,7 @@ def fetch_dividends(tickers, sector):
                         append_data = False
 
                 # add the ticker as a column to the dividends DataFrame
+                annual_dividends = annual_dividends.to_frame(name='dividends')
                 annual_dividends['ticker'] = ticker
 
                 if append_data:  # Check flag before appending data
