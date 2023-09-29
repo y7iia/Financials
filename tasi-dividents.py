@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import numpy as np
+from datetime import datetime
 import logging
 
 companies = {'2222.SR': 'أرامكو السعودية',
@@ -279,25 +280,17 @@ def fetch_dividends(tickers, sector):
                 # Resample the cleaned monthly data by year and sum it
                 annual_dividends = monthly_dividends.resample('Y').sum()
 
-                append_data = True  # Flag for appending data
+                # Fill in missing years with 0 dividends
+                annual_dividends = annual_dividends.reindex(pd.date_range(start='2017', end=datetime.now().year, freq='Y'), fill_value=0)
 
-                if sector == 'Dividends Kings':
-                    # Add a 'count' column that is 1 where the dividend is zero, and 0 otherwise
-                    annual_dividends['count'] = (annual_dividends['dividends'] == 0).astype(int)
-
-                    # Calculate the sum of 'count' for years 2017 or more
-                    zero_dividend_years = annual_dividends.loc[annual_dividends.index.year >= 2017, 'count'].sum()
-
-                    # If the sum of 'count' is 5 or more, do not append this company's data
-                    if zero_dividend_years >= 5:
-                        append_data = False
+                # Add a 'count' column that is 1 where the dividend is zero, and 0 otherwise
+                annual_dividends['count'] = (annual_dividends == 0).astype(int)
 
                 # add the ticker as a column to the dividends DataFrame
-                annual_dividends = annual_dividends.to_frame(name='dividends')
                 annual_dividends['ticker'] = ticker
 
-                if append_data:  # Check flag before appending data
-                    dividends.append(annual_dividends)
+                # Append this company's data
+                dividends.append(annual_dividends)
             else:
                 logging.warning(f"No dividends data found for {ticker}")
         except Exception as e:
@@ -314,6 +307,9 @@ def fetch_dividends(tickers, sector):
 
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
+
+    # Calculate 'years with no dividends' for each company and create a new column
+    dividends['years with no dividends'] = (dividends == 0).sum(axis=1)
 
     # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
