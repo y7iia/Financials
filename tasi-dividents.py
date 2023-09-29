@@ -279,18 +279,22 @@ def fetch_dividends(tickers, sector):
                 # Resample the cleaned monthly data by year and sum it
                 annual_dividends = monthly_dividends.resample('Y').sum()
 
+                append_data = True  # Flag for appending data
+
                 if sector == 'Dividends Kings':
                     # Calculate the number of years with 0 dividends for years 2017 or more
                     zero_dividend_years = (annual_dividends[annual_dividends.index.year >= 2017] == 0).count()
 
                     # If the number of years with 0 dividends is 5 or more, do not append this company's data
                     if zero_dividend_years >= 5:
-                        continue
+                        append_data = False
 
                 # add the ticker as a column to the dividends DataFrame
                 annual_dividends = annual_dividends.to_frame(name='dividends')
                 annual_dividends['ticker'] = ticker
-                dividends.append(annual_dividends)
+
+                if append_data:  # Check flag before appending data
+                    dividends.append(annual_dividends)
             else:
                 logging.warning(f"No dividends data found for {ticker}")
         except Exception as e:
@@ -312,6 +316,7 @@ def fetch_dividends(tickers, sector):
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
+ 
  
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
