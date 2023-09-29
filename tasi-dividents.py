@@ -263,18 +263,25 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
        }
 
 
-def fetch_dividends(tickers, check_dividend_history=False):
+def fetch_dividends(tickers, sector):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
     dividends = []
-    current_year = datetime.now().year
     for ticker in tickers:
         try:
             stock = yf.Ticker(ticker)
-            div = stock.dividends
+            div = stock.dividends  # Fetch all available dividends data
+
             if not div.empty:
+                # Resample the dividends data by month
                 monthly_dividends = div.resample('M').sum()
+
+                # Remove duplicate dividend values that appear in consecutive months
                 monthly_dividends = monthly_dividends.loc[monthly_dividends.shift() != monthly_dividends]
+
+                # Resample the cleaned monthly data by year and sum it
                 annual_dividends = monthly_dividends.resample('Y').sum()
+
+                # add the ticker as a column to the dividends DataFrame
                 annual_dividends = annual_dividends.to_frame(name='dividends')
                 annual_dividends['ticker'] = ticker
                 dividends.append(annual_dividends)
@@ -282,18 +289,34 @@ def fetch_dividends(tickers, check_dividend_history=False):
                 logging.warning(f"No dividends data found for {ticker}")
         except Exception as e:
             logging.error(f"Error fetching data for {ticker}: {e}")
+
+    # concatenate all the dividends DataFrames
     dividends = pd.concat(dividends) if dividends else pd.DataFrame()
+
+    # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
+
+    # pivot the DataFrame and group by year
     dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
-    
+
+    if sector == "Dividends Kings":
+        # replace NaN values with '-'
+        dividends = dividends.fillna('-')
+
+        # Count the number of "-" in the last 5 years
+        dividends["count"] = dividends.apply(lambda row: sum(row[-5:] == "-"), axis=1)
+
+        # Drop the companies with 5 or more "-"
+        dividends = dividends[dividends["count"] < 5]
+
+        # Drop the 'count' column as we don't need it anymore
+        dividends = dividends.drop(columns="count")
+
+    # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
-    dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
-    
-    # For 'Dividents Kings', count the number of "-" in the last 5 years and drop companies with 5 or more "-"
-    if check_dividend_history:
-        dividends = dividends.loc[:, (dividends.columns >= current_year - 5) | (dividends.columns == 'مجموع التوزيعات')]
-        dividends['Years without Div'] = dividends.apply(lambda row: sum(row == "-"), axis=1)
-        dividends = dividends[dividends['Years without Div'] < 5].drop(columns=['Years without Div'])
+
+    # replace '-' back to NaN and round to 2 decimal places
+    dividends = dividends.replace('-', np.nan).applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
 
     return dividends
 
