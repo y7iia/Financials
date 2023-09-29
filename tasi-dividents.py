@@ -263,7 +263,6 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 'Dividends Kings': list(companies.keys())
        }
 
-
 def fetch_dividends(tickers, sector):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
     dividends = []
@@ -284,7 +283,7 @@ def fetch_dividends(tickers, sector):
 
                 if sector == "Dividends Kings":
                     # Calculate the number of years with 0 dividends for years 2017 or more
-                    zero_dividend_years = sum((annual_dividends[annual_dividends.index.year >= 2017] == 0).values.flatten())
+                    zero_dividend_years = (annual_dividends.loc[annual_dividends.index.year >= 2017] == 0).sum()
 
                     # If the number of years with 0 dividends is 5 or more, do not append this company's data
                     if zero_dividend_years >= 5:
