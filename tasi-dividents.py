@@ -274,7 +274,7 @@ def fetch_dividends(tickers, sector):
                 monthly_dividends = div.resample('M').sum()
 
                 # Remove only consecutive duplicate dividend values
-                monthly_dividends = monthly_dividends.loc[monthly_dividends.shift(-1) != monthly_dividends]
+                monthly_dividends = monthly_dividends.loc[monthly_dividends.shift() != monthly_dividends]
 
                 # Resample the cleaned monthly data by year and sum it
                 annual_dividends = monthly_dividends.resample('Y').sum()
