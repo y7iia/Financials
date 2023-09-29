@@ -152,7 +152,6 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '4331.SR': 'الجزيرة ريت',
  '2220.SR': 'معدنية',
  '1213.SR': 'نسيج',
- '2160.SR': 'أميانتيت',
  '2200.SR': 'أنابيب',
  '1301.SR': 'أسلاك',
  '4141.SR': 'العمران للصناعة والتجارة',
@@ -251,7 +250,7 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 'الإعلام والترفيه': ['4210.SR', '4070.SR', '4071.SR'],
 'الخدمات الإستهلاكية': ['1810.SR',  '1830.SR',  '4291.SR',  '4290.SR',  '6012.SR','6013.SR','1820.SR',  '4292.SR',  '6002.SR',  '4010.SR',  '4170.SR','6014.SR', '6015.SR'],
 'الخدمات التجارية والمهنية': ['4270.SR',  '1831.SR',  '6004.SR',  '1832.SR',  '1833.SR'],
-'السلع الرأسمالية': ['2040.SR',  '1303.SR',  '1212.SR',  '2110.SR',  '2370.SR',  '2160.SR',  '4141.SR',  '2360.SR',  '1302.SR',  '2320.SR',  '4140.SR',  '4142.SR'],
+'السلع الرأسمالية': ['2040.SR',  '1303.SR',  '1212.SR',  '2110.SR',  '2370.SR', '4141.SR',  '2360.SR',  '1302.SR',  '2320.SR',  '4140.SR',  '4142.SR'],
 'السلع طويلة الاجل': ['2340.SR','4180.SR',  '4012.SR',  '2130.SR',  '1213.SR',  '4011.SR'],
 'المرافق العامة': ['2082.SR', '5110.SR', '2080.SR', '2081.SR', '2083.SR'],
 'المواد الأساسية': ['1202.SR',  '2300.SR',  '1320.SR',  '1201.SR',  '3008.SR', '2220.SR',  '2200.SR',  '1301.SR',  '3007.SR',  '2180.SR',  '2240.SR',  '1321.SR',  '1304.SR',  '2090.SR',  '2150.SR',  '1322.SR'],
@@ -277,20 +276,30 @@ def fetch_dividends(tickers, sector):
                 # Remove only consecutive duplicate dividend values, keep one of them
                 monthly_dividends = monthly_dividends.loc[(monthly_dividends.shift() != monthly_dividends) | (monthly_dividends.shift(-1) != monthly_dividends)]
 
-                # Resample the cleaned monthly data by year and sum it
-                annual_dividends = monthly_dividends.resample('Y').sum()
+                # Resample the cleaned monthly data by year and sum it, then convert it to a DataFrame
+                annual_dividends = monthly_dividends.resample('Y').sum().to_frame(name='dividends')
 
                 # Fill in missing years with 0 dividends
-                annual_dividends = annual_dividends.reindex(pd.date_range(start='2017', end=datetime.now().year, freq='Y'), fill_value=0)
+                annual_dividends = annual_dividends.reindex(pd.date_range(start='2017', end='2023', freq='Y'), fill_value=0)
 
-                # Add a 'count' column that is 1 where the dividend is zero, and 0 otherwise
-                annual_dividends['count'] = (annual_dividends == 0).astype(int)
+                append_data = True  # Flag for appending data
+
+                if sector == 'Dividends Kings':
+                    # Add a 'count' column that is 1 where the dividend is zero, and 0 otherwise
+                    annual_dividends['count'] = (annual_dividends['dividends'] == 0).astype(int)
+
+                    # Calculate the sum of 'count' for years 2017 or more
+                    zero_dividend_years = annual_dividends.loc[annual_dividends.index.year >= 2017, 'count'].sum()
+
+                    # If the sum of 'count' is 5 or more, do not append this company's data
+                    if zero_dividend_years >= 5:
+                        append_data = False
 
                 # add the ticker as a column to the dividends DataFrame
                 annual_dividends['ticker'] = ticker
 
-                # Append this company's data
-                dividends.append(annual_dividends)
+                if append_data:  # Check flag before appending data
+                    dividends.append(annual_dividends)
             else:
                 logging.warning(f"No dividends data found for {ticker}")
         except Exception as e:
@@ -307,9 +316,6 @@ def fetch_dividends(tickers, sector):
 
     # Calculate total dividends for each company and create a new column
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
-
-    # Calculate 'years with no dividends' for each company and create a new column
-    dividends['years with no dividends'] = (dividends == 0).sum(axis=1)
 
     # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
