@@ -283,7 +283,7 @@ def fetch_dividends(tickers, sector):
 
                 if sector == 'Dividends Kings':
                     # Calculate the number of years with 0 dividends for years 2017 or more
-                    zero_dividend_years = (annual_dividends[annual_dividends.index.year >= 2017] == 0).count()
+                    zero_dividend_years = (annual_dividends[annual_dividends.index.year >= 2017] == 0).sum()
 
                     # If the number of years with 0 dividends is 5 or more, do not append this company's data
                     if zero_dividend_years >= 5:
