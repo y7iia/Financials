@@ -266,6 +266,7 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 def fetch_dividends(tickers, check_dividend_history=False):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
     dividends = []
+    current_year = datetime.now().year
     for ticker in tickers:
         try:
             stock = yf.Ticker(ticker)
@@ -285,17 +286,14 @@ def fetch_dividends(tickers, check_dividend_history=False):
     dividends['ticker'] = dividends['ticker'].map(companies)
     dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
     
-    # Calculate years without dividends if necessary
-    if check_dividend_history:
-        dividends['Years without Div'] = dividends.apply(lambda row: sum(1 for val in row if val == '-'), axis=1)
-        dividends = dividends[dividends['Years without Div'] < 5]
-    
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
     
-    # Remove the 'Years without Div' column if necessary
-    if check_dividend_history and 'Years without Div' in dividends.columns:
-        dividends = dividends.drop(columns=['Years without Div'])
+    # For 'Dividents Kings', count the number of "-" in the last 5 years and drop companies with 5 or more "-"
+    if check_dividend_history:
+        dividends = dividends.loc[:, (dividends.columns >= current_year - 5) | (dividends.columns == 'مجموع التوزيعات')]
+        dividends['Years without Div'] = dividends.apply(lambda row: sum(row == "-"), axis=1)
+        dividends = dividends[dividends['Years without Div'] < 5].drop(columns=['Years without Div'])
 
     return dividends
 
