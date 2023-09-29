@@ -282,10 +282,13 @@ def fetch_dividends(tickers, sector):
                 append_data = True  # Flag for appending data
 
                 if sector == 'Dividends Kings':
-                    # Calculate the number of years with 0 dividends for years 2017 or more
-                    zero_dividend_years = (annual_dividends[annual_dividends.index.year >= 2017] == 0).sum()
+                    # Add a 'count' column that is 1 where the dividend is zero, and 0 otherwise
+                    annual_dividends['count'] = (annual_dividends['dividends'] == 0).astype(int)
 
-                    # If the number of years with 0 dividends is 5 or more, do not append this company's data
+                    # Calculate the sum of 'count' for years 2017 or more
+                    zero_dividend_years = annual_dividends.loc[annual_dividends.index.year >= 2017, 'count'].sum()
+
+                    # If the sum of 'count' is 5 or more, do not append this company's data
                     if zero_dividend_years >= 5:
                         append_data = False
 
