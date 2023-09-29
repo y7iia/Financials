@@ -272,7 +272,7 @@ def fetch_dividends(tickers, sector):
 
             if not div.empty:
                 # Resample the dividends data by month
-                monthly_dividends = div.resample('M').sum(-1)
+                monthly_dividends = div.resample('W').sum(-1)
 
                 # Remove only consecutive duplicate dividend values, keep one of them
                 monthly_dividends = monthly_dividends.loc[(monthly_dividends.shift() != monthly_dividends) | (monthly_dividends.shift(-1) != monthly_dividends)]
