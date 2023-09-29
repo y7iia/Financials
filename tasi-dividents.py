@@ -4,6 +4,7 @@ import yfinance as yf
 import logging
 
 
+
 companies = {'2222.SR': 'أرامكو السعودية',
  '1180.SR': 'الأهلي السعودي',
  '2082.SR': 'أكوا باور',
@@ -258,28 +259,21 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
 'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
-'أفضل 30 سهم من حيث مجموع التوزيعات': list(companies.keys())
+'Dividents Kings': list(companies.keys())
        }
 
-def fetch_dividends(tickers):
+
+def fetch_dividends(tickers, check_dividend_history=False):
     logging.info(f"Fetching dividends for the following tickers: {tickers}")
     dividends = []
     for ticker in tickers:
         try:
             stock = yf.Ticker(ticker)
-            div = stock.dividends  # Fetch all available dividends data
-
+            div = stock.dividends
             if not div.empty:
-                # Resample the dividends data by month
                 monthly_dividends = div.resample('M').sum()
-
-                # Remove duplicate dividend values that appear in consecutive months
                 monthly_dividends = monthly_dividends.loc[monthly_dividends.shift() != monthly_dividends]
-
-                # Resample the cleaned monthly data by year and sum it
                 annual_dividends = monthly_dividends.resample('Y').sum()
-
-                # add the ticker as a column to the dividends DataFrame
                 annual_dividends = annual_dividends.to_frame(name='dividends')
                 annual_dividends['ticker'] = ticker
                 dividends.append(annual_dividends)
@@ -287,50 +281,37 @@ def fetch_dividends(tickers):
                 logging.warning(f"No dividends data found for {ticker}")
         except Exception as e:
             logging.error(f"Error fetching data for {ticker}: {e}")
-
-    # concatenate all the dividends DataFrames
     dividends = pd.concat(dividends) if dividends else pd.DataFrame()
-
-    # map the tickers to their Arabic names
     dividends['ticker'] = dividends['ticker'].map(companies)
-
-    # pivot the DataFrame and group by year
     dividends = dividends.pivot_table(index='ticker', columns=dividends.index.year, values='dividends', aggfunc='sum')
-
-    # Calculate total dividends for each company and create a new column
+    
+    # Calculate years without dividends if necessary
+    if check_dividend_history:
+        dividends['Years without Div'] = dividends.apply(lambda row: sum(1 for val in row if val == '-'), axis=1)
+        dividends = dividends[dividends['Years without Div'] < 5]
+    
     dividends['مجموع التوزيعات'] = dividends.sum(axis=1)
-
-    # replace NaN values with '-' and round to 2 decimal places
     dividends = dividends.fillna('-').applymap(lambda x: round(x, 2) if isinstance(x, float) else x)
+    
+    # Remove the 'Years without Div' column if necessary
+    if check_dividend_history and 'Years without Div' in dividends.columns:
+        dividends = dividends.drop(columns=['Years without Div'])
 
     return dividends
- 
 
-# Streamlit app
+
 st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
-
-# Dropdown menu
 sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
-
-# Submit button
 if st.button('Submit'):
     if sector == '':
         st.warning('الرجاء اختيار قطاع.')
     else:
-        # Fetch tickers for the selected sector
         tickers = tasi[sector]
-
-        # Fetch dividends
-        dividends = fetch_dividends(tickers)
-
-        # Sort the DataFrame by 'مجموع التوزيعات' in descending order
+        check_dividend_history = sector == 'Dividents Kings'
+        dividends = fetch_dividends(tickers, check_dividend_history)
         sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
-
-        # Display the sorted DataFrame in Streamlit
         st.dataframe(sorted_dividends)
-     
-# Add a statement
 st.write("> ** ملاحظة مهمة: الأرباح في الجدول مجمعة حسب سنة التوزيع وليس بحسب السنة المالية** ")
 st.write('\n')
 st.markdown('[تطبيقات أخرى قد تعجبك:](https://twitter.com/telmisany/status/1702641486792159334)')
