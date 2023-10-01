@@ -73,7 +73,10 @@ def Divergence_points(df):
 data = []
 for name, ticker in companies.items():
     df = yf.download(ticker, period='1y')
-    points = EMA_points(df) + EMA_Volume_points(df) + EMA_Whale_points(df) + RSI_points(df) + MACD_points(df) + Bolinger_Bands_points(df) + OBV_points(df) + Divergence_points(df)
+    try:
+        points = EMA_points(df) + EMA_Volume_points(df) + EMA_Whale_points(df) + RSI_points(df) + MACD_points(df) + Bolinger_Bands_points(df) + OBV_points(df) + Divergence_points(df)
+    except Exception as e:
+        print(f"Error calculating points for {ticker}: {e}")
     data.append({'Company': name, 'Ticker': ticker, 'Points': points})
 
 # Create a DataFrame and sort by Points
