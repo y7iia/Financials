@@ -10,7 +10,7 @@ companies = {
     'Tesla': 'TSLA',
     'Amazon': 'AMZN',
     'Google': 'GOOGL',
-    'Facebook': 'FB',
+    'Facebook': 'META',
     'Netflix': 'NFLX',
     'Alibaba': 'BABA',
     'Twitter': 'TWTR',
