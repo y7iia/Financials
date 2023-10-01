@@ -5,3 +5,4 @@ yfinance
 matplotlib
 yahooquery
 datetime
+ta
