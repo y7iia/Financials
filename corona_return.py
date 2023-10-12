@@ -306,6 +306,8 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional
 
     return result_df
 
+from datetime import datetime
+
 # Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
