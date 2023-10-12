@@ -327,7 +327,7 @@ else:
 # Button to trigger data fetching and display
 if st.button('Submit'):
     if sector:
-        if start_date:
+        if start_date and isinstance(start_date, datetime):
             start_date = start_date.strftime("%Y-%m-%d")
 
         result_df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
