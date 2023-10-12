@@ -328,7 +328,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
 
     return result_df
  
- # Streamlit app setup
+# Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
 
@@ -341,7 +341,5 @@ if st.button('Submit'):
         result_df = fetch_ticker_data(tasi, companies, sector)
         if not result_df.empty:
             st.dataframe(result_df)
-        else:
-            st.warning('No data available for the chosen sector.')
     else:
         st.warning('Please select a sector.')
