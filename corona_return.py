@@ -1,7 +1,7 @@
-import yfinance as yf
-import pandas as pd
-from datetime import datetime
 import streamlit as st
+import pandas as pd
+import yfinance as yf
+from datetime import datetime
 
 # Create a dictionary of sector to ticker symbols
 tasi = {
@@ -26,7 +26,7 @@ tasi = {
 'النقل': ['4261.SR', '4260.SR', '4031.SR', '4040.SR', '4110.SR', '2190.SR','4262'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
-'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
+'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR']
 }
 
 
@@ -307,7 +307,6 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
             perc_increase = (latest_close / min_close - 1) * 100
 
             # Append data to result DataFrame
-         # Append a new row to the DataFrame
             result_df = result_df.append({
                             'القطاع': sector,
                             'الرمز': ticker,
@@ -322,34 +321,24 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
             # Sort DataFrame in descending order by 'chg%'
             result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop = True)
 
-            
         except Exception as e:
           print(f"Error fetching data for ticker {ticker}: {e}")
 
     return result_df
- 
-# Streamlit app setup
-st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
-st.markdown('برمجة يحيى التلمساني @telmisany')
+# Streamlit app starts here
+st.title('Fetch Stock Market Data')
 
-# User inputs for sector
-sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
+# Add a selectbox to the sidebar:
+sector = st.sidebar.selectbox(
+    'Select a sector',
+    tuple(tasi.keys())  # get all sector names from the dictionary
+)
 
-# Check if 'submit_clicked' key exists in the session state
-if 'submit_clicked' not in st.session_state:
-    st.session_state.submit_clicked = False
-
-if st.button('Submit'):
-    # Set 'submit_clicked' to True when button is clicked
-    st.session_state.submit_clicked = True
-
-if st.session_state.submit_clicked:
-    if sector:
-        result_df = fetch_ticker_data(tasi, companies, sector)
-        # Check if 'chg%' column exists before dropping
-        if 'chg%' in result_df.columns:
-            result_df = result_df.drop(columns=['chg%'])
-        if not result_df.empty:
-            st.dataframe(result_df)
-    else:
-        st.warning('Please select a sector.')
+if st.sidebar.button('Submit'):
+  # Use the function
+  result_df = fetch_ticker_data(tasi, companies, sector)
+  # Drop the 'chg%' column
+  result_df = result_df.drop(columns=['chg%'])
+  
+  # Display the DataFrame
+  st.dataframe(result_df)
