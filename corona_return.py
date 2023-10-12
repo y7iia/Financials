@@ -313,100 +313,26 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional
     return result_df.drop(columns=['chg%'])
 
 # Streamlit app setup
-st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
-st.markdown(' @telmisany - برمجة يحيى التلمساني')
+st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
+st.markdown('برمجة يحيى التلمساني @telmisany')
 
-sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
-selection = st.selectbox('أختر البداية', ['قاع كورونا', 'تاريخ آخر'])
+# User inputs for sector and date
+sector = st.selectbox('أختر قطاع', ['', *tasi.keys()])
+date_selection = st.selectbox('أختر البداية', ['قاع كورونا', 'تاريخ آخر'])
 
+# Conditional date input based on user selection
 start_date = None
-if selection == 'تاريخ آخر':
+if date_selection == 'تاريخ آخر':
     start_date = st.date_input('أختر التاريخ')
 
-if st.button('Submit'):
-    if sector:
-I apologize for the incomplete response. Here's the complete one:
-
-```python
-import pandas as pd
-import yfinance as yf
-from typing import Optional
-from datetime import datetime
-import streamlit as st
-
-# Define the dictionaries
-tasi = {
-    'الطاقة' : ['2222.SR', '4030.SR', '4200.SR', '2030.SR', '2381.SR', '2382.SR'],
-    'البتروكيماويات': ['2350.SR',  '1211.SR',  '2310.SR',  '2380.SR',  '2001.SR',  '2330.SR',  '2060.SR',  '2010.SR',  '2170.SR',  '2250.SR',  '2290.SR',  '2210.SR',  '1210.SR',  '2020.SR',  '2223.SR']
-}
-
-companies = {
-    '2222.SR': 'أرامكو السعودية',
-    # ...
-    '2380.SR': 'بترو رابغ'
-}
-
-def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional[str] = None):
-    result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
-    tickers = sector_tickers.get(sector, [])
-
-    for ticker in tickers:
-        try:
-            if not start_date:
-                data = yf.download(ticker, start="2020-03-01", end="2020-04-01")
-                if data.empty:
-                    st.write(f"No data available for ticker {ticker} for March 2020. This stock may have been enlisted after this date.")
-                    continue
-                min_close_date = data['Close'].idxmin()
-                min_close = data.loc[min_close_date, 'Close']
-            else:
-                data = yf.download(ticker, start=start_date, end=datetime.now().strftime("%Y-%m-%d"))
-                if data.empty:
-                    st.write(f"No data available for ticker {ticker} for the start date {start_date}.")
-                    continue
-                min_close_date = data.index.min()
-                min_close = data.loc[min_close_date, 'Close']
-
-            latest_data = yf.download(ticker, period="1d")
-            if latest_data.empty:
-                st.write(f"No latest data available for ticker {ticker}.")
-                continue
-
-            latest_close = latest_data.loc[latest_data.index.max(), 'Close']
-            perc_increase = (latest_close / min_close - 1) * 100
-
-            result_df = result_df.append({
-                            'القطاع': sector,
-                            'الرمز': ticker,
-                            'الشركة': ticker_names.get(ticker, "Unknown"),
-                            'التاريخ': min_close_date,
-                            'قاع كورونا': round(min_close,2),
-                            'آخر اغلاق': round(latest_close,2),
-                            'التغيير%': f"{round(perc_increase, 2)}%",
-                            'chg%': round(perc_increase, 2) 
-                        }, ignore_index=True)
-
-            result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop = True)
-        except Exception as e:
-            st.write(f"Error fetching data for ticker {ticker}: {e}")
-
-    return result_df.drop(columns=['chg%'])
-
-# Streamlit app setup
-st.title('التوزيعات النقدية لسوق الأسهم السعودي - حسب القطاع')
-st.markdown(' @telmisany - برمجة يحيى التلمساني')
-
-sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
-selection = st.selectbox('أختر البداية', ['قاع كورونا', 'تاريخ آخر'])
-
-start_date = None
-if selection == 'تاريخ آخر':
-    start_date = st.date_input('أختر التاريخ')
-
+# Button to trigger data fetching and display
 if st.button('Submit'):
     if sector:
         start_date = start_date.strftime("%Y-%m-%d") if start_date else None
         result_df = fetch_ticker_data(tasi, companies, sector, start_date)
         if not result_df.empty:
-            st.write(result_df)
+            st.dataframe(result_df)
         else:
+            st.warning('No data available for the chosen sector and date.')
+    else:
+        st.warning('Please select a sector.')
