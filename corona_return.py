@@ -328,10 +328,6 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
 
     return result_df
  
-import streamlit as st
-import pandas as pd
-import yfinance as yf
-
 # Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
@@ -342,8 +338,9 @@ sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
 if st.button('Submit'):
     if sector:
         result_df = fetch_ticker_data(tasi, companies, sector)
-        # Drop the 'chg%' column
-        result_df = result_df.drop(columns=['chg%'])
+        # Check if 'chg%' column exists before dropping
+        if 'chg%' in result_df.columns:
+            result_df = result_df.drop(columns=['chg%'])
         if not result_df.empty:
             st.dataframe(result_df)
     else:
