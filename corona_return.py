@@ -25,7 +25,7 @@ tasi = {
 'النقل': ['4261.SR', '4260.SR', '4031.SR', '4040.SR', '4110.SR', '2190.SR','4262'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
-'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
+'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR']
 }
 
 
@@ -262,48 +262,36 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-
-def fetch_ticker_data(sector_tickers, ticker_names, sector):
-    # Prepare list to store DataFrame rows
+def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date):
     result_rows = []
-
-    # Get the tickers for the specific sector
     tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
-            # Fetch the ticker data for March 2020
-            data = yf.download(ticker, start="2020-03-01", end="2020-04-01")
+            data = yf.download(ticker, start=start_date, end=end_date)
 
-            # If data is empty, skip this ticker
             if data.empty:
-                st.write(f"No data available for ticker {ticker} for March 2020. This stock may have been enlisted after this date.")
+                st.write(f"No data available for ticker {ticker} for the selected period. The stock may have been enlisted after this date.")
                 continue
 
-            # Find the date of minimum close
             min_close_date = data['Close'].idxmin()
             min_close = data.loc[min_close_date, 'Close']
 
-            # Get the latest close price
             latest_data = yf.download(ticker, period="1d")
 
-            # If latest data is empty, skip this ticker
             if latest_data.empty:
                 st.write(f"No latest data available for ticker {ticker}.")
                 continue
 
             latest_close = latest_data.loc[latest_data.index.max(), 'Close']
-
-            # Calculate percentage increase
             perc_increase = (latest_close / min_close - 1) * 100
 
-            # Append data to result DataFrame
             result_rows.append({
                 'القطاع': sector,
                 'الرمز': ticker,
                 'الشركة': ticker_names.get(ticker, "Unknown"),
                 'التاريخ': min_close_date,
-                'قاع كورونا': round(min_close,2),
+                'قاع الفترة المحددة': round(min_close,2),
                 'آخر اغلاق': round(latest_close,2),
                 'التغيير%': f"{round(perc_increase, 2)}%",
             })
@@ -312,22 +300,24 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
             st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
             continue
 
-    # Convert list of rows to DataFrame
     result_df = pd.DataFrame(result_rows)
     return result_df
- 
-# Streamlit code
-st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع كورونا في 2020")
+
+st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع الفترة المحددة")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
-# Dropdown menu for user to select sector
 sector = st.selectbox("أختار قطاع", list(tasi.keys()))
+date_option = st.selectbox("اختر الفترة", ["قاع كورونا", "تاريخ آخر"])
+
+if date_option == "تاريخ آخر":
+    start_date = st.date_input("اختر التاريخ")
+    end_date = start_date
+else:
+    start_date = "2020-03-01"
+    end_date = "2020-04-01"
 
 if st.button('Submit'):
-    # Fetch data when user clicks the button
-    df = fetch_ticker_data(tasi, companies, sector)
-
-    # Display the result DataFrame
+    df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
     st.dataframe(df)
 
 st.write('\n')
