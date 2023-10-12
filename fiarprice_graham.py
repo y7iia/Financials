@@ -377,3 +377,6 @@ st.write('\n\n\n')
 
 # Add a hyperlink to your Twitter account
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+st.markdown('[قهويني؟](https://www.buymeacoffee.com/y7iia)')
+
+
