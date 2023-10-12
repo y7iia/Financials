@@ -264,8 +264,8 @@ companies = {'2222.SR': 'أرامكو السعودية',
 
 
 def fetch_ticker_data(sector_tickers, ticker_names, sector):
-    # Prepare empty DataFrame
-    result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
+    # Prepare list to store DataFrame rows
+    result_rows = []
 
     # Get the tickers for the specific sector
     tickers = sector_tickers.get(sector, [])
@@ -298,22 +298,24 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
             perc_increase = (latest_close / min_close - 1) * 100
 
             # Append data to result DataFrame
-            result_df = result_df.append({
-                            'القطاع': sector,
-                            'الرمز': ticker,
-                            'الشركة': ticker_names.get(ticker, "Unknown"),
-                            'التاريخ': min_close_date,
-                            'قاع كورونا': round(min_close,2),
-                            'آخر اغلاق': round(latest_close,2),
-                            'التغيير%': f"{round(perc_increase, 2)}%",
-                            }, ignore_index=True)
+            result_rows.append({
+                'القطاع': sector,
+                'الرمز': ticker,
+                'الشركة': ticker_names.get(ticker, "Unknown"),
+                'التاريخ': min_close_date,
+                'قاع كورونا': round(min_close,2),
+                'آخر اغلاق': round(latest_close,2),
+                'التغيير%': f"{round(perc_increase, 2)}%",
+            })
 
         except Exception as e:
             st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
             continue
 
+    # Convert list of rows to DataFrame
+    result_df = pd.DataFrame(result_rows)
     return result_df
-
+ 
 # Streamlit code
 st.title("Fetch Stock Market Data")
 
