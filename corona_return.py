@@ -1,7 +1,6 @@
-import streamlit as st
 import pandas as pd
 import yfinance as yf
-from datetime import datetime
+import streamlit as st
 
 # Create a dictionary of sector to ticker symbols
 tasi = {
@@ -26,7 +25,7 @@ tasi = {
 'النقل': ['4261.SR', '4260.SR', '4031.SR', '4040.SR', '4110.SR', '2190.SR','4262'],
 'انتاج الأغذية': ['2280.SR',  '2050.SR',  '2270.SR',  '6001.SR',  '6020.SR',  '6090.SR',  '6010.SR',  '2281.SR',  '6070.SR',  '2100.SR',  '6060.SR',  '6050.SR',  '6040.SR', '2282.SR',  '2283.SR'],
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
-'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR']
+'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
 }
 
 
@@ -263,16 +262,8 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-def fetch_ticker_data(sector_tickers, ticker_names, sector):
-    """
-    This function fetches the minimum closing price during March 2020, the date of this minimum close,
-    the latest close price, and the percentage increase from the minimum close to the latest close.
 
-    :param sector_tickers: Dictionary with 'Sector' and list of 'Tickers'
-    :param ticker_names: Dictionary with 'Ticker' and 'Company Name'
-    :param sector: The specific sector to fetch ticker data for
-    :return: DataFrame with 'Sector', 'Ticker', 'Company Name', 'Date', 'Lowest Close', 'Latest Close', 'Percentage Increase'
-    """
+def fetch_ticker_data(sector_tickers, ticker_names, sector):
     # Prepare empty DataFrame
     result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
 
@@ -286,7 +277,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
 
             # If data is empty, skip this ticker
             if data.empty:
-                print(f"No data available for ticker {ticker} for March 2020. This stock may have been enlisted after this date.")
+                st.write(f"No data available for ticker {ticker} for March 2020. This stock may have been enlisted after this date.")
                 continue
 
             # Find the date of minimum close
@@ -298,7 +289,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
 
             # If latest data is empty, skip this ticker
             if latest_data.empty:
-                print(f"No latest data available for ticker {ticker}.")
+                st.write(f"No latest data available for ticker {ticker}.")
                 continue
 
             latest_close = latest_data.loc[latest_data.index.max(), 'Close']
@@ -315,25 +306,23 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
                             'قاع كورونا': round(min_close,2),
                             'آخر اغلاق': round(latest_close,2),
                             'التغيير%': f"{round(perc_increase, 2)}%",
-                            'chg%': round(perc_increase, 2)  # add a column with numeric values
-                        }, ignore_index=True)
-
-            # Sort DataFrame in descending order by 'chg%'
-            result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop = True)
+                            }, ignore_index=True)
 
         except Exception as e:
-          print(f"Error fetching data for ticker {ticker}: {e}")
+            st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
+            continue
 
     return result_df
- 
- # Streamlit app:
-if st.sidebar.button('Submit'):
-  # Use the function
-  result_df = fetch_ticker_data(tasi, companies, sector)
-  
-  # Drop the 'chg%' column if it exists
-  if 'chg%' in result_df.columns:
-      result_df = result_df.drop(columns=['chg%'])
-  
-  # Display the DataFrame
-  st.dataframe(result_df)
+
+# Streamlit code
+st.title("Fetch Stock Market Data")
+
+# Dropdown menu for user to select sector
+sector = st.selectbox("Please select a sector", list(tasi.keys()))
+
+if st.button('Fetch Data'):
+    # Fetch data when user clicks the button
+    df = fetch_ticker_data(tasi, companies, sector)
+
+    # Display the result DataFrame
+    st.dataframe(df)
