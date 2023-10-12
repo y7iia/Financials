@@ -1,6 +1,6 @@
-import pandas as pd
-import yfinance as yf
 from typing import Optional
+import yfinance as yf
+import pandas as pd
 from datetime import datetime
 import streamlit as st
 
@@ -264,8 +264,6 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-
-
 def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional[str] = None):
     result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
     tickers = sector_tickers.get(sector, [])
@@ -307,11 +305,16 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional
                         }, ignore_index=True)
 
             result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop = True)
+
         except Exception as e:
             st.write(f"Error fetching data for ticker {ticker}: {e}")
 
-    return result_df.drop(columns=['chg%'])
+    # Drop the 'chg%' column if it exists in the dataframe
+    if 'chg%' in result_df.columns:
+        result_df = result_df.drop(columns=['chg%'])
 
+    return result_df
+ 
 # Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
