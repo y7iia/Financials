@@ -1,6 +1,7 @@
 import pandas as pd
 import yfinance as yf
 import streamlit as st
+from datetime import timedelta
 
 # Create a dictionary of sector to ticker symbols
 tasi = {
@@ -262,13 +263,22 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
+
 def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date):
     result_rows = []
     tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
+            # If start_date and end_date are the same, fetch data for one week
+            if start_date == end_date:
+                end_date = (pd.to_datetime(start_date) + pd.DateOffset(days=7)).strftime('%Y-%m-%d')
+            
             data = yf.download(ticker, start=start_date, end=end_date)
+            
+            # If start_date and end_date were the same, get data for the specific date
+            if start_date != end_date:
+                data = data.loc[data.index == start_date]
 
             if data.empty:
                 st.write(f"No data available for ticker {ticker} for the selected period. The stock may have been enlisted after this date.")
@@ -313,7 +323,6 @@ if date_option == "تاريخ آخر":
     entered_date = st.date_input("اختر التاريخ")
     start_date = entered_date.strftime('%Y-%m-%d')
     end_date = start_date
- 
 else:
     start_date = "2020-03-01"
     end_date = "2020-04-01"
@@ -321,13 +330,3 @@ else:
 if st.button('Submit'):
     df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
     st.dataframe(df)
-
-st.write('\n')
-st.markdown('[تطبيقات أخرى قد تعجبك:](https://twitter.com/telmisany/status/1702641486792159334)')
-
-
-# Add three empty lines for spacing
-st.write('\n\n\n')
-
-# Add a hyperlink to your Twitter account
-st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
