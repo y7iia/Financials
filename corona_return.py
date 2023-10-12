@@ -301,7 +301,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
                 'الرمز': ticker,
                 'الشركة': ticker_names.get(ticker, "Unknown"),
                 'التاريخ': min_close_date,
-                'قاع الفترة المحددة': round(min_close,2),
+                'السعر عند التاريخ المحددة': round(min_close,2),
                 'آخر اغلاق': round(latest_close,2),
                 'التغيير%': f"{round(perc_increase, 2)}%",
             })
