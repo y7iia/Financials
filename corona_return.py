@@ -264,61 +264,48 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional[str] = None):
+def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional[str] = "2020-03-01", end_date: Optional[str] = "2020-04-01"):
     result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
+
     tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
-            print(type(result_df))  # Debug line
-            if not start_date:
-                data = yf.download(ticker, start="2020-03-01", end="2020-04-01")
-                if data.empty:
-                    st.write(f"No data available for ticker {ticker} for March 2020. This stock may have been enlisted after this date.")
-                    continue
-                min_close_date = data['Close'].idxmin()
-                min_close = data.loc[min_close_date, 'Close']
-            else:
-                data = yf.download(ticker, start=start_date, end=datetime.now().strftime("%Y-%m-%d"))
-                if data.empty:
-                    st.write(f"No data available for ticker {ticker} for the start date {start_date}.")
-                    continue
-                min_close_date = data.index.min()
-                min_close = data.loc[min_close_date, 'Close']
+            # Download the data
+            data = yf.download(ticker, start=start_date, end=end_date)
 
-            latest_data = yf.download(ticker, period="1d")
-            if latest_data.empty:
-                st.write(f"No latest data available for ticker {ticker}.")
+            # If the data is empty, skip to the next ticker
+            if data.empty:
                 continue
 
-            latest_close = latest_data.loc[latest_data.index.max(), 'Close']
+            # Calculate the minimum closing price and the date it occurred
+            min_close_date = data['Close'].idxmin()
+            min_close = data.loc[min_close_date, 'Close']
+
+            # Calculate the latest closing price and the percentage increase
+            latest_close = data['Close'].iloc[-1]
             perc_increase = (latest_close / min_close - 1) * 100
 
-            print(type(result_df))  # Debug line
+            # Append the data to the result DataFrame
             result_df = result_df.append({
-                            'القطاع': sector,
-                            'الرمز': ticker,
-                            'الشركة': ticker_names.get(ticker, "Unknown"),
-                            'التاريخ': min_close_date,
-                            'قاع كورونا': round(min_close,2),
-                            'آخر اغلاق': round(latest_close,2),
-                            'التغيير%': f"{round(perc_increase, 2)}%",
-                            'chg%': round(perc_increase, 2) 
-                        }, ignore_index=True)
-
-            print(type(result_df))  # Debug line
-            result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop = True)
-            print(type(result_df))  # Debug line
+                'القطاع': sector,
+                'الرمز': ticker,
+                'الشركة': ticker_names.get(ticker, "Unknown"),
+                'التاريخ': min_close_date,
+                'قاع كورونا': round(min_close,2),
+                'آخر اغلاق': round(latest_close,2),
+                'التغيير%': f"{round(perc_increase, 2)}%",
+            }, ignore_index=True)
 
         except Exception as e:
-            st.write(f"Error fetching data for ticker {ticker}: {e}")
+            print(f"Error fetching data for ticker {ticker}: {e}")
 
-    # Drop the 'chg%' column if it exists in the dataframe
-    if 'chg%' in result_df.columns:
-        result_df = result_df.drop(columns=['chg%'])
+    # Sort the result DataFrame by the percentage change column
+    result_df['التغيير%'] = result_df['التغيير%'].str.rstrip('%').astype('float') 
+    result_df = result_df.sort_values('التغيير%', ascending=False)
 
     return result_df
- 
+
 # Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
@@ -329,14 +316,21 @@ date_selection = st.selectbox('أختر البداية', ['قاع كورونا',
 
 # Conditional date input based on user selection
 start_date = None
+end_date = None
 if date_selection == 'تاريخ آخر':
     start_date = st.date_input('أختر التاريخ')
+    end_date = datetime.now().strftime("%Y-%m-%d")  # Set end_date to current date
+else:
+    start_date = "2020-03-01"
+    end_date = "2020-04-01"
 
 # Button to trigger data fetching and display
 if st.button('Submit'):
     if sector:
-        start_date = start_date.strftime("%Y-%m-%d") if start_date else None
-        result_df = fetch_ticker_data(tasi, companies, sector, start_date)
+        if start_date:
+            start_date = start_date.strftime("%Y-%m-%d")
+
+        result_df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
         if not result_df.empty:
             st.dataframe(result_df)
         else:
