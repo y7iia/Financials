@@ -1,4 +1,3 @@
-from typing import Optional
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
@@ -264,29 +263,26 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional[str] = "2020-03-01", end_date: Optional[str] = "2020-04-01"):
+import pandas as pd
+import yfinance as yf
+
+def fetch_ticker_data(sector_tickers, ticker_names, sector):
     result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
 
     tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
-            # Download the data
-            data = yf.download(ticker, start=start_date, end=end_date)
+            data = yf.download(ticker, start="2020-03-01", end="2020-04-01")
 
-            # If the data is empty, skip to the next ticker
             if data.empty:
                 continue
 
-            # Calculate the minimum closing price and the date it occurred
             min_close_date = data['Close'].idxmin()
             min_close = data.loc[min_close_date, 'Close']
-
-            # Calculate the latest closing price and the percentage increase
             latest_close = data['Close'].iloc[-1]
             perc_increase = (latest_close / min_close - 1) * 100
 
-            # Append the data to the result DataFrame
             result_df = result_df.append({
                 'القطاع': sector,
                 'الرمز': ticker,
@@ -300,42 +296,25 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional
         except Exception as e:
             print(f"Error fetching data for ticker {ticker}: {e}")
 
-    # Sort the result DataFrame by the percentage change column
     result_df['التغيير%'] = result_df['التغيير%'].str.rstrip('%').astype('float') 
     result_df = result_df.sort_values('التغيير%', ascending=False)
 
     return result_df
-
-from datetime import datetime
-
-# Streamlit app setup
+ 
+ # Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
 
-# User inputs for sector and date
+# User inputs for sector
 sector = st.selectbox('أختر قطاع', ['', *tasi.keys()])
-date_selection = st.selectbox('أختر البداية', ['قاع كورونا', 'تاريخ آخر'])
-
-# Conditional date input based on user selection
-start_date = None
-end_date = None
-if date_selection == 'تاريخ آخر':
-    start_date = st.date_input('أختر التاريخ')
-    end_date = datetime.now().strftime("%Y-%m-%d")  # Set end_date to current date
-else:
-    start_date = "2020-03-01"
-    end_date = "2020-04-01"
 
 # Button to trigger data fetching and display
 if st.button('Submit'):
     if sector:
-        if start_date and isinstance(start_date, datetime):
-            start_date = start_date.strftime("%Y-%m-%d")
-
-        result_df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
+        result_df = fetch_ticker_data(tasi, companies, sector)
         if not result_df.empty:
             st.dataframe(result_df)
         else:
-            st.warning('No data available for the chosen sector and date.')
+            st.warning('No data available for the chosen sector.')
     else:
         st.warning('Please select a sector.')
