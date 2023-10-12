@@ -333,12 +333,9 @@ if st.button('Submit'):
         sorted_dividends = dividends.sort_values('مجموع التوزيعات', ascending=False)
         st.dataframe(sorted_dividends)
 st.write("> ** ملاحظة مهمة: الأرباح في الجدول مجمعة حسب سنة التوزيع وليس بحسب السنة المالية** ")
-st.write('\n')
-st.markdown('[تطبيقات أخرى قد تعجبك:](https://twitter.com/telmisany/status/1702641486792159334)')
-
-
+st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
 # Add three empty lines for spacing
 st.write('\n\n\n')
-
 # Add a hyperlink to your Twitter account
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+st.markdown('[قهويني؟](https://www.buymeacoffee.com/y7iia)')
