@@ -333,7 +333,7 @@ if st.sidebar.button('Submit'):
   result_df = fetch_ticker_data(tasi, companies, sector)
   
  # Drop the 'chg%' column if it exists
- if 'chg%' in result_df.columns:
+if 'chg%' in result_df.columns:
      result_df = result_df.drop(columns=['chg%'])
  
   # Display the DataFrame
