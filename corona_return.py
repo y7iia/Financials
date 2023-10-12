@@ -307,7 +307,14 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
             st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
             continue
 
-    return pd.DataFrame(result_rows)
+    result_df = pd.DataFrame(result_rows)
+    # Sort the dataframe by 'التغيير%' in descending order
+    result_df = result_df.sort_values(by='التغيير%', ascending=False)
+    # Format the 'التغيير%' column as percentage with 2 decimals
+    result_df['التغيير%'] = result_df['التغيير%'].apply(lambda x: f'{x}%')
+
+    return result_df
+ 
 
 st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع الفترة المحددة")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
