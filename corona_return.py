@@ -270,13 +270,11 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
 
     for ticker in tickers:
         try:
-            # If start_date and end_date are the same, fetch data for one week
             if start_date == end_date:
                 end_date = (pd.to_datetime(start_date) + pd.DateOffset(days=7)).strftime('%Y-%m-%d')
-            
+
             data = yf.download(ticker, start=start_date, end=end_date)
-            
-            # If start_date and end_date were the same, get data for the specific date
+
             if start_date != end_date:
                 data = data.loc[data.index == start_date]
 
@@ -296,7 +294,6 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
             latest_close = latest_data.loc[latest_data.index.max(), 'Close']
             perc_increase = (latest_close / min_close - 1) * 100
 
-            # Indentation is corrected here
             result_rows.append({
                 'القطاع': sector,
                 'الرمز': ticker,
@@ -306,18 +303,12 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
                 'آخر اغلاق': round(latest_close,2),
                 'التغيير%': round(perc_increase, 2),
             })
-
-        # Indentation is corrected here
         except Exception as e:
             st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
             continue
 
-    # Indentation is corrected here
-    result_df = pd.DataFrame(result_rows)
-    
+    return pd.DataFrame(result_rows)
 
-    return result_df
- 
 st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع الفترة المحددة")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
@@ -334,7 +325,6 @@ else:
 
 if st.button('Submit'):
     df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
-   # Apply formatting when displaying the dataframe
-   with pd.option_context('display.float_format', '{:.2%}'.format):
-    
-    st.dataframe(df)
+    # Apply formatting when displaying the dataframe
+    with pd.option_context('display.float_format', '{:.2%}'.format):
+        st.dataframe(df)
