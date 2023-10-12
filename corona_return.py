@@ -327,13 +327,14 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
     return result_df
  
  # Streamlit app:
- if st.sidebar.button('Submit'):
+
+if st.sidebar.button('Submit'):
   # Use the function
   result_df = fetch_ticker_data(tasi, companies, sector)
   
-  # Drop the 'chg%' column if it exists
-  if 'chg%' in result_df.columns:
-      result_df = result_df.drop(columns=['chg%'])
-  
+ # Drop the 'chg%' column if it exists
+ if 'chg%' in result_df.columns:
+     result_df = result_df.drop(columns=['chg%'])
+ 
   # Display the DataFrame
   st.dataframe(result_df)
