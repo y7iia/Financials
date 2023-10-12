@@ -296,22 +296,28 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
             latest_close = latest_data.loc[latest_data.index.max(), 'Close']
             perc_increase = (latest_close / min_close - 1) * 100
 
-            result_rows.append({
-                'القطاع': sector,
-                'الرمز': ticker,
-                'الشركة': ticker_names.get(ticker, "Unknown"),
-                'التاريخ': min_close_date,
-                'السعر عند التاريخ المحددة': round(min_close,2),
-                'آخر اغلاق': round(latest_close,2),
-                'التغيير%': f"{round(perc_increase, 2)}%",
-            })
 
-        except Exception as e:
-            st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
-            continue
+    result_rows.append({
+        'القطاع': sector,
+        'الرمز': ticker,
+        'الشركة': ticker_names.get(ticker, "Unknown"),
+        'التاريخ': min_close_date,
+        'قاع الفترة المحددة': round(min_close,2),
+        'آخر اغلاق': round(latest_close,2),
+        'التغيير%': round(perc_increase, 2),
+    })
 
-    result_df = pd.DataFrame(result_rows)
-    return result_df
+except Exception as e:
+    st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
+    continue
+
+result_df = pd.DataFrame(result_rows)
+
+# Apply formatting when displaying the dataframe
+with pd.option_context('display.float_format', '{:.2%}'.format):
+    st.dataframe(result_df)
+
+return result_df
 
 st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع الفترة المحددة")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
