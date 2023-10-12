@@ -319,7 +319,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
 st.title("نسب ارتفاع وانخفاض الأسهم من تاريخ محدد")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
-sector = st.selectbox("أختار قطاع", list(tasi.keys()))
+sector = st.selectbox("أختار قطاع", [''] + list(tasi.keys()))
 date_option = st.selectbox("اختر الفترة", ["قاع كورونا", "تاريخ آخر"])
 
 if date_option == "تاريخ آخر":
