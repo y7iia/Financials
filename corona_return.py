@@ -263,13 +263,8 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-import pandas as pd
-import yfinance as yf
-
-def fetch_ticker_data(sector_tickers, ticker_names, sector):
+def fetch_ticker_data(tickers, ticker_names, sector):
     result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
-
-    tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
