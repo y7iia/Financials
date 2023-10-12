@@ -263,40 +263,72 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-def fetch_ticker_data(tickers, ticker_names, sector):
+def fetch_ticker_data(sector_tickers, ticker_names, sector):
+    """
+    This function fetches the minimum closing price during March 2020, the date of this minimum close,
+    the latest close price, and the percentage increase from the minimum close to the latest close.
+
+    :param sector_tickers: Dictionary with 'Sector' and list of 'Tickers'
+    :param ticker_names: Dictionary with 'Ticker' and 'Company Name'
+    :param sector: The specific sector to fetch ticker data for
+    :return: DataFrame with 'Sector', 'Ticker', 'Company Name', 'Date', 'Lowest Close', 'Latest Close', 'Percentage Increase'
+    """
+    # Prepare empty DataFrame
     result_df = pd.DataFrame(columns=['القطاع', 'الرمز', 'الشركة', 'التاريخ', 'قاع كورونا', 'آخر اغلاق', 'التغيير%'])
+
+    # Get the tickers for the specific sector
+    tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
+            # Fetch the ticker data for March 2020
             data = yf.download(ticker, start="2020-03-01", end="2020-04-01")
 
+            # If data is empty, skip this ticker
             if data.empty:
+                print(f"No data available for ticker {ticker} for March 2020. This stock may have been enlisted after this date.")
                 continue
 
+            # Find the date of minimum close
             min_close_date = data['Close'].idxmin()
             min_close = data.loc[min_close_date, 'Close']
-            latest_close = data['Close'].iloc[-1]
+
+            # Get the latest close price
+            latest_data = yf.download(ticker, period="1d")
+
+            # If latest data is empty, skip this ticker
+            if latest_data.empty:
+                print(f"No latest data available for ticker {ticker}.")
+                continue
+
+            latest_close = latest_data.loc[latest_data.index.max(), 'Close']
+
+            # Calculate percentage increase
             perc_increase = (latest_close / min_close - 1) * 100
 
+            # Append data to result DataFrame
+         # Append a new row to the DataFrame
             result_df = result_df.append({
-                'القطاع': sector,
-                'الرمز': ticker,
-                'الشركة': ticker_names.get(ticker, "Unknown"),
-                'التاريخ': min_close_date,
-                'قاع كورونا': round(min_close,2),
-                'آخر اغلاق': round(latest_close,2),
-                'التغيير%': f"{round(perc_increase, 2)}%",
-            }, ignore_index=True)
+                            'القطاع': sector,
+                            'الرمز': ticker,
+                            'الشركة': ticker_names.get(ticker, "Unknown"),
+                            'التاريخ': min_close_date,
+                            'قاع كورونا': round(min_close,2),
+                            'آخر اغلاق': round(latest_close,2),
+                            'التغيير%': f"{round(perc_increase, 2)}%",
+                            'chg%': round(perc_increase, 2)  # add a column with numeric values
+                        }, ignore_index=True)
 
+            # Sort DataFrame in descending order by 'chg%'
+            result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop = True)
+
+            
         except Exception as e:
-            print(f"Error fetching data for ticker {ticker}: {e}")
-
-    result_df['التغيير%'] = result_df['التغيير%'].str.rstrip('%').astype('float') 
-    result_df = result_df.sort_values('التغيير%', ascending=False)
+          print(f"Error fetching data for ticker {ticker}: {e}")
 
     return result_df
  
-# Streamlit app setup
+ # Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
 
@@ -306,8 +338,7 @@ sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
 # Button to trigger data fetching and display
 if st.button('Submit'):
     if sector:
-        tickers = tasi[sector]
-        result_df = fetch_ticker_data(tickers, companies, sector)
+        result_df = fetch_ticker_data(tasi, companies, sector)
         if not result_df.empty:
             st.dataframe(result_df)
         else:
