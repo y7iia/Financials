@@ -325,20 +325,15 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
           print(f"Error fetching data for ticker {ticker}: {e}")
 
     return result_df
-# Streamlit app starts here
-st.title('Fetch Stock Market Data')
-
-# Add a selectbox to the sidebar:
-sector = st.sidebar.selectbox(
-    'Select a sector',
-    tuple(tasi.keys())  # get all sector names from the dictionary
-)
-
-if st.sidebar.button('Submit'):
+ 
+ # Streamlit app:
+ if st.sidebar.button('Submit'):
   # Use the function
   result_df = fetch_ticker_data(tasi, companies, sector)
-  # Drop the 'chg%' column
-  result_df = result_df.drop(columns=['chg%'])
+  
+  # Drop the 'chg%' column if it exists
+  if 'chg%' in result_df.columns:
+      result_df = result_df.drop(columns=['chg%'])
   
   # Display the DataFrame
   st.dataframe(result_df)
