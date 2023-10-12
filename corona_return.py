@@ -270,6 +270,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional
 
     for ticker in tickers:
         try:
+            print(type(result_df))  # Debug line
             if not start_date:
                 data = yf.download(ticker, start="2020-03-01", end="2020-04-01")
                 if data.empty:
@@ -293,6 +294,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional
             latest_close = latest_data.loc[latest_data.index.max(), 'Close']
             perc_increase = (latest_close / min_close - 1) * 100
 
+            print(type(result_df))  # Debug line
             result_df = result_df.append({
                             'القطاع': sector,
                             'الرمز': ticker,
@@ -304,7 +306,9 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date: Optional
                             'chg%': round(perc_increase, 2) 
                         }, ignore_index=True)
 
+            print(type(result_df))  # Debug line
             result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop = True)
+            print(type(result_df))  # Debug line
 
         except Exception as e:
             st.write(f"Error fetching data for ticker {ticker}: {e}")
