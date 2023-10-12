@@ -70,13 +70,9 @@ if st.button('أحسب Calculate Pivot Points'):
     st.write(f"===============S3 is: {S3:.2f}")
 
 
-st.write('\n')
-st.markdown('[أنظر ايضا: آراء المحللين](https://twitter.com/telmisany/status/1701640774138445878)')
-st.write('\n')
-st.markdown('[أنظر ايضا: الأرباح المبقاة](https://twitter.com/telmisany/status/1700128870349811959)')
-
+st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
 # Add three empty lines for spacing
 st.write('\n\n\n')
-
 # Add a hyperlink to your Twitter account
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+st.markdown('[قهويني؟](https://www.buymeacoffee.com/y7iia)')
