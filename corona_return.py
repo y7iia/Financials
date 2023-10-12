@@ -316,7 +316,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
     return result_df
  
 
-st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع الفترة المحددة")
+st.title("نسب ارتفاع وانخفاض الأسهم من تاريخ محدد")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 sector = st.selectbox("أختار قطاع", list(tasi.keys()))
