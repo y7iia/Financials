@@ -335,7 +335,15 @@ st.markdown('برمجة يحيى التلمساني @telmisany')
 # User inputs for sector
 sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
 
+# Check if 'submit_clicked' key exists in the session state
+if 'submit_clicked' not in st.session_state:
+    st.session_state.submit_clicked = False
+
 if st.button('Submit'):
+    # Set 'submit_clicked' to True when button is clicked
+    st.session_state.submit_clicked = True
+
+if st.session_state.submit_clicked:
     if sector:
         result_df = fetch_ticker_data(tasi, companies, sector)
         # Check if 'chg%' column exists before dropping
