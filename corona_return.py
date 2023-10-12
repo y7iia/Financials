@@ -315,9 +315,6 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
     # Indentation is corrected here
     result_df = pd.DataFrame(result_rows)
     
-    # Apply formatting when displaying the dataframe
-    with pd.option_context('display.float_format', '{:.2%}'.format):
-        st.dataframe(result_df)
 
     return result_df
  
@@ -337,4 +334,7 @@ else:
 
 if st.button('Submit'):
     df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
+   # Apply formatting when displaying the dataframe
+   with pd.option_context('display.float_format', '{:.2%}'.format):
+    
     st.dataframe(df)
