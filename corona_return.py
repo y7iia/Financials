@@ -317,10 +317,10 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
     
     # Apply formatting when displaying the dataframe
     with pd.option_context('display.float_format', '{:.2%}'.format):
-        
+        st.dataframe(result_df)
 
     return result_df
-
+ 
 st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع الفترة المحددة")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
