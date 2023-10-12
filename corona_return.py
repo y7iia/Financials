@@ -310,8 +310,10 @@ sector = st.selectbox("أختار قطاع", list(tasi.keys()))
 date_option = st.selectbox("اختر الفترة", ["قاع كورونا", "تاريخ آخر"])
 
 if date_option == "تاريخ آخر":
-    start_date = st.date_input("اختر التاريخ")
+    entered_date = st.date_input("اختر التاريخ")
+    start_date = entered_date.strftime('%Y-%m-%d')
     end_date = start_date
+ 
 else:
     start_date = "2020-03-01"
     end_date = "2020-04-01"
