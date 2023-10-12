@@ -339,7 +339,6 @@ sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
 if st.button('Submit'):
     if sector:
         result_df = fetch_ticker_data(tasi, companies, sector)
-        if not result_df.empty:
-            st.dataframe(result_df)
+      
     else:
         st.warning('Please select a sector.')
