@@ -301,17 +301,18 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
 
     return result_df
  
- # Streamlit app setup
+# Streamlit app setup
 st.title('قرب/بعد الأسهم عن قاع كورونا - حسب القطاع')
 st.markdown('برمجة يحيى التلمساني @telmisany')
 
 # User inputs for sector
-sector = st.selectbox('أختر قطاع', ['', *tasi.keys()])
+sector = st.selectbox('أختر قطاع', list([''] + list(tasi.keys())))
 
 # Button to trigger data fetching and display
 if st.button('Submit'):
     if sector:
-        result_df = fetch_ticker_data(tasi, companies, sector)
+        tickers = tasi[sector]
+        result_df = fetch_ticker_data(tickers, companies, sector)
         if not result_df.empty:
             st.dataframe(result_df)
         else:
