@@ -317,14 +317,25 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector):
     return result_df
  
 # Streamlit code
-st.title("Fetch Stock Market Data")
+st.title("نسب ارتفاع وانخفاض الأسهم منذ قاع كورونا في 2020")
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # Dropdown menu for user to select sector
-sector = st.selectbox("Please select a sector", list(tasi.keys()))
+sector = st.selectbox("أختار قطاع", list(tasi.keys()))
 
-if st.button('Fetch Data'):
+if st.button('Submit'):
     # Fetch data when user clicks the button
     df = fetch_ticker_data(tasi, companies, sector)
 
     # Display the result DataFrame
     st.dataframe(df)
+
+st.write('\n')
+st.markdown('[تطبيقات أخرى قد تعجبك:](https://twitter.com/telmisany/status/1702641486792159334)')
+
+
+# Add three empty lines for spacing
+st.write('\n\n\n')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
