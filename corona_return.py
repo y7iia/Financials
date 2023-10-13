@@ -275,15 +275,12 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
 
             data = yf.download(ticker, start=start_date, end=end_date)
 
-            if start_date != end_date:
-                data = data.loc[data.index == start_date]
-
             if data.empty:
                 st.write(f"No data available for ticker {ticker} for the selected period. The stock may have been enlisted after this date.")
                 continue
 
-            min_close_date = data['Close'].idxmin()
-            min_close = data.loc[min_close_date, 'Low']
+            min_low_date = data['Low'].idxmin()
+            min_low = data.loc[min_low_date, 'Low']
 
             latest_data = yf.download(ticker, period="1d")
 
@@ -292,14 +289,14 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
                 continue
 
             latest_close = latest_data.loc[latest_data.index.max(), 'Close']
-            perc_increase = (latest_close / min_close - 1) * 100
+            perc_increase = (latest_close / min_low - 1) * 100
 
             result_rows.append({
                 'القطاع': sector,
                 'الرمز': ticker,
                 'الشركة': ticker_names.get(ticker, "Unknown"),
-                'التاريخ': min_close_date,
-                'قاع الفترة المحددة': round(min_close,2),
+                'التاريخ': min_low_date,
+                'قاع الفترة المحددة': round(min_low,2),
                 'آخر اغلاق': round(latest_close,2),
                 'التغيير%': round(perc_increase, 2),
             })
