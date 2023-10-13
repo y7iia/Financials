@@ -283,7 +283,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
                 continue
 
             min_close_date = data['Close'].idxmin()
-            min_close = data.loc[min_close_date, 'Close']
+            min_close = data.loc[min_close_date, 'Low']
 
             latest_data = yf.download(ticker, period="1d")
 
