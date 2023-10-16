@@ -363,6 +363,8 @@ st.write('\n\n\n')
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
 
 # Buy me coffee AD
-image_url = 'https://drive.google.com/file/d/1L7hg_kGgWZmbNJvDbWGWkfFcfDXawR_U'
+file_id = 'https://drive.google.com/file/d/1L7hg_kGgWZmbNJvDbWGWkfFcfDXawR_U/view?usp=sharing'  # replace with your file ID
+image_url = f'https://drive.google.com/uc?export=view&id={file_id}'
 link_url = 'https://www.buymeacoffee.com/y7iia'
+
 st.markdown(f'<a href="{link_url}"><img src="{image_url}" alt="Image" width="200"/></a>', unsafe_allow_html=True)
