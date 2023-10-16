@@ -277,5 +277,9 @@ st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmi
 st.write('\n\n\n')
 # Add a hyperlink to your Twitter account
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
-st.markdown('[قهويني؟](https://www.buymeacoffee.com/y7iia)')
+
+# Buy me coffee AD:
+image_url = 'https://i.ibb.co/dM0tT0f/buy-me-coffee.png'
+link_url = 'https://www.buymeacoffee.com/y7iia'
+st.markdown(f'<a href="{link_url}"><img src="{image_url}" alt="Image" width="200"/></a>', unsafe_allow_html=True)
 
