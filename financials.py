@@ -354,9 +354,6 @@ if st.button("Submit"):
     else:
         st.error("تعذر جلب البيانات")
 
-
-
-
 # Add a statement
 st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي** ")
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
@@ -366,6 +363,6 @@ st.write('\n\n\n')
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
 
 # Buy me coffee AD
-image_url = 'https://drive.google.com/file/d/1L7hg_kGgWZmbNJvDbWGWkfFcfDXawR_U/view?usp=sharing'
+image_url = 'https://drive.google.com/file/d/1L7hg_kGgWZmbNJvDbWGWkfFcfDXawR_U'
 link_url = 'https://www.buymeacoffee.com/y7iia'
 st.markdown(f'<a href="{link_url}"><img src="{image_url}" alt="Image" width="200"/></a>', unsafe_allow_html=True)
