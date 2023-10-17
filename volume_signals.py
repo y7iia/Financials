@@ -291,10 +291,12 @@ def volume_signals(data, period):
 
         data['Volume_EMA'] = data['Volume'].ewm(span=90, adjust=False).mean()
         conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['High'].shift().max())
-        return sum(conditions)
+        # Get a list of dates where conditions are true
+        signal_dates = data[conditions].index.tolist()
+        return sum(conditions), signal_dates
     except Exception as e:
         logging.error(f"Error calculating volume signals: {e}")
-        return np.nan
+        return np.nan, []
 
 def get_data_for_sector(sector, period):
     try:
@@ -303,14 +305,15 @@ def get_data_for_sector(sector, period):
         period_in_days = convert_period_to_days(period)
         for code in stock_codes:
             stock_data = fetch_data_for_stock(code)
-            signal_count = volume_signals(stock_data, period_in_days)
+            signal_count, signal_dates = volume_signals(stock_data, period_in_days)
             latest_close = stock_data['Close'].iat[-1]
             data.append({
                 'الرمز': code,
                 'الاسم': companies.get(code),
                 'القطاع': sector,
                 'أحدث إغلاق': latest_close,
-                'إشارات الحجم': signal_count
+                'إشارات الحجم': signal_count,
+                'تواريخ الإشارات': signal_dates
             })
         df = pd.DataFrame(data)
         df = df.sort_values(by='إشارات الحجم', ascending=False)
@@ -332,6 +335,9 @@ if st.button('Submit'):
     if sector:
         # Fetch and display data
         sector_data = get_data_for_sector(sector, period)
-        st.dataframe(sector_data)
+        st.dataframe(sector_data[['الرمز', 'الاسم', 'القطاع', 'أحدث إغلاق', 'إشارات الحجم']])
+        # Button to show signal dates
+        if st.button('Show Signal Dates'):
+            st.dataframe(sector_data[['الرمز', 'تواريخ الإشارات']])
     else:
         st.write("أختار القطاع المطلوب")
