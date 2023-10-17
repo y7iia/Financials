@@ -269,7 +269,7 @@ companies = {'2222.SR': 'أرامكو السعودية',
 # Setup logging
 logging.basicConfig(filename='app.log', level=logging.ERROR)
 
-def fetch_data_for_stock(stock, period='3mo'):
+def fetch_data_for_stock(stock, period='1y'):
     try:
         # Fetch historical market data using yfinance
         data = yf.download(stock, period=period)
@@ -288,14 +288,16 @@ def convert_period_to_days(period):
 
 def volume_signals(data, period):
     try:
+        # Filter data to only include the user-selected period
+        data = data[-period:]
+
         data['Volume_EMA'] = data['Volume'].ewm(span=90, adjust=False).mean()
         conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['High'].shift().rolling(window=period).max())
         return sum(conditions)
     except Exception as e:
         logging.error(f"Error calculating volume signals: {e}")
         return np.nan
-     
-
+ 
 def get_data_for_sector(sector, period):
     try:
         stock_codes = tasi[sector]
