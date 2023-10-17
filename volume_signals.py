@@ -296,7 +296,7 @@ def volume_signals(data, period):
         else:
             window_size = 90  # For periods greater than 3 months, use a 90-day window
 
-        data['Volume_EMA'] = data['Volume'].ewm(span=window_size, adjust=False).mean()
+        data['Volume_EMA'] = data['Volume'].ewm(span=90, adjust=False).mean()
         conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['High'].shift().rolling(window=window_size).max())
         return sum(conditions)
     except Exception as e:
