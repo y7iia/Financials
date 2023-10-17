@@ -1,12 +1,11 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-from ta.volatility import BollingerBands
-from ta.volume import VolumeWeightedAveragePrice
-import logging
+import ta
 import numpy as np
-from ta.trend import EMAIndicator
+import logging
 
+# Dictionaries
 # Create a dictionary of sector to ticker symbols
 tasi = {
 'الطاقة' : ['2222.SR', '4030.SR', '4200.SR', '2030.SR', '2381.SR', '2382.SR'],
@@ -32,6 +31,7 @@ tasi = {
 'تجزئة الأغذية': ['4161.SR',  '4001.SR',  '4162.SR',  '4160.SR',  '4061.SR',  '4006.SR',  '4163.SR',  '4164.SR'],
 'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR']
 }
+
 
 # Create a dictionary of ticker symbols to company names
 companies = {'2222.SR': 'أرامكو السعودية',
@@ -266,66 +266,74 @@ companies = {'2222.SR': 'أرامكو السعودية',
 '4262': 'لومي',
 '2382':'أديس'}
 
-
 # Setup logging
 logging.basicConfig(filename='app.log', level=logging.ERROR)
 
-def fetch_data_for_stock(stock):
+def fetch_data_for_stock(stock, period='3mo'):
     try:
-        # Fetch historical data for a stock using yfinance
-        data = yf.download(stock, period='90d')
+        # Fetch historical market data using yfinance
+        data = yf.download(stock, period=period)
         return data
     except Exception as e:
         logging.error(f"Error fetching data for stock {stock}: {e}")
         return pd.DataFrame()
 
-def volume_signals(df):
-    # Calculate EMA of volume
-    ema_volume = EMAIndicator(df['Volume'], 90).ema_indicator()
+def volume_signals(data):
+    try:
+        data['Volume_EMA'] = data['Volume'].ewm(span=90, adjust=False).mean()
+        data['Highest_High'] = data['Close'].rolling(window=90).max()
+        conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['Highest_High'])
+        return sum(conditions)
+    except Exception as e:
+        logging.error(f"Error calculating volume signals: {e}")
+        return np.nan
 
-    # Calculate Bollinger Bands
-    bollinger = BollingerBands(df['Close'], 20, 2)
-    upper_bollinger = bollinger.bollinger_hband()
-    lower_bollinger = bollinger.bollinger_lband()
-
-    # Count signals
-    signals = (df['Volume'] > ema_volume) & (df['Close'] < upper_bollinger)
-    return signals.sum()
-
-def get_data_for_sector(sector):
+def get_data_for_sector(sector, period):
     try:
         stock_codes = tasi[sector]
-        data = {}
+        data = []
         for code in stock_codes:
-            df = fetch_data_for_stock(code)
-            if not df.empty:
-                signals = volume_signals(df)
-                latest_close = df['Close'].iloc[-1]
-                data[code] = {
-                    'ticker': code,
-                    'sector': sector,
-                    'latest_close': latest_close,
-                    'volume_signals': signals
-                }
-        df = pd.DataFrame(data).T
-        df = df.sort_values(by='volume_signals', ascending=False)
+            stock_data = fetch_data_for_stock(code, period)
+            signal_count = volume_signals(stock_data)
+            latest_close = stock_data['Close'].iat[-1]
+            data.append({
+                'الرمز': code,
+                'الاسم': companies.get(code),
+                'القطاع': sector,
+                'أحدث إغلاق': latest_close,
+                'إشارات الحجم': signal_count
+            })
+        df = pd.DataFrame(data)
+        df = df.sort_values(by='إشارات الحجم', ascending=False)
         return df
     except Exception as e:
         logging.error(f"Error getting data for sector {sector}: {e}")
         return pd.DataFrame()
 
 # Streamlit code
-st.title('راصد احجام التداول الغير طبيعية على اسهم القطاع')
-st.markdown('@telmisany - برمجة يحيى التلمساني')
+st.title('راصد الأحجام الغير طبيعية خلال فترة زمنية معينة')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # User input
 sector = st.selectbox('اختار القطاع المطلوب', options=[''] + list(tasi.keys()))
+period = st.selectbox('اختار الفترة', options=['1mo', '3mo', '6mo', '1y', '2y', '5y'], index=2)
 
 # Submit button
 if st.button('Submit'):
     if sector:
         # Fetch and display data
-        sector_data = get_data_for_sector(sector)
+        sector_data = get_data_for_sector(sector, period)
         st.dataframe(sector_data)
     else:
-        st.write(":أختار القطاع المطلوب")
+        st.write("أختار القطاع المطلوب")
+
+ st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
+# Add three empty lines for spacing
+st.write('\n\n\n')
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+
+# Buy me coffee AD:
+image_url = 'https://i.ibb.co/dM0tT0f/buy-me-coffee.png'
+link_url = 'https://www.buymeacoffee.com/y7iia'
+st.markdown(f'<a href="{link_url}"><img src="{image_url}" alt="Image" width="200"/></a>', unsafe_allow_html=True)
