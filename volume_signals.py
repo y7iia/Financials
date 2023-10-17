@@ -263,8 +263,8 @@ companies = {'2222.SR': 'أرامكو السعودية',
  '4082.SR': 'مرنة',
  '2283.SR': 'المطاحن الأولى',
  '4323.SR': 'سمو',
-'4262': 'لومي',
-'2382':'أديس'}
+'4262.SR': 'لومي',
+'2382.SR':'أديس'}
 
 # Setup logging
 logging.basicConfig(filename='app.log', level=logging.ERROR)
