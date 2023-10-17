@@ -332,16 +332,21 @@ st.markdown(' @telmisany - برمجة يحيى التلمساني')
 sector = st.selectbox('اختار القطاع المطلوب', options=[''] + list(tasi.keys()))
 period = st.selectbox('اختار الفترة', options=['1 month', '3 months', '6 months'], index=0)
 
+# Initialize an empty DataFrame
+sector_data = pd.DataFrame()
+
 # Submit button
 if st.button('Submit'):
     if sector:
         # Fetch and display data
         sector_data = get_data_for_sector(sector, period)
         st.dataframe(sector_data[['الرمز', 'الاسم', 'القطاع', 'أحدث إغلاق', 'إشارات الحجم']])
-        # Button to show signal dates
-        
-    else:
-        st.write("أختار القطاع المطلوب")
-     
+
+# Show Signal Dates button
 if st.button('Show Signal Dates'):
-            st.dataframe(sector_data[['الرمز', 'تواريخ الإشارات']])
+    if not sector_data.empty:
+        st.dataframe(sector_data[['الرمز', 'تواريخ الإشارات']])
+    else:
+        st.write("Please fetch the data first by clicking 'Submit'")
+     
+
