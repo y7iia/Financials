@@ -278,6 +278,14 @@ def fetch_data_for_stock(stock, period='3mo'):
         logging.error(f"Error fetching data for stock {stock}: {e}")
         return pd.DataFrame()
 
+def convert_period_to_days(period):
+    if period.endswith('mo'):
+        return int(period[:-2]) * 30
+    elif period.endswith('y'):
+        return int(period[:-1]) * 365
+    else:
+        return int(period)
+
 def volume_signals(data, period):
     try:
         # Define the window size for EMA based on period
@@ -300,9 +308,10 @@ def get_data_for_sector(sector, period):
     try:
         stock_codes = tasi[sector]
         data = []
+        period_in_days = convert_period_to_days(period)
         for code in stock_codes:
             stock_data = fetch_data_for_stock(code, period)
-            signal_count = volume_signals(stock_data)
+            signal_count = volume_signals(stock_data, period_in_days)
             latest_close = stock_data['Close'].iat[-1]
             data.append({
                 'الرمز': code,
