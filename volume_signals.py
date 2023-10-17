@@ -278,15 +278,23 @@ def fetch_data_for_stock(stock, period='3mo'):
         logging.error(f"Error fetching data for stock {stock}: {e}")
         return pd.DataFrame()
 
-def volume_signals(data):
+def volume_signals(data, period):
     try:
-        data['Volume_EMA'] = data['Volume'].ewm(span=90, adjust=False).mean()
-        data['Highest_High'] = data['Close'].rolling(window=90).max()
-        conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['Highest_High'])
+        # Define the window size for EMA based on period
+        if period <= 30:  # 1 month
+            window_size = period
+        elif period <= 90:  # 3 months
+            window_size = period
+        else:
+            window_size = 90  # For periods greater than 3 months, use a 90-day window
+
+        data['Volume_EMA'] = data['Volume'].ewm(span=window_size, adjust=False).mean()
+        conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['High'].shift().rolling(window=window_size).max())
         return sum(conditions)
     except Exception as e:
         logging.error(f"Error calculating volume signals: {e}")
         return np.nan
+     
 
 def get_data_for_sector(sector, period):
     try:
