@@ -327,7 +327,7 @@ if st.button('Submit'):
     else:
         st.write("أختار القطاع المطلوب")
 
- st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
+st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
 # Add three empty lines for spacing
 st.write('\n\n\n')
 # Add a hyperlink to your Twitter account
