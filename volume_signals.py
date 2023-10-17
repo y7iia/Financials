@@ -328,7 +328,7 @@ def get_data_for_sector(sector, period):
         return pd.DataFrame()
 
 # Streamlit code
-st.title('راصد الأحجام الغير طبيعية خلال فترة زمنية معينة')
+st.title(' الأحجام الغير طبيعية خلال فترة زمنية معينة')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
 # User input
