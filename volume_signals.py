@@ -271,6 +271,7 @@ companies = {'2222.SR': 'أرامكو السعودية',
 # Setup logging
 logging.basicConfig(filename='app.log', level=logging.ERROR)
 
+@st.cache
 def fetch_data_for_stock(stock):
     try:
         # Fetch historical market data using yfinance
@@ -298,6 +299,7 @@ def volume_signals(data, period):
         logging.error(f"Error calculating volume signals: {e}")
         return np.nan, []
 
+@st.cache(allow_output_mutation=True)
 def get_data_for_sector(sector, period):
     try:
         stock_codes = tasi[sector]
