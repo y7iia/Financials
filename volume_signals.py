@@ -339,7 +339,9 @@ if st.button('Submit'):
         sector_data = get_data_for_sector(sector, period)
         st.dataframe(sector_data[['الرمز', 'الاسم', 'القطاع', 'أحدث إغلاق', 'إشارات الحجم']])
         # Button to show signal dates
-        if st.button('Show Signal Dates'):
-            st.dataframe(sector_data[['الرمز', 'تواريخ الإشارات']])
+        
     else:
         st.write("أختار القطاع المطلوب")
+     
+if st.button('Show Signal Dates'):
+            st.dataframe(sector_data[['الرمز', 'تواريخ الإشارات']])
