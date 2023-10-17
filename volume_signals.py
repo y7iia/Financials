@@ -290,7 +290,7 @@ def volume_signals(data, period):
         data = data[-period:]
 
         data['Volume_EMA'] = data['Volume'].ewm(span=90, adjust=False).mean()
-        conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['High'].shift().rolling(window=period).max())
+        conditions = (data['Volume'] > data['Volume_EMA']) & (data['Close'] < data['High'].shift().max())
         return sum(conditions)
     except Exception as e:
         logging.error(f"Error calculating volume signals: {e}")
