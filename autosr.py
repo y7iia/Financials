@@ -49,9 +49,9 @@ method = st.selectbox("اختر طريقة الحساب Choose the calculation m
 
 if st.button('أحسب Calculate Pivot Points'):
     # get historical market data
-    data = yf.download(ticker, period="2d")
-    high = data['High'][-2]
-    low = data['Low'][-2]
+    data = yf.download(ticker, period="1d")
+    high = data['High'][-1]
+    low = data['Low'][-1]
     
    #currently info method is not working. so, use download method to get the close prices
     close = data['Close'][-1]
