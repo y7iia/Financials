@@ -54,7 +54,7 @@ if st.button('أحسب Calculate Pivot Points'):
     low = data['Low'][-2]
     
    #currently info method is not working. so, use download method to get the close prices
-    close = data['Close'][-2]
+    close = data['Close'][-1]
     
     # Fetch accurate close prices [use this way whenever, info method is working]
     # data2 = yf.Ticker(ticker).info
