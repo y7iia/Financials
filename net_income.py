@@ -275,7 +275,7 @@ def aggregate_financial_data(tickers, frequency):
         return results_data
     else:
         return None
-     
+
 # Streamlit code
 st.title('النتائج المالية لقطاعات سوق الأسهم السعودي')
 st.markdown('@telmisany - برمجة يحيى التلمساني')
@@ -286,34 +286,40 @@ selected_sector = st.selectbox('اختر القطاع', [''] + list(tasi.keys())
 # Define a dictionary for English-Arabic frequency
 dic_frq = {'yearly': 'سنوي', 'quarterly': 'ربع سنوي'}
 
+# Reverse the dictionary for frequency lookup
+reverse_dic_frq = {v: k for k, v in dic_frq.items()}
+
 # Dropdown for selecting the frequency in Arabic
 financial_type_ARABIC = st.selectbox('اختر الفترة', [''] + list(dic_frq.values()))
 
 # Button for submitting the input
-if st.button("Submit") and selected_sector:
-    # Get the list of tickers for the selected sector
-    tickers = tasi[selected_sector]
+if st.button("Submit"):
+    if selected_sector and financial_type_ARABIC:
+        # Get the list of tickers for the selected sector
+        tickers = tasi[selected_sector]
 
-    # Fetch data
-    df = aggregate_financial_data(tickers, frequency)
+        # Map the selected Arabic frequency to English
+        frequency = reverse_dic_frq.get(financial_type_ARABIC)
 
-    # Display data
-    if df is not None:
-        df.index.names = ['Ticker']
-        df = df.rename(index=companies)
-        st.write(df.T)
-    else:
-        st.error("تعذر جلب البيانات")
+        if frequency is None:
+            st.error("الرجاء اختيار فترة زمنية صحيحة")
+        else:
+            # Fetch data
+            df = aggregate_financial_data(tickers, frequency)
+
+            # Display data
+            if df is not None:
+                df.index.names = ['Ticker']
+                df = df.rename(index=companies)
+                st.write(df.T)
+            else:
+                st.error("تعذر جلب البيانات")
 
 # Add a statement
 st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي**")
-st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
-
-# Add three empty lines for spacing
-st.write('\n\n\n')
 
 # Add a hyperlink to your Twitter account
-st.markdown('[تابعني في منصة X](https://twitter.com/telmisany)')
+st.markdown('[تابعني على تويتر](https://twitter.com/telmisany)')
 
 # Buy me a coffee AD
 image_url = 'https://i.ibb.co/dM0tT0f/buy-me-coffee.png'
