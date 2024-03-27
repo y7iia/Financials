@@ -281,10 +281,16 @@ def aggregate_financial_data(tickers, frequency):
     # Concatenate all the results into a single DataFrame
     if results:
         results_data = pd.concat(results)
-        # If the DataFrame is not empty, perform rounding and sorting
+        # If the DataFrame is not empty, convert to numeric and handle non-numeric data
         if not results_data.empty:
-            results_data.iloc[:, 3:] = results_data.iloc[:, 3:].apply(pd.to_numeric, errors='coerce').fillna("-")
-            results_data.iloc[:, 3:] = round(results_data.iloc[:, 3:] / 1000000, 2)
+            # Convert columns to numeric, coercing errors to NaN, which allows arithmetic operations
+            for col in results_data.columns[2:]:  # Assuming the numeric data starts from the third column
+                results_data[col] = pd.to_numeric(results_data[col], errors='coerce')
+            
+            # Now, you can safely perform the division and rounding
+            results_data.iloc[:, 2:] = round(results_data.iloc[:, 2:] / 1000000, 2)
+            # Replace NaN with placeholder after arithmetic operations
+            results_data.fillna("-", inplace=True)
             results_data = results_data.sort_values(by='ticker', ascending=False)
         return results_data
     else:
