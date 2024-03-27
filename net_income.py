@@ -251,47 +251,41 @@ companies = {'1010.SR': 'الرياض',
  '8311.SR': 'عناية'}
 
 # Function to fetch and aggregate financial data
-# Function to fetch and aggregate financial data
 def aggregate_financial_data(tickers, frequency):
     results = []
     for ticker in tickers:
         try:
-            logging.info(f"Fetching data for {ticker}")
             company = yf.Ticker(ticker)
-            financial_data = company.quarterly_financials if frequency == "quarterly" else company.financials
-
-            if financial_data is not None and not financial_data.empty:
-                financial_data = financial_data.transpose()
-                net_income = financial_data.loc["Net Income"] if "Net Income" in financial_data.index else pd.Series()
-                if not net_income.empty:
-                    net_income_df = pd.DataFrame(net_income).transpose()
-                    net_income_df.insert(loc=0, column='ticker', value=ticker)
-                    results.append(net_income_df)
-                else:
-                    raise ValueError('Net Income data not available')
+            # Choose the correct financial data based on frequency
+            if frequency == "quarterly":
+                financial_data = company.quarterly_financials
             else:
-                raise ValueError('Financial data not available')
+                financial_data = company.financials
 
+            # Check if financial_data is not empty and has 'Net Income'
+            if financial_data is not None and 'Net Income' in financial_data.index:
+                # Reset index without dropping the 'Breakdown' column
+                financial_data = financial_data.reset_index(level=None, drop=False, inplace=False)
+                # Insert the 'ticker' column
+                financial_data.insert(loc=0, column='ticker', value=ticker)
+                # Filter rows where 'index' is 'Net Income'
+                net_income = financial_data[financial_data['index'] == 'Net Income']
+                results.append(net_income)
+            else:
+                logging.warning(f"No 'Net Income' data for {ticker}. Continuing with other tickers.")
+        
         except Exception as e:
             logging.error(f"Exception occurred for ticker {ticker}: {e}")
-            placeholder_df = pd.DataFrame({"ticker": [ticker], "Net Income": ["-"]})
-            results.append(placeholder_df)
-            continue
+            continue  # Continue with the next ticker
 
-    # Concatenate all the results into a single DataFrame
+    # Concatenate all the results into a single DataFrame if results are not empty
     if results:
         results_data = pd.concat(results, ignore_index=True)
-        # Convert 'Net Income' column to numeric, coercing errors to NaN, which allows arithmetic operations
-        results_data["Net Income"] = pd.to_numeric(results_data["Net Income"], errors='coerce')
-        # Now, you can safely perform the division and rounding
-        results_data["Net Income"] = round(results_data["Net Income"] / 1000000, 2)
-        # Replace NaN with placeholder after arithmetic operations
-        results_data.fillna("-", inplace=True)
-        if 'ticker' in results_data.columns:
-            results_data.sort_values(by='ticker', ascending=False, inplace=True)
+        # Convert the numeric columns to millions and round to 2 decimal places
+        results_data.iloc[:, 3:] = round(results_data.iloc[:, 3:] / 1000000, 2)
         return results_data
     else:
-        return pd.DataFrame()  # Return an empty DataFrame instead of None
+        return pd.DataFrame()  # Return an empty DataFrame if results are empty
      
 # Streamlit code
 st.title('النتائج المالية لقطاعات سوق الأسهم السعودي')
