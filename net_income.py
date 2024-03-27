@@ -259,39 +259,34 @@ def aggregate_financial_data(tickers, frequency):
             company = yf.Ticker(ticker)
             financial_data = company.quarterly_financials if frequency == "quarterly" else company.financials
 
-            # Check if 'Breakdown' column is in financial_data
-            if financial_data is not None and not financial_data.empty and 'Breakdown' in financial_data.columns:
-                financial_data = financial_data.reset_index(drop=False)
+            if financial_data is not None and not financial_data.empty:
+                financial_data = financial_data.transpose()
                 financial_data.insert(loc=0, column='ticker', value=ticker)
-                net_income = financial_data[financial_data['Breakdown'] == 'Net Income']
-                net_income.drop(columns=['Breakdown'], inplace=True)  # Drop the 'Breakdown' column
-                net_income.reset_index(drop=True, inplace=True)  # Reset the index
-                results.append(net_income)
+                net_income = financial_data.loc[:, ['Net Income']] if 'Net Income' in financial_data.columns else pd.DataFrame()
+                if not net_income.empty:
+                    net_income.reset_index(drop=True, inplace=True)  # Reset the index
+                    results.append(net_income)
+                else:
+                    raise ValueError('Net Income data not available')
             else:
-                placeholder_df = pd.DataFrame({"ticker": [ticker]})
-                # Append placeholder DataFrames with "-" if data is not available
-                results.append(placeholder_df)
+                raise ValueError('Financial data not available')
+
         except Exception as e:
             logging.error(f"Exception occurred for ticker {ticker}: {e}")
-            placeholder_df = pd.DataFrame({"ticker": [ticker]})
+            placeholder_df = pd.DataFrame({"ticker": [ticker], "Net Income": ["-"]})
             results.append(placeholder_df)
             continue
 
     # Concatenate all the results into a single DataFrame
     if results:
         results_data = pd.concat(results, ignore_index=True)
-        # If the DataFrame is not empty, convert to numeric and handle non-numeric data
-        if not results_data.empty:
-            # Convert columns to numeric, coercing errors to NaN, which allows arithmetic operations
-            numeric_columns = results_data.columns[1:]  # Assuming the numeric data starts from the second column
-            for col in numeric_columns:
-                results_data[col] = pd.to_numeric(results_data[col], errors='coerce')
-
-            # Now, you can safely perform the division and rounding
-            results_data[numeric_columns] = round(results_data[numeric_columns] / 1000000, 2)
-            # Replace NaN with placeholder after arithmetic operations
-            results_data.fillna("-", inplace=True)
-            results_data.sort_values(by='ticker', ascending=False, inplace=True)
+        # Convert columns to numeric, coercing errors to NaN, which allows arithmetic operations
+        results_data["Net Income"] = pd.to_numeric(results_data["Net Income"], errors='coerce')
+        # Now, you can safely perform the division and rounding
+        results_data["Net Income"] = round(results_data["Net Income"] / 1000000, 2)
+        # Replace NaN with placeholder after arithmetic operations
+        results_data["Net Income"].fillna("-", inplace=True)
+        results_data.sort_values(by='ticker', ascending=False, inplace=True)
         return results_data
     else:
         return pd.DataFrame()  # Return an empty DataFrame instead of None
