@@ -320,7 +320,6 @@ if st.button("Submit"):
 
             # Display data
             if df is not None:
-                # df.index.names = ['Ticker']
                 # to convert it into a column before this operation.
                 df['Ticker'] = df['ticker']
               
@@ -330,9 +329,14 @@ if st.button("Submit"):
                 # Rename the 'Ticker' column to 'الشركة'
                 df.rename(columns={'Ticker': 'الشركة'}, inplace=True)
               
-                # Drop the 'index' column. Assuming 'index' is the name of your column. If 'index' is the actual index, use df.reset_index(drop=True, inplace=True)
-                df.drop(columns=['index'], inplace=True)
-                
+                # Set 'الشركة' as the index of the DataFrame
+                df.set_index('الشركة', inplace=True)
+
+                # Drop the 'index' column if it exists. Assuming 'index' is the name of your column.
+                # If 'index' is the actual index, it's already been handled by set_index().
+                if 'index' in df.columns:
+                    df.drop(columns=['index'], inplace=True)
+
                 # Display data with Streamlit
                 st.write(df)
             else:
