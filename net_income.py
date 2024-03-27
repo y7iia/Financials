@@ -320,7 +320,7 @@ if st.button("Submit"):
 
             # Display data
             if df is not None:
-                df.index.names = ['Ticker']
+                # df.index.names = ['Ticker']
                 # to convert it into a column before this operation.
                 df['Ticker'] = df['ticker']
               
