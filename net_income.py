@@ -6,11 +6,7 @@ import logging
 # Configure logger
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-# Create a dictionary of ticker symbols to company names
 # Create a dictionary of sector to ticker symbols
-
-# Create a dictionary of sector to ticker symbols
-
 tasi = {
 'إدارة وتطوير العقارات': ['4090.SR', '4321.SR', '4320.SR', '4150.SR', '4323.SR', '4020.SR', '4300.SR', '4250.SR', '4220.SR', '4322.SR', '4310.SR', '4100.SR', '4230.SR'],
 'إنتاج الأغذية ': ['2270.SR', '2280.SR', '2050.SR', '6070.SR', '6040.SR', '6020.SR', '6010.SR', '2281.SR', '6001.SR', '6050.SR', '2100.SR', '4080.SR', '6090.SR', '2283.SR', '2282.SR', '6060.SR', '2284.SR'],
@@ -35,7 +31,6 @@ tasi = {
 'السلع طويلة الاجل': ['2340.SR', '4012.SR', '4180.SR', '4011.SR', '2130.SR', '1213.SR'],
 'الطاقة': ['4030.SR', '2222.SR', '2382.SR', '4200.SR', '2381.SR', '2030.SR']
 }
-
 
 # Create a dictionary of ticker symbols to company names
 companies = {'1010.SR': 'الرياض',
@@ -261,19 +256,21 @@ def aggregate_financial_data(tickers, frequency):
     for ticker in tickers:
         logging.info(f"Fetching data for {ticker}")
         company = yf.Ticker(ticker)
-        if frequency == "quarterly":
-            net_income = company.quarterly_financials
-        else:
-            net_income = company.financials
-        net_income.insert(loc=0, column='sheet', value=financial_type)
-        net_income = net_income.reset_index(drop=False)
-        net_income.insert(loc=0, column='ticker', value=ticker)
-        nt_inc = net_income[net_income['Breakdown'] == 'Net Income']
-        results.append(nt_inc)
-    results_data = pd.concat(results)
-    results_data.iloc[:, 3:] = round(results_data.iloc[:, 3:] / 1000000, 2)
-    results_data = results_data.sort_values(by='ticker', ascending=False)
-    return results_data
+        financial_data = company.quarterly_financials if frequency == "quarterly" else company.financials
+
+        if financial_data is not None:
+            financial_data = financial_data.reset_index(drop=False)
+            financial_data.insert(loc=0, column='ticker', value=ticker)
+            net_income = financial_data[financial_data['Breakdown'] == 'Net Income']
+            results.append(net_income)
+
+    if results:
+        results_data = pd.concat(results)
+        results_data.iloc[:, 3:] = round(results_data.iloc[:, 3:] / 1000000, 2)
+        results_data = results_data.sort_values(by='ticker', ascending=False)
+        return results_data
+    else:
+        return None
 
 # Streamlit code
 st.title('النتائج المالية لقطاعات سوق الأسهم السعودي')
@@ -297,7 +294,7 @@ if st.button("Submit") and selected_sector and financial_type:
     tickers = tasi[selected_sector]
 
     # Fetch data
-    df = aggregate_financial_data(tickers, "financials", financial_type)
+    df = aggregate_financial_data(tickers, financial_type)
 
     # Display data
     if df is not None:
