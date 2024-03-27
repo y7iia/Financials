@@ -295,15 +295,15 @@ if st.button("Submit") and selected_sector:
     tickers = tasi[selected_sector]
 
     # Fetch data
-    df = aggregate_financial_data(tickers, financial_type)
+    df = aggregate_financial_data(tickers, frequency)
 
-    # # Display data
-    # if df is not None:
-    #     df.index.names = ['Ticker']
-    #     df = df.rename(index=companies)
-    #     st.write(df.T)
-    # else:
-    #     st.error("تعذر جلب البيانات")
+    # Display data
+    if df is not None:
+        df.index.names = ['Ticker']
+        df = df.rename(index=companies)
+        st.write(df.T)
+    else:
+        st.error("تعذر جلب البيانات")
 
 # Add a statement
 st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي**")
