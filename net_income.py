@@ -256,7 +256,7 @@ companies = {{'1010.SR': 'الرياض',
  '8311.SR': 'عناية'}
 
 # Function to fetch and aggregate financial data
-def aggregate_financial_data(tickers, financial_type, frequency):
+def aggregate_financial_data(tickers, frequency):
     results = []
     for ticker in tickers:
         logging.info(f"Fetching data for {ticker}")
@@ -276,7 +276,7 @@ def aggregate_financial_data(tickers, financial_type, frequency):
     return results_data
 
 # Streamlit code
-st.title('القوائم المالية لقطاعات سوق الأسهم السعودي')
+st.title('النتائج المالية لقطاعات سوق الأسهم السعودي')
 st.markdown('@telmisany - برمجة يحيى التلمساني')
 
 # Dropdown for selecting the sector
