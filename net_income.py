@@ -331,7 +331,7 @@ if st.button("Submit"):
             if df is not None:
                 df.index.names = ['Ticker']
                 df = df.rename(index=companies)
-                st.write(df.T)
+                st.write(df)
             else:
                 st.error("تعذر جلب البيانات")
 
