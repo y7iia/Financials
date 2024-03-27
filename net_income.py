@@ -259,10 +259,14 @@ def aggregate_financial_data(tickers, frequency):
         financial_data = company.quarterly_financials if frequency == "quarterly" else company.financials
 
         if financial_data is not None:
-            financial_data = financial_data.reset_index(drop=False)
-            financial_data.insert(loc=0, column='ticker', value=ticker)
-            net_income = financial_data[financial_data['Breakdown'] == 'Net Income']
-            results.append(net_income)
+            try:
+                financial_data = financial_data.reset_index(drop=False)
+                financial_data.insert(loc=0, column='ticker', value=ticker)
+                net_income = financial_data[financial_data['Breakdown'] == 'Net Income']
+                results.append(net_income)
+            except KeyError as e:
+                logging.error(f"KeyError: {e}. The 'Breakdown' column or 'Net Income' value is missing for ticker {ticker}. Data structure might have changed.")
+                continue
 
     if results:
         results_data = pd.concat(results)
@@ -271,7 +275,7 @@ def aggregate_financial_data(tickers, frequency):
         return results_data
     else:
         return None
-
+     
 # Streamlit code
 st.title('النتائج المالية لقطاعات سوق الأسهم السعودي')
 st.markdown('@telmisany - برمجة يحيى التلمساني')
