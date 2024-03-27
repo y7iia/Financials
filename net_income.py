@@ -289,11 +289,8 @@ dic_frq = {'yearly': 'سنوي', 'quarterly': 'ربع سنوي'}
 # Dropdown for selecting the frequency in Arabic
 financial_type_ARABIC = st.selectbox('اختر الفترة', [''] + list(dic_frq.values()))
 
-# Find the corresponding English term
-financial_type = [k for k, v in dic_frq.items() if v == financial_type_ARABIC][0] if financial_type_ARABIC else ""
-
 # Button for submitting the input
-if st.button("Submit") and selected_sector and financial_type:
+if st.button("Submit") and selected_sector:
     # Get the list of tickers for the selected sector
     tickers = tasi[selected_sector]
 
