@@ -38,7 +38,7 @@ tasi = {
 
 
 # Create a dictionary of ticker symbols to company names
-companies = {{'1010.SR': 'الرياض',
+companies = {'1010.SR': 'الرياض',
  '1020.SR': 'الجزيرة',
  '1030.SR': 'استثمار',
  '1050.SR': 'السعودي الفرنسي',
