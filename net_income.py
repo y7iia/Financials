@@ -282,7 +282,7 @@ def aggregate_financial_data(tickers, frequency):
     if results:
         results_data = pd.concat(results, ignore_index=True)
         # Convert the numeric columns to millions and round to 2 decimal places
-        results_data.iloc[:, 3:] = round(results_data.iloc[:, 3:] / 1000000, 2)
+        results_data.iloc[:, 2:] = round(results_data.iloc[:, 2:] / 1000000, 2)
         return results_data
     else:
         return pd.DataFrame()  # Return an empty DataFrame if results are empty
