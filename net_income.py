@@ -320,26 +320,24 @@ if st.button("Submit"):
 
             # Display data
             if df is not None:
-               df.index.names = ['Ticker']
-               # to convert it into a column before this operation.
-               df['Ticker'] = df['ticker']
+                df.index.names = ['Ticker']
+                # to convert it into a column before this operation.
+                df['Ticker'] = df['ticker']
               
-               # Map the Ticker column to the values in the companies dictionary
-               df['Ticker'] = df['Ticker'].map(companies)
+                # Map the Ticker column to the values in the companies dictionary
+                df['Ticker'] = df['Ticker'].map(companies)
               
-               # Rename the 'Ticker' column to 'الشركة'
-               df.rename(columns={'Ticker': 'الشركة'}, inplace=True)
+                # Rename the 'Ticker' column to 'الشركة'
+                df.rename(columns={'Ticker': 'الشركة'}, inplace=True)
               
-               # Drop the 'index' column. Assuming 'index' is the name of your column. If 'index' is the actual index, use df.reset_index(drop=True, inplace=True)
-               df.drop(columns=['index'], inplace=True)
-
-# Display data with Streamlit
-if df is not None:
-    st.write(df)
+                # Drop the 'index' column. Assuming 'index' is the name of your column. If 'index' is the actual index, use df.reset_index(drop=True, inplace=True)
+                df.drop(columns=['index'], inplace=True)
+                
+                # Display data with Streamlit
                 st.write(df)
             else:
                 st.error("تعذر جلب البيانات")
-
+             
 # Add a statement
 st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي**")
 
