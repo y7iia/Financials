@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta 
 
 # Create a dictionary of ticker symbols to company names
 companies = {
