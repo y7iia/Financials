@@ -4,7 +4,9 @@ import yfinance as yf
 from datetime import datetime
 
 # Create a dictionary of ticker symbols to company names
-companies = {'1010.SR': 'الرياض',
+companies = {
+ " " : " " ,
+ '1010.SR': 'الرياض',
  '1020.SR': 'الجزيرة',
  '1030.SR': 'استثمار',
  '1050.SR': 'السعودي الفرنسي',
@@ -221,71 +223,66 @@ companies = {'1010.SR': 'الرياض',
  '8310.SR': 'أمانة للتأمين ',
  '8311.SR': 'عناية'}
 
-# Streamlit application layout
+
+# Streamlit interface elements
 st.title('دقة توقعات المحللين')
-st.markdown('@telmisany - برمجة يحيى التلمساني')
 
-company_name = st.selectbox('اختار الشركة', options=list(companies.values()))
-analyst_date = st.date_input('أدخل تاريخ التوصية')
-analyst_name = st.text_input('أدخل اسم المحلل (اختياري)')
-analyst_target = st.number_input('أدخل هدف المحلل', min_value=0.0, format='%f')
+# Select company
+company_name = st.selectbox('Choose the company:', options=list(companies.values()))
 
-# Find the company ticker based on the selected company name
+# Input fields for the analyst information
+analyst_date = st.date_input('Enter the date of recommendation:')
+analyst_name = st.text_input('Enter the analyst\'s name (optional):')
+analyst_target = st.number_input('Enter the analyst\'s target price:', min_value=0.0, format='%f')
+
+# Function to fetch stock data and evaluate the analyst's recommendation
+def evaluate_analyst_recommendation(ticker, target_date, target_price):
+    try:
+        # It's a good practice to add some days to the target_date to create a range
+        end_date = target_date + timedelta(days=30)  # For example, 30 days after the target date
+        
+        # Fetch historical stock data
+        stock_data = yf.download(ticker, start=target_date.isoformat(), end=end_date.isoformat())
+
+        if stock_data.empty:
+            return f"No data available for {ticker} from {target_date} to {end_date}.", None
+
+        # Calculate whether the target price was reached
+        high_price = stock_data['High'].max()
+        target_reached = high_price >= target_price
+
+        # Prepare the DataFrame to display
+        result_df = pd.DataFrame({
+            'Analyst Name': [analyst_name],
+            'Recommendation Date': [target_date],
+            'Target Price': [target_price],
+            'Highest Price Within 30 Days': [high_price],
+            'Target Reached': ['Yes' if target_reached else 'No']
+        })
+
+        return None, result_df
+
+    except Exception as e:
+        return str(e), None
+
+# Find the ticker symbol based on the selected company name
+selected_ticker = None
 for ticker, name in companies.items():
     if name == company_name:
         selected_ticker = ticker
         break
 
-# Function to fetch stock data and evaluate the analyst's recommendation
-def evaluate_analyst_recommendation(ticker, target_date, target_price):
-    # Fetch historical stock data
-    stock_data = yf.download(ticker, start=target_date)
-    
-    if not stock_data.empty:
-        # Calculate highest and lowest price and the return since the target date
-        highest_price = stock_data['High'].max()
-        lowest_price = stock_data['Low'].min()
-        highest_date = stock_data['High'].idxmax().strftime('%Y-%m-%d')
-        lowest_date = stock_data['Low'].idxmin().strftime('%Y-%m-%d')
-        initial_price = stock_data.iloc[0]['Open']
-        highest_return = ((highest_price - initial_price) / initial_price) * 100
-        lowest_return = ((lowest_price - initial_price) / initial_price) * 100
-
-        # Create a results DataFrame
-        result_data = {
-            'أسم المحلل': analyst_name,
-            'تاريخ التوصية': target_date,
-            'السهم': company_name,
-            'الهدف': round(target_price, 2),
-            'تحقق الهدف ؟': 'نعم' if highest_price >= target_price else 'لا',
-            'أعلى سعر وصل له السهم و التاريخ': f"{highest_price:.2f} ({highest_date})",
-            'أعلى سعر وصل له السهم (مع العائد)': f"{highest_price:.2f} ({highest_return:.2f}%)",
-            'أقل سعر وصل له السهم( مع العائد)': f"{lowest_price:.2f} ({lowest_return:.2f}%)"
-        }
-        return pd.DataFrame([result_data])
+# Submit button
+if st.button('Evaluate Recommendation'):
+    if selected_ticker:
+        error_message, result_df = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target)
+        if error_message:
+            st.error(error_message)
+        else:
+            # Display results
+            st.dataframe(result_df)
     else:
-        return "No data available for the selected stock and date range."
-
-# When the user clicks the submit button
-if st.button('Submit'):
-    result_df = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target)
-    
-    if isinstance(result_df, pd.DataFrame):
-        # Transpose the DataFrame for vertical display
-        transposed_df = result_df.T
-        # You only need to rename columns if you have more than one row in your DataFrame
-        # Since you are only displaying one row, the column name after transposing will be that row index
-        
-        # Apply conditional formatting
-        def color_target_reached(val):
-            color = 'green' if val == 'نعم' else 'red'
-            return f'color: {color};'  # Use 'color' for font color; 'background-color' for background
-
-        # If the Streamlit version supports displaying styled DataFrames directly, you can use this:
-        st.dataframe(transposed_df.style.applymap(color_target_reached, subset=['تحقق الهدف ؟']))
-        # Note that 'subset' refers to the DataFrame's columns after transposition in this case
-    else:
-        st.error(result_df)
+        st.error('Company not found in the ticker list.')
 
 # Links and advertisements
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
