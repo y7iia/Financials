@@ -279,7 +279,7 @@ if st.button('تقييم التوصية'):
             st.error(error_message)
         else:
             # Display results
-            st.dataframe(result_df)
+            st.dataframe(result_df.T)
     else:
         st.error('لم يتم العثور على الشركة في قائمة الرموز.')
 
