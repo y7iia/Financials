@@ -225,6 +225,8 @@ companies = {
 
 # Streamlit interface elements
 st.title('تقييم توصيات المحللين')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
+st.markdown(' برنامج لتقييم توصيات المحللين السابقة: هل تحققت التوصية؟ وكم العائد منها')
 
 # Select company
 company_name = st.selectbox('اختر الشركة:', options=[""] + list(companies.values()))
