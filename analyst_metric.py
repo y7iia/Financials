@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 
 # Create a dictionary of ticker symbols to company names
 companies = {
- " " : " " ,
  '1010.SR': 'الرياض',
  '1020.SR': 'الجزيرة',
  '1030.SR': 'استثمار',
@@ -223,11 +222,12 @@ companies = {
  '8310.SR': 'أمانة للتأمين ',
  '8311.SR': 'عناية'}
 
+
 # Streamlit interface elements
 st.title('تقييم توصيات المحللين')
 
 # Select company
-company_name = st.selectbox('اختر الشركة:', options=list(companies.values()))
+company_name = st.selectbox('اختر الشركة:', options=[""] + list(companies.values()))
 
 # Input fields for the analyst information
 analyst_date = st.date_input('أدخل تاريخ التوصية:')
@@ -253,7 +253,7 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price, analyst_n
             # Create a results DataFrame
             result_data = {
                 'أسم المحلل': analyst_name,
-                'تاريخ التوصية': target_date,
+                'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
                 'السهم': company_name,
                 'الهدف': target_price,
                 'تحقق الهدف ؟': 'نعم' if highest_price >= target_price else 'لا',
@@ -281,15 +281,16 @@ for ticker, name in companies.items():
 # Submit button
 if st.button('تقييم التوصية'):
     if selected_ticker:
-        error_message, result_df = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target)
-        if error_message:
-            st.error(error_message)
-        else:
+        # Pass all the required arguments to the function
+        result = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target, analyst_name, company_name)
+        if isinstance(result, pd.DataFrame):
             # Display results
-            st.dataframe(result_df.T)
+            st.dataframe(result.T)
+        else:
+            # Display error message
+            st.error(result)
     else:
         st.error('لم يتم العثور على الشركة في قائمة الرموز.')
-
 
 # Links and advertisements
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
