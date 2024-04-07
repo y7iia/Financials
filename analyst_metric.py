@@ -256,7 +256,7 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             'أسم المحلل': analyst_name,
             'تاريخ التوصية': target_date,
             'السهم': company_name,
-            'الهدف': target_price,
+            'الهدف': round(target_price, 2),
             'تحقق الهدف ؟': 'نعم' if highest_price >= target_price else 'لا',
             'أعلى سعر وصل له السهم و التاريخ': f"{highest_price:.2f} ({highest_date})",
             'أعلى سعر وصل له السهم (مع العائد)': f"{highest_price:.2f} ({highest_return:.2f}%)",
