@@ -235,34 +235,41 @@ analyst_name = st.text_input('أدخل اسم المحلل (اختياري):')
 analyst_target = st.number_input('أدخل السعر المستهدف من المحلل:', min_value=0.0, format='%f')
 
 # Function to fetch stock data and evaluate the analyst's recommendation
-def evaluate_analyst_recommendation(ticker, target_date, target_price):
+def evaluate_analyst_recommendation(ticker, target_date, target_price, analyst_name, company_name):
     try:
-        # Define the end date as 30 days after the target date
-        end_date = target_date + timedelta(days=30)
-        
         # Fetch historical stock data
-        stock_data = yf.download(ticker, start=target_date.isoformat(), end=end_date.isoformat())
+        stock_data = yf.download(ticker, start=target_date)
+        
+        if not stock_data.empty:
+            # Calculate highest and lowest price and the return since the target date
+            highest_price = stock_data['High'].max()
+            lowest_price = stock_data['Low'].min()
+            highest_date = stock_data['High'].idxmax().strftime('%Y-%m-%d')
+            lowest_date = stock_data['Low'].idxmin().strftime('%Y-%m-%d')
+            initial_price = stock_data.iloc[0]['Open']
+            highest_return = ((highest_price - initial_price) / initial_price) * 100
+            lowest_return = ((lowest_price - initial_price) / initial_price) * 100
 
-        if stock_data.empty:
-            return f"لا توجد بيانات متاحة لـ {ticker} من {target_date} إلى {end_date}.", None
-
-        # Calculate whether the target price was reached
-        high_price = stock_data['High'].max()
-        target_reached = high_price >= target_price
-
-        # Prepare the DataFrame to display
-        result_df = pd.DataFrame({
-            'اسم المحلل': [analyst_name],
-            'تاريخ التوصية': [target_date],
-            'السعر المستهدف': [target_price],
-            'أعلى سعر خلال 30 يوم': [high_price],
-            'هل تحقق الهدف': ['نعم' if target_reached else 'لا']
-        })
-
-        return None, result_df
-
+            # Create a results DataFrame
+            result_data = {
+                'أسم المحلل': analyst_name,
+                'تاريخ التوصية': target_date,
+                'السهم': company_name,
+                'الهدف': target_price,
+                'تحقق الهدف ؟': 'نعم' if highest_price >= target_price else 'لا',
+                'أعلى سعر وصل له السهم و التاريخ': f"{highest_price} ({highest_date})",
+                'أعلى سعر وصل له السهم (مع العائد)': f"{highest_price} ({highest_return:.2f}%)",
+                'أقل سعر وصل له السهم( مع العائد)': f"{lowest_price} ({lowest_return:.2f}%)"
+            }
+            return pd.DataFrame([result_data])
+        else:
+            return "No data available for the selected stock and date range."
+    
     except Exception as e:
-        return str(e), None
+        # You can log the exception message if needed
+        # print(f"An error occurred: {e}")
+        return f"An error occurred while fetching the data: {e}"
+
 
 # Find the ticker symbol based on the selected company name
 selected_ticker = None
