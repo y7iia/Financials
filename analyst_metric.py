@@ -272,15 +272,18 @@ if st.button('Submit'):
     
     if isinstance(result_df, pd.DataFrame):
         # Transpose the DataFrame for vertical display
-        result_df = result_df.T
+        transposed_df = result_df.T
+        transposed_df.columns = ['النتائج']  # Name the single column after transposition
 
         # Apply conditional formatting
         def color_target_reached(val):
             color = 'green' if val == 'نعم' else 'red'
             return f'background-color: {color}'
 
-        # Display the transposed DataFrame with styles
-        st.dataframe(result_df.style.applymap(color_target_reached, subset=['تحقق الهدف ؟']))
+        # Since we cannot display styled DataFrame directly, we convert it to HTML
+        # and then use Streamlit's `st.markdown` with `unsafe_allow_html=True`
+        styled_html = transposed_df.style.applymap(color_target_reached, subset=pd.IndexSlice['تحقق الهدف ؟', :]).render()
+        st.markdown(styled_html, unsafe_allow_html=True)
     else:
         st.error(result_df)
 
