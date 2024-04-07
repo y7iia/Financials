@@ -221,7 +221,6 @@ companies = {'1010.SR': 'الرياض',
  '8310.SR': 'أمانة للتأمين ',
  '8311.SR': 'عناية'}
 
-
 # Streamlit application layout
 st.title('دقة توقعات المحللين')
 st.markdown('@telmisany - برمجة يحيى التلمساني')
@@ -243,25 +242,43 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
     stock_data = yf.download(ticker, start=target_date)
     
     if not stock_data.empty:
-        # Calculate the highest price and the return since the target date
+        # Calculate highest and lowest price and the return since the target date
         highest_price = stock_data['High'].max()
+        lowest_price = stock_data['Low'].min()
         highest_date = stock_data['High'].idxmax().strftime('%Y-%m-%d')
+        lowest_date = stock_data['Low'].idxmin().strftime('%Y-%m-%d')
         initial_price = stock_data.iloc[0]['Open']
-        return_percentage = ((highest_price - initial_price) / initial_price) * 100
+        highest_return = ((highest_price - initial_price) / initial_price) * 100
+        lowest_return = ((lowest_price - initial_price) / initial_price) * 100
 
-        # Check if the analyst's target was reached
-        if highest_price >= target_price:
-            return (f"Analyst target was reached on {highest_date}, "
-                    f"the highest return was {return_percentage:.2f}%.")
-        else:
-            return "Analyst target was not reached."
+        # Create a results DataFrame
+        result_data = {
+            'أسم المحلل': analyst_name,
+            'تاريخ التوصية': target_date,
+            'السهم': company_name,
+            'الهدف': target_price,
+            'تحقق الهدف ؟': 'نعم' if highest_price >= target_price else 'لا',
+            'أعلى سعر وصل له السهم و التاريخ': f"{highest_price} ({highest_date})",
+            'أعلى سعر وصل له السهم (مع العائد)': f"{highest_price} ({highest_return:.2f}%)",
+            'أقل سعر وصل له السهم( مع العائد)': f"{lowest_price} ({lowest_return:.2f}%)"
+        }
+        return pd.DataFrame([result_data])
     else:
         return "No data available for the selected stock and date range."
 
 # When the user clicks the submit button
 if st.button('Submit'):
-    result = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target)
-    st.success(result)
+    result_df = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target)
+    
+    if isinstance(result_df, pd.DataFrame):
+        # Apply conditional formatting
+        def color_target_reached(val):
+            color = 'green' if val == 'نعم' else 'red'
+            return f'background-color: {color}'
+
+        st.dataframe(result_df.style.applymap(color_target_reached, subset=['تحقق الهدف ؟']))
+    else:
+        st.error(result_df)
 
 # Links and advertisements
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
@@ -271,4 +288,4 @@ st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
 # Buy me coffee AD
 image_url = 'https://drive.google.com/uc?id=1L7hg_kGgWZmbNJvDbWGWkfFcfDXawR_U'
 link_url = 'https://www.buymeacoffee.com/y7iia'
-st.markdown(f'<a href="{link_url}"><img src="{image_url}" alt="Buy me a coffee" width="200"/></a>', unsafe_allow_html=True)
+st.markdown(f'<a href="{link"{link_url}"><img src="{image_url}" alt="Buy me a coffee" width="200"/></a>', unsafe_allow_html=True)
