@@ -271,11 +271,15 @@ if st.button('Submit'):
     result_df = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target)
     
     if isinstance(result_df, pd.DataFrame):
+        # Transpose the DataFrame for vertical display
+        result_df = result_df.T
+
         # Apply conditional formatting
         def color_target_reached(val):
             color = 'green' if val == 'نعم' else 'red'
             return f'background-color: {color}'
 
+        # Display the transposed DataFrame with styles
         st.dataframe(result_df.style.applymap(color_target_reached, subset=['تحقق الهدف ؟']))
     else:
         st.error(result_df)
