@@ -222,77 +222,73 @@ companies = {
  '8310.SR': 'أمانة للتأمين ',
  '8311.SR': 'عناية'}
 
-
-# Streamlit interface elements
-st.title('تقييم توصيات المحللين')
-st.markdown(' @telmisany - برمجة يحيى التلمساني')
-st.markdown(' برنامج يتيح للمستخدمين تقييم أداء توصيات المحللين الماليين عبر تحليل بيانات الأسهم التاريخية. يُمكن للمستخدم اختيار الشركة المُدرَجة في السوق السعودي، تحديد تاريخ التوصية، وإدخال السعر المستهدف الذي حدده المحلل. بعد ذلك، يقوم البرنامج بجلب بيانات السهم وتحديد ما إذا كان السعر قد وصل للهدف المُحدد ويُقدم تقريرًا يشمل العائد الأقصى والأدنى منذ تاريخ التوصية.')
-
-# Select company
-company_name = st.selectbox('اختر الشركة:', options=[""] + list(companies.values()))
-
-# Input fields for the analyst information
-analyst_date = st.date_input('أدخل تاريخ التوصية:')
-analyst_name = st.text_input('أدخل اسم المحلل (اختياري):')
-analyst_target = st.number_input('أدخل السعر المستهدف من المحلل:', min_value=0.0, format='%f')
-
 # Function to fetch stock data and evaluate the analyst's recommendation
 def evaluate_analyst_recommendation(ticker, target_date, target_price, analyst_name, company_name):
     try:
-        # Fetch historical stock data
-        stock_data = yf.download(ticker, start=target_date)
-        
+        # Define the end date as one year from the target date
+        end_date = target_date + timedelta(days=365)
+
+        # Fetch historical stock data from target date to end date
+        stock_data = yf.download(ticker, start=target_date, end=end_date)
+
         if not stock_data.empty:
             # Calculate highest and lowest price and the return since the target date
             highest_price = stock_data['High'].max()
             lowest_price = stock_data['Low'].min()
-            highest_date = stock_data['High'].idxmax().strftime('%Y-%m-%d')
-            lowest_date = stock_data['Low'].idxmin().strftime('%Y-%m-%d')
+            highest_date = stock_data['High'].idxmax()
+            lowest_date = stock_data['Low'].idxmin()
             initial_price = stock_data.iloc[0]['Open']
             highest_return = ((highest_price - initial_price) / initial_price) * 100
             lowest_return = ((lowest_price - initial_price) / initial_price) * 100
 
+            # Check if and when the target was achieved within the year
+            target_achieved = stock_data['High'] >= target_price
+            if target_achieved.any():
+                target_achieved_date = stock_data[target_achieved].index[0]
+                days_to_target = (target_achieved_date - target_date).days
+                target_reached = 'نعم'
+            else:
+                target_achieved_date = None
+                days_to_target = None
+                target_reached = 'لا'
+
             # Create a results DataFrame
             result_data = {
-                'أسم المحلل': analyst_name,
-                'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
-                'السهم': company_name,
-                'الهدف': round(target_price,2),
-                'تحقق الهدف ؟': 'نعم' if highest_price >= target_price else 'لا',
-                'أعلى سعر وصل له السهم و التاريخ': f"{highest_price:.2f} ({highest_date})",
-                'أعلى سعر وصل له السهم (مع العائد)': f"{highest_price:.2f} ({highest_return:.2f}%)",
-                'أقل سعر وصل له السهم( مع العائد)': f"{lowest_price:.2f} ({lowest_return:.2f}%)"
+                'اسم المحلل': analyst_name,
+                'اسم الشركة': company_name,
+                'السعر المستهدف': target_price,
+                'تحقق الهدف ؟': target_reached,
+                'أعلى سعر تم الوصول إليه': highest_price,
+                'تاريخ الأعلى سعر': highest_date.strftime('%Y-%m-%d'),
+                'العائد إلى الأعلى سعر %': highest_return,
+                'أدنى سعر تم الوصول إليه': lowest_price,
+                'تاريخ الأدنى سعر': lowest_date.strftime('%Y-%m-%d'),
+                'العائد إلى الأدنى سعر %': lowest_return,
+                'عدد الأيام لتحقيق الهدف': days_to_target if days_to_target is not None else "لم يتحقق الهدف خلال السنة"
             }
             return pd.DataFrame([result_data])
         else:
             return "No data available for the selected stock and date range."
-    
     except Exception as e:
-        # You can log the exception message if needed
-        # print(f"An error occurred: {e}")
-        return f"An error occurred while fetching the data: {e}"
+        return f"An error occurred: {e}"
 
+# Streamlit interface code
+st.title('تقييم توصيات المحللين الفنية')
+st.sidebar.header('مدخلات المستخدم')
 
-# Find the ticker symbol based on the selected company name
-selected_ticker = None
-for ticker, name in companies.items():
-    if name == company_name:
-        selected_ticker = ticker
-        break
+# User inputs
+ticker = st.sidebar.text_input('رمز السهم', value='1010.SR')
+target_date = st.sidebar.date_input('تاريخ التوصية', datetime.now())
+target_price = st.sidebar.number_input('السعر المستهدف', value=100.0)
+analyst_name = st.sidebar.text_input('اسم المحلل')
+company_name = companies.get(ticker, 'Unknown Company')
 
-# Submit button
-if st.button('تقييم التوصية'):
-    if selected_ticker:
-        # Pass all the required arguments to the function
-        result = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target, analyst_name, company_name)
-        if isinstance(result, pd.DataFrame):
-            # Display results
-            st.dataframe(result.T)
-        else:
-            # Display error message
-            st.error(result)
+if st.sidebar.button('تقييم التوصية'):
+    result = evaluate_analyst_recommendation(ticker, target_date, target_price, analyst_name, company_name)
+    if isinstance(result, pd.DataFrame):
+        st.write(result)
     else:
-        st.error('لم يتم العثور على الشركة في قائمة الرموز.')
+        st.error(result)
 
 # Links and advertisements
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
