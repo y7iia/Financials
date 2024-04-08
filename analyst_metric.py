@@ -290,7 +290,7 @@ analyst_target = st.number_input('أدخل السعر المستهدف من ال
 
 
 
-if st.sidebar.button('تقييم التوصية'):
+if st.button('تقييم التوصية'):
     result = evaluate_analyst_recommendation(ticker, target_date, target_price, analyst_name, company_name)
     if isinstance(result, pd.DataFrame):
         st.write(result)
