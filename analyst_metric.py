@@ -280,15 +280,15 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
                 'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
                 'السعر المستهدف': round(target_price, 2),
                 'هل تم تحقيق الهدف': target_reached,
+                'تاريخ تحقيق الهدف': target_achieved_date_str,
+                'عدد الأيام لتحقيق الهدف': days_to_target,
                 'أعلى سعر تم الوصول إليه': f"{highest_price:.2f}",
                 'تاريخ أعلى سعر': highest_date.strftime('%Y-%m-%d'),
-                'نسبة العائد الأعلى': f"{highest_return:.2f}%",
+                'أعلى عائد': f"{highest_return:.2f}%",
                 'أقل سعر تم الوصول إليه': f"{lowest_price:.2f}",
                 'تاريخ أقل سعر': lowest_date.strftime('%Y-%m-%d'),
-                'نسبة العائد الأدنى': f"{lowest_return:.2f}%",
-                'تاريخ تحقيق الهدف': target_achieved_date_str,
-                'عدد الأيام لتحقيق الهدف': days_to_target
-            }
+                'أقل عائد': f"{lowest_return:.2f}%"
+                         }
             return result_data
         else:
             return "No data available for the selected stock and date range."
