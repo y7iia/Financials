@@ -274,14 +274,19 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price, analyst_n
 
 # Streamlit interface code
 st.title('تقييم توصيات المحللين الفنية')
-st.sidebar.header('مدخلات المستخدم')
+# Streamlit interface elements
+st.title('تقييم توصيات المحللين')
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
+st.markdown(' برنامج يتيح للمستخدمين تقييم أداء توصيات المحللين الماليين عبر تحليل بيانات الأسهم التاريخية. يُمكن للمستخدم اختيار الشركة المُدرَجة في السوق السعودي، تحديد تاريخ التوصية، وإدخال السعر المستهدف الذي حدده المحلل. بعد ذلك، يقوم البرنامج بجلب بيانات السهم وتحديد ما إذا كان السعر قد وصل للهدف المُحدد ويُقدم تقريرًا يشمل العائد الأقصى والأدنى منذ تاريخ التوصية.')
+
+
 
 # User inputs
-ticker = st.text_input('رمز السهم', value='1010.SR')
-target_date = st.date_input('تاريخ التوصية', datetime.now())
-target_price = st.number_input('السعر المستهدف', value=100.0)
-analyst_name = st.text_input('اسم المحلل')
-company_name = companies.get(ticker, 'Unknown Company')
+company_name = st.selectbox('اختر الشركة:', options=[""] + list(companies.values()))
+# Input fields for the analyst information
+analyst_date = st.date_input('أدخل تاريخ التوصية:')
+analyst_name = st.text_input('أدخل اسم المحلل (اختياري):')
+analyst_target = st.number_input('أدخل السعر المستهدف من المحلل:', min_value=0.0, format='%f')
 
 
 
