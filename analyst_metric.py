@@ -235,10 +235,6 @@ analyst_date = st.date_input('أدخل تاريخ التوصية:')
 analyst_name = st.text_input('أدخل اسم المحلل (اختياري):')
 analyst_target = st.number_input('أدخل السعر المستهدف من المحلل:', min_value=0.0, format='%f')
 
-# Function to fetch stock data and evaluate the analyst's recommendation
-from datetime import datetime, timedelta
-import yfinance as yf
-
 def evaluate_analyst_recommendation(ticker, target_date, target_price):
     try:
         # Ensure target_date is a datetime.date object
@@ -273,7 +269,7 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             else:
                 target_achieved_date_str = ' '
                 days_to_target = ' '
-                target_reached = ' '
+                target_reached = 'No'
 
             # Create a results dictionary with keys in Arabic
             result_data = {
