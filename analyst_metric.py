@@ -248,8 +248,8 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             # Calculate highest and lowest price since the target date
             highest_price = stock_data['High'].max()
             lowest_price = stock_data['Low'].min()
-            highest_date = stock_data['High'].idxmax().strftime('%Y-%m-%d')
-            lowest_date = stock_data['Low'].idxmin().strftime('%Y-%m-%d')
+            highest_date = stock_data['High'].idxmax()
+            lowest_date = stock_data['Low'].idxmin()
             initial_price = stock_data.iloc[0]['Open']
             highest_return = ((highest_price - initial_price) / initial_price) * 100
             lowest_return = ((lowest_price - initial_price) / initial_price) * 100
@@ -257,12 +257,13 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             # Check if the target was achieved within the year
             target_achieved = stock_data['High'] >= target_price
             if target_achieved.any():
-                target_achieved_date = stock_data.loc[target_achieved].index[0].strftime('%Y-%m-%d')
+                target_achieved_date = stock_data.loc[target_achieved].index[0]
                 days_to_target = (target_achieved_date - target_date).days
                 target_reached = 'نعم'
+                target_achieved_date = target_achieved_date.strftime('%Y-%m-%d')
             else:
-                target_achieved_date = ' '
-                days_to_target = ' '
+                target_achieved_date = 'N/A'
+                days_to_target = 'N/A'
                 target_reached = 'لا'
 
             # Create a results dictionary
@@ -271,10 +272,10 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
                 'السعر المستهدف': round(target_price, 2),
                 'تحقق الهدف': target_reached,
                 'أعلى سعر وصل له السهم': f"{highest_price:.2f}",
-                'تاريخ أعلى سعر': highest_date,
+                'تاريخ أعلى سعر': highest_date.strftime('%Y-%m-%d'),
                 'أعلى عائد %': f"{highest_return:.2f}%",
                 'أدنى سعر وصل له السهم': f"{lowest_price:.2f}",
-                'تاريخ أدنى سعر': lowest_date,
+                'تاريخ أدنى سعر': lowest_date.strftime('%Y-%m-%d'),
                 'أدنى عائد %': f"{lowest_return:.2f}%",
                 'تاريخ تحقق الهدف': target_achieved_date,
                 'عدد الأيام لتحقيق الهدف': days_to_target
@@ -284,7 +285,6 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             return "No data available for the selected stock and date range."
     except Exception as e:
         return f"An error occurred: {e}"
-
 
 # Find the ticker symbol based on the selected company name
 selected_ticker = None
