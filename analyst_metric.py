@@ -261,8 +261,8 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
                 days_to_target = (target_achieved_date - target_date).days
                 target_reached = 'نعم'
             else:
-                target_achieved_date = 'N/A'
-                days_to_target = 'N/A'
+                target_achieved_date = ' '
+                days_to_target = ' '
                 target_reached = 'لا'
 
             # Create a results dictionary
