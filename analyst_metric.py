@@ -276,17 +276,17 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
 
             # Create a results dictionary
             result_data = {
-                'Recommendation Date': target_date.strftime('%Y-%m-%d'),
-                'Target Price': round(target_price, 2),
-                'Target Achieved': target_reached,
-                'Highest Price Reached': f"{highest_price:.2f}",
-                'Date of Highest Price': highest_date.strftime('%Y-%m-%d'),
-                'Highest Return %': f"{highest_return:.2f}%",
-                'Lowest Price Reached': f"{lowest_price:.2f}",
-                'Date of Lowest Price': lowest_date.strftime('%Y-%m-%d'),
-                'Lowest Return %': f"{lowest_return:.2f}%",
-                'Date Target Achieved': target_achieved_date if target_reached == 'Yes' else 'N/A',
-                'Days to Target': days_to_target
+                'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
+                'السعر المستهدف': round(target_price, 2),
+                'هل تم تحقيق الهدف': target_reached,
+                'أعلى سعر تم الوصول إليه': f"{highest_price:.2f}",
+                'تاريخ أعلى سعر': highest_date.strftime('%Y-%m-%d'),
+                'نسبة العائد الأعلى': f"{highest_return:.2f}%",
+                'أقل سعر تم الوصول إليه': f"{lowest_price:.2f}",
+                'تاريخ أقل سعر': lowest_date.strftime('%Y-%m-%d'),
+                'نسبة العائد الأدنى': f"{lowest_return:.2f}%",
+                'تاريخ تحقيق الهدف': target_achieved_date_str,
+                'عدد الأيام لتحقيق الهدف': days_to_target
             }
             return result_data
         else:
