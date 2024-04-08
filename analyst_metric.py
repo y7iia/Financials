@@ -296,17 +296,19 @@ for ticker, name in companies.items():
 # Submit button
 if st.button('تقييم التوصية'):
     if selected_ticker:
-        # Pass all the required arguments to the function
-        result = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target, analyst_name, company_name)
-        if isinstance(result, pd.DataFrame):
+        # Pass only the required arguments to the function
+        result = evaluate_analyst_recommendation(selected_ticker, analyst_date, analyst_target)
+        if isinstance(result, dict):
+            # Create a DataFrame from the results dictionary
+            result_df = pd.DataFrame.from_records([result])
             # Display results
-            st.dataframe(result.T)
+            st.dataframe(result_df)
         else:
             # Display error message
             st.error(result)
     else:
         st.error('لم يتم العثور على الشركة في قائمة الرموز.')
-
+     
 
 # Links and advertisements
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
