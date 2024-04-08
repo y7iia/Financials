@@ -302,7 +302,7 @@ if st.button('تقييم التوصية'):
             # Create a DataFrame from the results dictionary
             result_df = pd.DataFrame.from_records([result])
             # Display results
-            st.dataframe(result_df)
+            st.dataframe(result_df.T)
         else:
             # Display error message
             st.error(result)
