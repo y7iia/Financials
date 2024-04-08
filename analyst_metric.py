@@ -277,11 +277,13 @@ st.title('تقييم توصيات المحللين الفنية')
 st.sidebar.header('مدخلات المستخدم')
 
 # User inputs
-ticker = st.sidebar.text_input('رمز السهم', value='1010.SR')
-target_date = st.sidebar.date_input('تاريخ التوصية', datetime.now())
-target_price = st.sidebar.number_input('السعر المستهدف', value=100.0)
-analyst_name = st.sidebar.text_input('اسم المحلل')
+ticker = st.text_input('رمز السهم', value='1010.SR')
+target_date = st.date_input('تاريخ التوصية', datetime.now())
+target_price = st.number_input('السعر المستهدف', value=100.0)
+analyst_name = st.text_input('اسم المحلل')
 company_name = companies.get(ticker, 'Unknown Company')
+
+
 
 if st.sidebar.button('تقييم التوصية'):
     result = evaluate_analyst_recommendation(ticker, target_date, target_price, analyst_name, company_name)
