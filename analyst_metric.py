@@ -250,7 +250,7 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
         # Define the end date as one year from the target date
         end_date = target_date + timedelta(days=365)
 
-        # Fetch historical stock data from target date to end date
+        # Fetch historical stock data from the given date range
         stock_data = yf.download(ticker, start=target_date, end=end_date)
 
         if not stock_data.empty:
@@ -263,18 +263,19 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             highest_return = ((highest_price - initial_price) / initial_price) * 100
             lowest_return = ((lowest_price - initial_price) / initial_price) * 100
 
-            # Check if the target was achieved within the year
+            # Check if the target price has been achieved within the year
             target_achieved = stock_data['High'] >= target_price
             if target_achieved.any():
-                target_achieved_date = stock_data[target_achieved].index[0].to_pydatetime().date()
+                target_achieved_date = stock_data[target_achieved].index[0].date()
                 days_to_target = (target_achieved_date - target_date).days
                 target_reached = 'Yes'
+                target_achieved_date_str = target_achieved_date.strftime('%Y-%m-%d')
             else:
-                target_achieved_date = 'N/A'
-                days_to_target = 'N/A'
-                target_reached = 'No'
+                target_achieved_date_str = ' '
+                days_to_target = ' '
+                target_reached = ' '
 
-            # Create a results dictionary
+            # Create a results dictionary with keys in Arabic
             result_data = {
                 'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
                 'السعر المستهدف': round(target_price, 2),
@@ -293,7 +294,6 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             return "No data available for the selected stock and date range."
     except Exception as e:
         return f"An error occurred: {e}"
-     
 
 # Find the ticker symbol based on the selected company name
 selected_ticker = None
