@@ -277,6 +277,7 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
 
             # Create a results dictionary with keys in Arabic
             result_data = {
+                'أسم المحلل' : analyst_name, 
                 'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
                 'السعر المستهدف': round(target_price, 2),
                 'هل تم تحقيق الهدف': target_reached,
