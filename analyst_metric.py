@@ -236,8 +236,17 @@ analyst_name = st.text_input('أدخل اسم المحلل (اختياري):')
 analyst_target = st.number_input('أدخل السعر المستهدف من المحلل:', min_value=0.0, format='%f')
 
 # Function to fetch stock data and evaluate the analyst's recommendation
+from datetime import datetime, timedelta
+import yfinance as yf
+
 def evaluate_analyst_recommendation(ticker, target_date, target_price):
     try:
+        # Ensure target_date is a datetime.date object
+        if isinstance(target_date, datetime):
+            target_date = target_date.date()
+        elif not isinstance(target_date, date):
+            raise ValueError("target_date must be a datetime.date or datetime.datetime object")
+
         # Define the end date as one year from the target date
         end_date = target_date + timedelta(days=365)
 
@@ -245,7 +254,7 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
         stock_data = yf.download(ticker, start=target_date, end=end_date)
 
         if not stock_data.empty:
-            # Calculate highest and lowest price since the target date
+            # Calculate the highest and lowest price since the target date
             highest_price = stock_data['High'].max()
             lowest_price = stock_data['Low'].min()
             highest_date = stock_data['High'].idxmax()
@@ -257,34 +266,34 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
             # Check if the target was achieved within the year
             target_achieved = stock_data['High'] >= target_price
             if target_achieved.any():
-                target_achieved_date = stock_data.loc[target_achieved].index[0]
+                target_achieved_date = stock_data[target_achieved].index[0].to_pydatetime().date()
                 days_to_target = (target_achieved_date - target_date).days
-                target_reached = 'نعم'
-                target_achieved_date = target_achieved_date.strftime('%Y-%m-%d')
+                target_reached = 'Yes'
             else:
                 target_achieved_date = 'N/A'
                 days_to_target = 'N/A'
-                target_reached = 'لا'
+                target_reached = 'No'
 
             # Create a results dictionary
             result_data = {
-                'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
-                'السعر المستهدف': round(target_price, 2),
-                'تحقق الهدف': target_reached,
-                'أعلى سعر وصل له السهم': f"{highest_price:.2f}",
-                'تاريخ أعلى سعر': highest_date.strftime('%Y-%m-%d'),
-                'أعلى عائد %': f"{highest_return:.2f}%",
-                'أدنى سعر وصل له السهم': f"{lowest_price:.2f}",
-                'تاريخ أدنى سعر': lowest_date.strftime('%Y-%m-%d'),
-                'أدنى عائد %': f"{lowest_return:.2f}%",
-                'تاريخ تحقق الهدف': target_achieved_date,
-                'عدد الأيام لتحقيق الهدف': days_to_target
+                'Recommendation Date': target_date.strftime('%Y-%m-%d'),
+                'Target Price': round(target_price, 2),
+                'Target Achieved': target_reached,
+                'Highest Price Reached': f"{highest_price:.2f}",
+                'Date of Highest Price': highest_date.strftime('%Y-%m-%d'),
+                'Highest Return %': f"{highest_return:.2f}%",
+                'Lowest Price Reached': f"{lowest_price:.2f}",
+                'Date of Lowest Price': lowest_date.strftime('%Y-%m-%d'),
+                'Lowest Return %': f"{lowest_return:.2f}%",
+                'Date Target Achieved': target_achieved_date if target_reached == 'Yes' else 'N/A',
+                'Days to Target': days_to_target
             }
             return result_data
         else:
             return "No data available for the selected stock and date range."
     except Exception as e:
         return f"An error occurred: {e}"
+     
 
 # Find the ticker symbol based on the selected company name
 selected_ticker = None
