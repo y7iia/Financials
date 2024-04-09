@@ -252,12 +252,16 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
         if not stock_data.empty:
             # Calculate the highest and lowest price since the target date
             highest_price = stock_data['High'].max()
+            initial_price = stock_data.iloc[0]['Close']
             lowest_price = stock_data['Low'].min()
             highest_date = stock_data['High'].idxmax()
             lowest_date = stock_data['Low'].idxmin()
             initial_price = stock_data.iloc[0]['Open']
             highest_return = ((highest_price - initial_price) / initial_price) * 100
             lowest_return = ((lowest_price - initial_price) / initial_price) * 100
+         
+            # Calculate the percentage change between the initial price and the target price
+            percent_change = ((target_price - initial_price) / initial_price) * 100
 
             # Check if the target price has been achieved within the year
             target_achieved = stock_data['High'] >= target_price
@@ -276,7 +280,8 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
                 'الشركة' : company_name,
                 'أسم المحلل' : analyst_name, 
                 'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
-                'السعر المستهدف': round(target_price, 2),
+                'السعر وقت التوصية' : initial_price ,
+                'السعر المستهدف': f"{target_price:.2f} ({percent_change:.2f}%)",
                 'هل تم تحقيق الهدف': target_reached,
                 'تاريخ تحقيق الهدف': target_achieved_date_str,
                 'عدد الأيام لتحقيق الهدف': days_to_target,
