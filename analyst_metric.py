@@ -280,7 +280,7 @@ def evaluate_analyst_recommendation(ticker, target_date, target_price):
                 'الشركة' : company_name,
                 'أسم المحلل' : analyst_name, 
                 'تاريخ التوصية': target_date.strftime('%Y-%m-%d'),
-                'السعر وقت التوصية' : initial_price ,
+                'السعر وقت التوصية' : initial_price:.2f ,
                 'السعر المستهدف': f"{target_price:.2f} ({percent_change:.2f}%)",
                 'هل تم تحقيق الهدف': target_reached,
                 'تاريخ تحقيق الهدف': target_achieved_date_str,
