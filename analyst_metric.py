@@ -4,8 +4,7 @@ import yfinance as yf
 from datetime import datetime, timedelta , date
 
 # Create a dictionary of ticker symbols to company names
-companies = {
- '1010.SR': 'الرياض',
+companies = {'1010.SR': 'الرياض',
  '1020.SR': 'الجزيرة',
  '1030.SR': 'استثمار',
  '1050.SR': 'السعودي الفرنسي',
@@ -220,7 +219,8 @@ companies = {
  '8280.SR': 'العالمية',
  '8300.SR': 'الوطنية',
  '8310.SR': 'أمانة للتأمين ',
- '8311.SR': 'عناية'}
+ '8311.SR': 'عناية'
+            }
 
 # Streamlit interface elements
 st.title('تقييم توصيات المحللين')
