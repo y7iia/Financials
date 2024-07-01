@@ -44,9 +44,12 @@ st.markdown("""
 st.markdown('<div class="title">تطبيقات بايثون لأسواق الأسهم</div>', unsafe_allow_html=True)
 st.markdown('<div class="description">أدوات مالية متكاملة للمستثمرين في أسواق المال، تساعدك على اتخاذ قرارات استثمارية ذكية ومدروسة</div>', unsafe_allow_html=True)
 
-# Dummy profile picture
+# profile picture
 profile_pic_url = "https://pbs.twimg.com/profile_images/1689517781669007360/oIga1frq_400x400.jpg"
 st.markdown(f'<img src="{profile_pic_url}" alt="Profile Picture" class="profile-pic">', unsafe_allow_html=True)
+st.markdown(' @telmisany - برمجة يحيى التلمساني')
+# Add a hyperlink to your Twitter account
+st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
 
 # Button grid
 app_links = [
