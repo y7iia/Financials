@@ -1,3 +1,5 @@
+import streamlit as st
+
 # Custom CSS for visual enhancements
 st.markdown("""
     <style>
