@@ -39,20 +39,20 @@ st.markdown('<div class="description">Welcome to the dashboard! Click on any but
 
 # Button grid
 app_links = [
-    ("App 1", "https://dummy-link1.com"),
-    ("App 2", "https://dummy-link2.com"),
-    ("App 3", "https://dummy-link3.com"),
-    ("App 4", "https://dummy-link4.com"),
-    ("App 5", "https://dummy-link5.com"),
-    ("App 6", "https://dummy-link6.com"),
-    ("App 7", "https://dummy-link7.com"),
-    ("App 8", "https://dummy-link8.com"),
-    ("App 9", "https://dummy-link9.com"),
-    ("App 10", "https://dummy-link10.com"),
+    ("الأرباح المبقاة", "https://retainedincome.streamlit.app/"),
+    ("حاسبة الدعوم والمقاومات", "https://support-resistance-levels.streamlit.app/"),
+    ("توصيات المحللين", "https://tickerstargets.streamlit.app/#analyst-recommendations"),
+    ("القيمة العادلة للأسهم بطريقة جراهام", "https://otherfinancials-z8jg3khd9ka2igdzqjvxbw.streamlit.app/"),
+    ("القوائم المالية (غير معرب)", "https://tasi-financials.streamlit.app/"),
+    ("النتائج المالية", "https://net-income.streamlit.app/"),
+    ("التوزيعات النقدية", "https://tasi-dividents.streamlit.app/"),
+    ("نسبة تغير أسعار الأسهم من قاع كورونا 2020", "https://corona-return.streamlit.app/"),
+    ("تقييم توصيات المحللين", "https://corona-return.streamlit.app/"),
+    ("المحلل الرقمي (قريبا)", ""),
 ]
 
-# Indicate new apps (example: App 4 and App 9 are new)
-new_apps = ["App 4", "App 9"]
+# Indicate new apps (separated by ,)
+new_apps = ["المحلل الرقمي (قريبا)"]
 
 # Create a 2x5 grid using Streamlit's columns
 columns = st.columns(2)
