@@ -39,8 +39,8 @@ st.markdown('<div class="description">أدوات مالية متكاملة لل�
 
 # Button grid
 app_links = [
-    ("الأرباح المبقاة", "https://retainedincome.streamlit.app/"),
-    ("حاسبة الدعوم والمقاومات", "https://support-resistance-levels.streamlit.app/"),
+    ("الأرباح المبقاة للشركات", "https://retainedincome.streamlit.app/"),
+    ("حاسبة دعوم ومقاومات الأسهم", "https://support-resistance-levels.streamlit.app/"),
     ("توصيات المحللين", "https://tickerstargets.streamlit.app/#analyst-recommendations"),
     ("القيمة العادلة للأسهم بطريقة جراهام", "https://otherfinancials-z8jg3khd9ka2igdzqjvxbw.streamlit.app/"),
     ("القوائم المالية (غير معرب)", "https://tasi-financials.streamlit.app/"),
