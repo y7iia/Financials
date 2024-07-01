@@ -47,7 +47,7 @@ st.markdown('<div class="description">أدوات مالية متكاملة لل�
 # profile picture
 profile_pic_url = "https://pbs.twimg.com/profile_images/1689517781669007360/oIga1frq_400x400.jpg"
 st.markdown(f'<img src="{profile_pic_url}" alt="Profile Picture" class="profile-pic">', unsafe_allow_html=True)
-st.markdown(' @telmisany - برمجة يحيى التلمساني')
+st.markdown('برمجة يحيى التلمساني')
 # Add a hyperlink to your Twitter account
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
 
