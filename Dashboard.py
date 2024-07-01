@@ -1,5 +1,3 @@
-import streamlit as st
-
 # Custom CSS for visual enhancements
 st.markdown("""
     <style>
@@ -15,18 +13,6 @@ st.markdown("""
             text-align: center;
             margin-bottom: 20px;
         }
-        .button-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            justify-items: center;
-        }
-        .button-grid button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1em;
-            border-radius: 10px;
-        }
         .new-badge {
             background-color: #FFC107;
             color: white;
@@ -34,6 +20,13 @@ st.markdown("""
             border-radius: 5px;
             font-size: 0.75em;
             margin-left: 5px;
+        }
+        .button {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -59,20 +52,22 @@ app_links = [
 # Indicate new apps (example: App 4 and App 9 are new)
 new_apps = ["App 4", "App 9"]
 
-st.markdown('<div class="button-grid">', unsafe_allow_html=True)
-for app_name, link in app_links:
-    if app_name in new_apps:
-        st.markdown(
-            f'<a href="{link}" target="_blank">'
-            f'<button>{app_name} <span class="new-badge">NEW</span></button>'
-            f'</a>',
-            unsafe_allow_html=True,
-        )
-    else:
-        st.markdown(
-            f'<a href="{link}" target="_blank">'
-            f'<button>{app_name}</button>'
-            f'</a>',
-            unsafe_allow_html=True,
-        )
-st.markdown('</div>', unsafe_allow_html=True)
+# Create a 2x5 grid using Streamlit's columns
+columns = st.columns(2)
+for i, (app_name, link) in enumerate(app_links):
+    col = columns[i % 2]  # Alternate between left and right columns
+    with col:
+        if app_name in new_apps:
+            st.markdown(
+                f'<a href="{link}" target="_blank">'
+                f'<button class="button">{app_name} <span class="new-badge">NEW</span></button>'
+                f'</a>',
+                unsafe_allow_html=True,
+            )
+        else:
+            st.markdown(
+                f'<a href="{link}" target="_blank">'
+                f'<button class="button">{app_name}</button>'
+                f'</a>',
+                unsafe_allow_html=True,
+            )
