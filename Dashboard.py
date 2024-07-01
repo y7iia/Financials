@@ -34,7 +34,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title and description
-st.markdown('<div class="title">My Financial Market Apps</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">تطبيقات بايثون لأسواق الأسهم</div>', unsafe_allow_html=True)
 st.markdown('<div class="description">Welcome to the dashboard! Click on any button below to access one of our apps.</div>', unsafe_allow_html=True)
 
 # Button grid
