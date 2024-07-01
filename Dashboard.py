@@ -90,8 +90,6 @@ for i, (app_name, link) in enumerate(app_links):
 
 # Add three empty lines for spacing
 st.write('\n\n\n')
-# Add a hyperlink to your Twitter account
-st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
 
 # Buy me coffee AD:
 image_url = 'https://i.ibb.co/dM0tT0f/buy-me-coffee.png'
