@@ -30,12 +30,23 @@ st.markdown("""
             border-radius: 10px;
             margin-bottom: 10px;
         }
+        .profile-pic {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 50%;
+            width: 150px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 # Title and description
 st.markdown('<div class="title">تطبيقات بايثون لأسواق الأسهم</div>', unsafe_allow_html=True)
 st.markdown('<div class="description">أدوات مالية متكاملة للمستثمرين في أسواق المال، تساعدك على اتخاذ قرارات استثمارية ذكية ومدروسة</div>', unsafe_allow_html=True)
+
+# Dummy profile picture
+profile_pic_url = "https://via.placeholder.com/150"
+st.markdown(f'<img src="{profile_pic_url}" alt="Profile Picture" class="profile-pic">', unsafe_allow_html=True)
 
 # Button grid
 app_links = [
@@ -48,7 +59,7 @@ app_links = [
     ("التوزيعات النقدية", "https://tasi-dividents.streamlit.app/"),
     ("نسبة تغير أسعار الأسهم من قاع كورونا 2020", "https://corona-return.streamlit.app/"),
     ("تقييم توصيات المحللين", "https://corona-return.streamlit.app/"),
-    ("المحلل الرقمي (قريبا)", "" ),
+    ("المحلل الرقمي (قريبا)", ""),
 ]
 
 # Indicate new apps (separated by ,)
