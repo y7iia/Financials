@@ -274,8 +274,8 @@ companies = {'1010.SR': 'الرياض',
  '8300.SR': 'الوطنية',
  '8310.SR': 'أمانة للتأمين',
  '8311.SR': 'عناية',
- '8313.SR': 'رسن'
-            }
+ '8313.SR': 'رسن',
+}
 
 # Function to calculate financial ratios for a single company
 def calculate_financial_ratios(ticker):
@@ -464,28 +464,28 @@ if st.button("Submit"):
 
         # Display data
         if not df.empty:
-            # Calculate the sector average for each financial ratio
-            sector_avg = df.apply(pd.to_numeric, errors='coerce').mean(axis=1).fillna("-")
-
-            # Round the sector averages to 2 decimal places and convert to string with comma separator
-            sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
-
-            # Add the sector average to the DataFrame
-            df['Sector Avg'] = sector_avg
-
-            # Define the sequence of financial ratios
-            ratio_sequence = [
-                'Stock Price', 'Market Cap, B$', 'Number of Shares, M', 'Float Shares, M', 'P/E Ratio', 'EPS', 'Book Value per Share',
-                'BV Multiple', 'ROE', 'Book Value, M$', 'Debt-to-Equity Ratio', 'Current Ratio', 'Quick Ratio',
-                'Dividend Payout Ratio', 'Operating Cash Flow Ratio', 'Free Cash Flow, M$', 'Profit Margins', 'PEG Ratio'
-            ]
-
-            # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
-            columns = ['Sector Avg'] + [ticker for ticker in tickers]
-            df = df.reindex(ratio_sequence, axis=0).reindex(columns, axis=1)
-
             # Check if 'Ticker' column exists
             if 'Ticker' in df.columns:
+                # Calculate the sector average for each financial ratio
+                sector_avg = df.apply(pd.to_numeric, errors='coerce').mean(axis=1).fillna("-")
+
+                # Round the sector averages to 2 decimal places and convert to string with comma separator
+                sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
+
+                # Add the sector average to the DataFrame
+                df['Sector Avg'] = sector_avg
+
+                # Define the sequence of financial ratios
+                ratio_sequence = [
+                    'Stock Price', 'Market Cap, B$', 'Number of Shares, M', 'Float Shares, M', 'P/E Ratio', 'EPS', 'Book Value per Share',
+                    'BV Multiple', 'ROE', 'Book Value, M$', 'Debt-to-Equity Ratio', 'Current Ratio', 'Quick Ratio',
+                    'Dividend Payout Ratio', 'Operating Cash Flow Ratio', 'Free Cash Flow, M$', 'Profit Margins', 'PEG Ratio'
+                ]
+
+                # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
+                columns = ['Sector Avg'] + [ticker for ticker in tickers]
+                df = df.reindex(ratio_sequence, axis=0).reindex(columns, axis=1)
+
                 # Map the Ticker column to the values in the companies dictionary
                 df['الشركة'] = df['Ticker'].map(companies)
 
