@@ -31,8 +31,7 @@ tasi = {
 'تجزئة وتوزيع السلع الكمالية': ['4051.SR', '4240.SR', '4192.SR', '4190.SR', '4003.SR', '4050.SR', '4191.SR', '4008.SR'],
 'التطبيقات وخدمات التقنية': ['7203.SR', '7201.SR', '7204.SR', '7200.SR', '7202.SR'],
 'السلع طويلة الاجل': ['2340.SR', '4012.SR', '4180.SR', '4011.SR', '2130.SR', '1213.SR']
-}
-
+ }
 
 # Create a dictionary of ticker symbols to company names
 companies = {'1010.SR': 'الرياض',
@@ -276,21 +275,20 @@ companies = {'1010.SR': 'الرياض',
  '8311.SR': 'عناية',
  '8313.SR': 'رسن'
             }
+
 # Function to calculate financial ratios for a single company
 def calculate_financial_ratios(ticker):
     company = yf.Ticker(ticker)
-    
-    ratios = {'Ticker': ticker}  # Ensure Ticker is included in the ratios
+    ratios = {'Ticker': ticker}
+
     try:
-        # Fetch balance sheet, financials, cash flow, and stock info
         balance_sheet = company.balance_sheet
         financials = company.financials
         cash_flow = company.cashflow
         stock_info = company.info
 
-        # Fetch current stock price
         current_price = company.history(period="1d")['Close'].iloc[-1]
-        
+
         try:
             shares_outstanding = stock_info.get('sharesOutstanding', "-")
             ratios['Number of Shares, M'] = shares_outstanding / 1_000_000
@@ -298,7 +296,6 @@ def calculate_financial_ratios(ticker):
             logging.error(f"Error calculating Number of Shares for {ticker}: {e}")
             ratios['Number of Shares, M'] = "-"
 
-        # Calculate financial ratios with exception handling
         try:
             current_assets = balance_sheet.loc['Current Assets'][0]
             current_liabilities = balance_sheet.loc['Current Liabilities'][0]
@@ -306,14 +303,14 @@ def calculate_financial_ratios(ticker):
         except Exception as e:
             logging.error(f"Error calculating Current Ratio for {ticker}: {e}")
             ratios['Current Ratio'] = "-"
-        
+
         try:
             cash_and_equivalents = balance_sheet.loc['Cash And Cash Equivalents'][0]
             ratios['Quick Ratio'] = (cash_and_equivalents + balance_sheet.loc['Receivables'][0]) / current_liabilities
         except Exception as e:
             logging.error(f"Error calculating Quick Ratio for {ticker}: {e}")
             ratios['Quick Ratio'] = "-"
-        
+
         try:
             total_liabilities = balance_sheet.loc['Total Liabilities Net Minority Interest'][0]
             total_equity = balance_sheet.loc['Stockholders Equity'][0]
@@ -321,20 +318,20 @@ def calculate_financial_ratios(ticker):
         except Exception as e:
             logging.error(f"Error calculating Debt-to-Equity Ratio for {ticker}: {e}")
             ratios['Debt-to-Equity Ratio'] = "-"
-        
+
         try:
             net_income = financials.loc['Net Income'][0]
             ratios['ROE'] = net_income / total_equity
         except Exception as e:
             logging.error(f"Error calculating ROE for {ticker}: {e}")
             ratios['ROE'] = "-"
-        
+
         try:
             ratios['P/E Ratio'] = stock_info.get('trailingPE', "-")
         except Exception as e:
             logging.error(f"Error calculating P/E Ratio for {ticker}: {e}")
             ratios['P/E Ratio'] = "-"
-        
+
         try:
             if 'Stockholders Equity' in balance_sheet.index:
                 total_equity = balance_sheet.loc['Stockholders Equity'][0]
@@ -345,67 +342,60 @@ def calculate_financial_ratios(ticker):
         except Exception as e:
             logging.error(f"Error calculating Book Value for {ticker}: {e}")
             ratios['Book Value, M$'] = "-"
-        
+
         try:
             market_cap = stock_info.get('marketCap', "-")
             ratios['BV Multiple'] = market_cap / total_equity if total_equity != 0 else "-"
         except Exception as e:
             logging.error(f"Error calculating BV Multiple for {ticker}: {e}")
             ratios['BV Multiple'] = "-"
-        
-        try:
-            shares_outstanding = stock_info.get('sharesOutstanding', "-")
-            ratios['Number of Shares, M'] = shares_outstanding / 1_000_000
-        except Exception as e:
-            logging.error(f"Error calculating Number of Shares for {ticker}: {e}")
-            ratios['Number of Shares, M'] = "-"
-        
+
         try:
             ratios['Stock Price'] = current_price
         except Exception as e:
             logging.error(f"Error calculating Stock Price for {ticker}: {e}")
             ratios['Stock Price'] = "-"
-        
+
         try:
             ratios['Market Cap, B$'] = market_cap / 1_000_000_000
         except Exception as e:
             logging.error(f"Error calculating Market Cap for {ticker}: {e}")
             ratios['Market Cap, B$'] = "-"
-        
+
         try:
             ratios['Book Value per Share'] = total_equity / shares_outstanding
         except Exception as e:
             logging.error(f"Error calculating Book Value per Share for {ticker}: {e}")
             ratios['Book Value per Share'] = "-"
-        
+
         try:
             diluted_eps = financials.loc['Diluted EPS'][0]
             ratios['EPS'] = diluted_eps
         except Exception as e:
             logging.error(f"Error calculating EPS for {ticker}: {e}")
             ratios['EPS'] = "-"
-        
+
         try:
             dividends_paid = cash_flow.loc['Cash Dividends Paid'][0]
             ratios['Dividend Payout Ratio'] = dividends_paid / net_income
         except Exception as e:
             logging.error(f"Error calculating Dividend Payout Ratio for {ticker}: {e}")
             ratios['Dividend Payout Ratio'] = "-"
-        
+
         try:
             operating_cash_flow = cash_flow.loc['Operating Cash Flow'][0]
             ratios['Operating Cash Flow Ratio'] = operating_cash_flow / current_liabilities
         except Exception as e:
             logging.error(f"Error calculating Operating Cash Flow Ratio for {ticker}: {e}")
             ratios['Operating Cash Flow Ratio'] = "-"
-        
+
         try:
             free_cash_flow = cash_flow.loc['Free Cash Flow'][0]
             ratios['Free Cash Flow, M$'] = free_cash_flow / 1_000_000
         except Exception as e:
             logging.error(f"Error calculating Free Cash Flow for {ticker}: {e}")
             ratios['Free Cash Flow, M$'] = "-"
-        
+
         # Additional financial ratios
         try:
             ratios['Profit Margins'] = stock_info.get('profitMargins', "-")
@@ -425,15 +415,15 @@ def calculate_financial_ratios(ticker):
         except Exception as e:
             logging.error(f"Error calculating Float Shares for {ticker}: {e}")
             ratios['Float Shares, M'] = "-"
-        
+
     except Exception as e:
         logging.error(f"Error fetching data for {ticker}: {e}")
-    
+
     # Round numbers to 2 decimal places and use comma separator for thousands
     for key, value in ratios.items():
         if isinstance(value, (int, float)):
             ratios[key] = f"{value:,.2f}"
-    
+
     return ratios
 
 # Function to calculate financial ratios for a list of tickers
@@ -484,10 +474,6 @@ if st.button("Submit"):
                 # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
                 columns = ['Sector Avg'] + [ticker for ticker in tickers]
                 df = df.reindex(columns, axis=1)
-
-                # Debug information
-                logging.info(f"DataFrame columns: {df.columns.tolist()}")
-                logging.info(f"DataFrame head: {df.head()}")
 
                 # Map the Ticker column to the values in the companies dictionary
                 df['الشركة'] = df['Ticker'].map(companies)
