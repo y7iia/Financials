@@ -3,7 +3,7 @@ import pandas as pd
 import yfinance as yf
 import logging
 
-Configure logger
+# Configure logger
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # Create a dictionary of sector to ticker symbols
@@ -277,73 +277,66 @@ companies = {'1010.SR': 'الرياض',
  '8311.SR': 'عناية',
  '8313.SR': 'رسن',
 '^TASI.SR': 'تاسي'}
-Function to calculate financial ratios
+# Function to calculate financial ratios
 def calculate_financial_ratios(tickers):
-results = []
-for ticker in tickers:
-try:
-company = yf.Ticker(ticker)
-balance_sheet = company.balance_sheet
-if balance_sheet is not None:
+    results = []
+    for ticker in tickers:
+        try:
+            company = yf.Ticker(ticker)
+            balance_sheet = company.balance_sheet
+            if balance_sheet is not None:
+                # Calculate financial ratios
+                current_ratio = balance_sheet.loc['Total Current Assets'][0] / balance_sheet.loc['Total Current Liabilities'][0]
+                debt_to_equity = balance_sheet.loc['Total Liabilities'][0] / balance_sheet.loc['Total Stockholder Equity'][0]
+                financials = company.financials
+                if financials is not None:
+                    roe = financials.loc['Net Income'][0] / balance_sheet.loc['Total Stockholder Equity'][0]
+                    stock_info = company.info
+                    pe_ratio = stock_info['trailingPE'] if 'trailingPE' in stock_info else None
+                    results.append({
+                        'Ticker': ticker,
+                        'Current Ratio': current_ratio,
+                        'Debt-to-Equity Ratio': debt_to_equity,
+                        'ROE': roe,
+                        'P/E Ratio': pe_ratio
+                    })
+                else:
+                    logging.warning(f"No financial data for {ticker}. Continuing with other tickers.")
+            else:
+                logging.warning(f"No balance sheet data for {ticker}. Continuing with other tickers.")
+        except Exception as e:
+            logging.error(f"Exception occurred for ticker {ticker}: {e}")
+            continue # Continue with the next ticker
+    return pd.DataFrame(results)
 
-Calculate financial ratios
-current_ratio = balance_sheet.loc['Total Current Assets'][0] / balance_sheet.loc['Total Current Liabilities'][0]
-debt_to_equity = balance_sheet.loc['Total Liabilities'][0] / balance_sheet.loc['Total Stockholder Equity'][0]
-financials = company.financials
-if financials is not None:
-roe = financials.loc['Net Income'][0] / balance_sheet.loc['Total Stockholder Equity'][0]
-stock_info = company.info
-pe_ratio = stock_info['trailingPE'] if 'trailingPE' in stock_info else None
-results.append({
-'Ticker': ticker,
-'Current Ratio': current_ratio,
-'Debt-to-Equity Ratio': debt_to_equity,
-'ROE': roe,
-'P/E Ratio': pe_ratio
-})
-else:
-logging.warning(f"No financial data for {ticker}. Continuing with other tickers.")
-else:
-logging.warning(f"No balance sheet data for {ticker}. Continuing with other tickers.")
-except Exception as e:
-logging.error(f"Exception occurred for ticker {ticker}: {e}")
-continue # Continue with the next ticker
-
-Copy
-return pd.DataFrame(results)
-Streamlit code
+# Streamlit code
 st.title('نسب مالية للشركات في القطاعات المختارة')
 st.markdown('@telmisany - برمجة يحيى التلمساني')
 
-Dropdown for selecting the sector
+# Dropdown for selecting the sector
 selected_sector = st.selectbox('اختر القطاع', [''] + list(tasi.keys()))
 
-Button for submitting the input
+# Button for submitting the input
 if st.button("Submit"):
-if selected_sector:
-
-Get the list of tickers for the selected sector
-tickers = tasi[selected_sector]
-
-ini
-Copy
-# Fetch and calculate financial ratios
-df = calculate_financial_ratios(tickers)
-
-scheme
-Copy
-# Display data
-if not df.empty:
-    # Map the Ticker column to the values in the companies dictionary
-    df['الشركة'] = df['Ticker'].map(companies)
-
-    # Set 'الشركة' as the index of the DataFrame
-    df.set_index('الشركة', inplace=True)
-
-    # Drop the 'Ticker' column as it's no longer needed
-    df.drop(columns=['Ticker'], inplace=True)
-
-    # Display data with Streamlit
-    st.write(df)
-else:
-    st.error("تعذر جلب البيانات")
+    if selected_sector:
+        # Get the list of tickers for the selected sector
+        tickers = tasi[selected_sector]
+        
+        # Fetch and calculate financial ratios
+        df = calculate_financial_ratios(tickers)
+        
+        # Display data
+        if not df.empty:
+            # Map the Ticker column to the values in the companies dictionary
+            df['الشركة'] = df['Ticker'].map(companies)
+            
+            # Set 'الشركة' as the index of the DataFrame
+            df.set_index('الشركة', inplace=True)
+            
+            # Drop the 'Ticker' column as it's no longer needed
+            df.drop(columns=['Ticker'], inplace=True)
+            
+            # Display data with Streamlit
+            st.write(df)
+        else:
+            st.error("تعذر جلب البيانات")
