@@ -439,33 +439,24 @@ def calculate_financial_ratios(ticker):
 
 # Function to calculate financial ratios for the selected sector
 def calculate_sector_ratios(tickers):
-    sector_ratios = {}
+    sector_ratios = []
     for ticker in tickers:
         ratios = calculate_financial_ratios(ticker)
         if ratios:
-            sector_ratios[ticker] = ratios
+            ratios['Ticker'] = ticker
+            sector_ratios.append(ratios)
 
-    # Convert the dictionary to a DataFrame
+    # Convert the list of dictionaries to a DataFrame
     df_ratios = pd.DataFrame(sector_ratios)
 
     # Calculate the sector average for each financial ratio
-    sector_avg = df_ratios.apply(pd.to_numeric, errors='coerce').mean(axis=1).fillna("-")
+    sector_avg = df_ratios.apply(pd.to_numeric, errors='coerce').mean(axis=0).fillna("-")
 
     # Round the sector averages to 2 decimal places and convert to string with comma separator
     sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
 
     # Add the sector average to the DataFrame
     df_ratios['Sector Avg'] = sector_avg
-
-    # Define the sequence of financial ratios
-    ratio_sequence = [
-        'Stock Price', 'Market Cap, B$', 'Number of Shares, M','Float Shares, M', 'P/E Ratio', 'EPS', 'Book Value per Share', 'BV Multiple', 'ROE', 'Book Value, M$', 'Debt-to-Equity Ratio', 'Current Ratio', 'Quick Ratio', 
-        'Dividend Payout Ratio', 'Operating Cash Flow Ratio', 'Free Cash Flow, M$', 'Profit Margins', 'PEG Ratio'
-    ]
-
-    # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
-    columns = ['Sector Avg'] + [ticker for ticker in tickers]
-    df_ratios = df_ratios.reindex(ratio_sequence, axis=0).reindex(columns, axis=1)
 
     return df_ratios
 
