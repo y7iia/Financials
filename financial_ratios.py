@@ -510,7 +510,7 @@ if st.button("Submit"):
             df.drop(columns=['Ticker'], inplace=True)
             
             # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
-            columns = ['Sector Avg'] + [ticker for ticker in tickers]
+            columns = ['Sector Avg'] + [ticker for ticker in tickers if ticker in df.columns]
             df = df[columns]
             
             # Apply the ratio translations to the index
