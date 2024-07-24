@@ -31,6 +31,7 @@ tasi = {
 'تجزئة وتوزيع السلع الكمالية': ['4051.SR', '4240.SR', '4192.SR', '4190.SR', '4003.SR', '4050.SR', '4191.SR', '4008.SR'],
 'التطبيقات وخدمات التقنية': ['7203.SR', '7201.SR', '7204.SR', '7200.SR', '7202.SR'],
 'السلع طويلة الاجل': ['2340.SR', '4012.SR', '4180.SR', '4011.SR', '2130.SR', '1213.SR']
+
 }
 
 
@@ -281,7 +282,7 @@ companies = {'1010.SR': 'الرياض',
 def calculate_financial_ratios(ticker):
     company = yf.Ticker(ticker)
     
-    ratios = {}
+    ratios = {'Ticker': ticker}  # Ensure Ticker is included in the ratios
     try:
         # Fetch balance sheet, financials, cash flow, and stock info
         balance_sheet = company.balance_sheet
@@ -464,16 +465,20 @@ if st.button("Submit"):
 
         # Display data
         if not df.empty:
-            # Map the Ticker column to the values in the companies dictionary
-            df['الشركة'] = df['Ticker'].map(companies)
-
-            # Set 'الشركة' as the index of the DataFrame
-            df.set_index('الشركة', inplace=True)
-
-            # Drop the 'Ticker' column as it's no longer needed
-            df.drop(columns=['Ticker'], inplace=True)
-
-            # Display data with Streamlit
-            st.write(df)
+            # Check if 'Ticker' column exists
+            if 'Ticker' in df.columns:
+                # Map the Ticker column to the values in the companies dictionary
+                df['الشركة'] = df['Ticker'].map(companies)
+                
+                # Set 'الشركة' as the index of the DataFrame
+                df.set_index('الشركة', inplace=True)
+                
+                # Drop the 'Ticker' column as it's no longer needed
+                df.drop(columns=['Ticker'], inplace=True)
+                
+                # Display data with Streamlit
+                st.write(df)
+            else:
+                st.error("تعذر العثور على عمود 'Ticker' في البيانات")
         else:
             st.error("تعذر جلب البيانات")
