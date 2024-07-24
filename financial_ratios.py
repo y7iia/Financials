@@ -274,9 +274,8 @@ companies = {'1010.SR': 'الرياض',
  '8300.SR': 'الوطنية',
  '8310.SR': 'أمانة للتأمين',
  '8311.SR': 'عناية',
- '8313.SR': 'رسن',
-}
-
+ '8313.SR': 'رسن'
+            }
 # Function to calculate financial ratios for a single company
 def calculate_financial_ratios(ticker):
     company = yf.Ticker(ticker)
@@ -464,7 +463,7 @@ if st.button("Submit"):
 
         # Display data
         if not df.empty:
-            # Check if 'Ticker' column exists
+            # Ensure 'Ticker' column is present for mapping
             if 'Ticker' in df.columns:
                 # Calculate the sector average for each financial ratio
                 sector_avg = df.apply(pd.to_numeric, errors='coerce').mean(axis=1).fillna("-")
@@ -484,7 +483,11 @@ if st.button("Submit"):
 
                 # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
                 columns = ['Sector Avg'] + [ticker for ticker in tickers]
-                df = df.reindex(ratio_sequence, axis=0).reindex(columns, axis=1)
+                df = df.reindex(columns, axis=1)
+
+                # Debug information
+                logging.info(f"DataFrame columns: {df.columns.tolist()}")
+                logging.info(f"DataFrame head: {df.head()}")
 
                 # Map the Ticker column to the values in the companies dictionary
                 df['الشركة'] = df['Ticker'].map(companies)
@@ -496,7 +499,7 @@ if st.button("Submit"):
                 df.drop(columns=['Ticker'], inplace=True)
 
                 # Display data with Streamlit
-                st.write(df.T)
+                st.write(df)
             else:
                 st.error("تعذر العثور على عمود 'Ticker' في البيانات")
         else:
