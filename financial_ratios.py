@@ -477,8 +477,8 @@ def calculate_sector_ratios(tickers):
     # Round the sector averages to 2 decimal places and convert to string with comma separator
     sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
 
-    # Add the sector average to the DataFrame as a new column
-    df_ratios['Sector Avg'] = sector_avg
+    # Add the sector average to the DataFrame
+    df_ratios.loc['Sector Avg'] = sector_avg
 
     return df_ratios
 
@@ -509,9 +509,9 @@ if st.button("Submit"):
             # Drop the 'Ticker' column as it's no longer needed
             df.drop(columns=['Ticker'], inplace=True)
             
-            # Re-order the columns to have 'Sector Avg' next to the mapped tickers
-            columns_order = ['Sector Avg'] + [col for col in df.columns if col != 'Sector Avg']
-            df = df[columns_order]
+            # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
+            columns = ['Sector Avg'] + [ticker for ticker in tickers]
+            df = df.reindex(columns, axis=1)
             
             # Apply the ratio translations to the index
             df = df.rename(index=ratio_translation)
