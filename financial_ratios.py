@@ -279,7 +279,7 @@ companies = {'1010.SR': 'الرياض',
 # Function to calculate financial ratios for a single company
 def calculate_financial_ratios(ticker):
     company = yf.Ticker(ticker)
-    ratios = {'Ticker': ticker}
+    ratios = {}
 
     try:
         balance_sheet = company.balance_sheet
