@@ -477,7 +477,7 @@ if st.button("Submit"):
                 df.drop(columns=['Ticker'], inplace=True)
                 
                 # Display data with Streamlit
-                st.write(df)
+                st.write(df.T)
             else:
                 st.error("تعذر العثور على عمود 'Ticker' في البيانات")
         else:
