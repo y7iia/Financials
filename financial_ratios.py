@@ -450,14 +450,17 @@ def calculate_sector_ratios(tickers):
     df_ratios = pd.DataFrame(sector_ratios)
 
     # Calculate the sector average for each financial ratio
-    sector_avg = df_ratios.apply(pd.to_numeric, errors='coerce').mean(axis=0).fillna("-")
+    numeric_cols = df_ratios.select_dtypes(include='number').columns
+    sector_avg = df_ratios[numeric_cols].apply(pd.to_numeric, errors='coerce').mean(axis=0).round(2).fillna("-")
 
-    # Round the sector averages to 2 decimal places and convert to string with comma separator
+    # Convert the sector averages to string with comma separator
     sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
 
     # Add the sector average to the DataFrame
-    sector_avg.name = 'Sector Avg'
-    df_ratios = pd.concat([sector_avg.to_frame().T, df_ratios], ignore_index=True)
+    sector_avg = pd.DataFrame(sector_avg).T
+    sector_avg['Ticker'] = 'Sector Avg'
+
+    df_ratios = pd.concat([sector_avg, df_ratios], ignore_index=True)
 
     return df_ratios
 
