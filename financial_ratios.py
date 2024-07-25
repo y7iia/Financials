@@ -439,37 +439,28 @@ def calculate_financial_ratios(ticker):
 
 # Function to calculate financial ratios for the selected sector
 def calculate_sector_ratios(tickers):
-    # Dictionary to store the financial ratios for each company
-    sector_ratios = {}
-
-    # Loop through each ticker to calculate the financial ratios
+    sector_ratios = []
     for ticker in tickers:
         ratios = calculate_financial_ratios(ticker)
         if ratios:
-            sector_ratios[ticker] = ratios
+            ratios['Ticker'] = ticker
+            sector_ratios.append(ratios)
 
-    # Convert the dictionary to a DataFrame
+    # Convert the list of dictionaries to a DataFrame
     df_ratios = pd.DataFrame(sector_ratios)
 
     # Calculate the sector average for each financial ratio
-    sector_avg = df_ratios.apply(pd.to_numeric, errors='coerce').mean(axis=1).fillna("-")
+    numeric_cols = df_ratios.select_dtypes(include='number').columns
+    sector_avg = df_ratios[numeric_cols].apply(pd.to_numeric, errors='coerce').mean(axis=0).round(2).fillna("-")
 
-    # Round the sector averages to 2 decimal places and convert to string with comma separator
+    # Convert the sector averages to string with comma separator
     sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
 
     # Add the sector average to the DataFrame
-    df_ratios['Sector Avg'] = sector_avg
+    sector_avg = pd.DataFrame(sector_avg).T
+    sector_avg.insert(0, 'Ticker', 'Sector Avg')
 
-    # Define the sequence of financial ratios
-    ratio_sequence = [
-        'Stock Price', 'Market Cap, B$', 'Number of Shares, M', 'Float Shares, M', 'P/E Ratio', 'EPS', 'Book Value per Share', 
-        'BV Multiple', 'ROE', 'Book Value, M$', 'Debt-to-Equity Ratio', 'Current Ratio', 'Quick Ratio', 
-        'Dividend Payout Ratio', 'Operating Cash Flow Ratio', 'Free Cash Flow, M$', 'Profit Margins', 'PEG Ratio'
-    ]
-
-    # Reorder the columns to have 'Sector Avg' as the first column and ratios in defined sequence
-    columns = ['Sector Avg'] + [ticker for ticker in tickers]
-    df_ratios = df_ratios.reindex(columns=columns + ratio_sequence)
+    df_ratios = pd.concat([sector_avg, df_ratios], ignore_index=True)
 
     return df_ratios
 
