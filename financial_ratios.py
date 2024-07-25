@@ -456,8 +456,6 @@ if st.button('Submit'):
         df_ratios_arabic = df_ratios_arabic.rename(columns=companies)
         df_ratios_arabic = df_ratios_arabic.rename(columns={'Sector Avg': 'معدل القطاع'})
         
-        st.dataframe(df_ratios_arabic)
-        st.dataframe(df_ratios_arabic)
     
     # Define the financial ratios that are better when lower
     better_when_lower = ['P/E Ratio', 'Debt-to-Equity Ratio', 'PEG Ratio']
