@@ -490,8 +490,8 @@ def highlight_cells(data):
 styled_df_ratios_arabic = df_ratios_arabic.style.apply(highlight_cells, axis=None)
 
 st.dataframe(styled_df_ratios_arabic)
-else:
-    st.write('تعذر جلب البيانات')
+   else:
+     st.write('تعذر جلب البيانات')
  
 # Add a hyperlink to your Twitter account
 st.markdown('[تابعني على تويتر](https://twitter.com/telmisany)')
