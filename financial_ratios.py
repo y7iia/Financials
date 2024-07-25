@@ -407,8 +407,9 @@ def calculate_financial_ratios(ticker):
     
     return ratios
 
-# Streamlit app
-st.title('Financial Ratios for TASI Companies')
+# Streamlit code
+st.title('النسب المالية للشركات المساهمة في سوق الأسهم السعودي حسب القطاع')
+st.markdown('@telmisany - برمجة يحيى التلمساني')
 
 # Sector selection
 sector = st.selectbox('Select a sector', list(tasi.keys()))
@@ -456,3 +457,11 @@ if st.button('Submit'):
         st.dataframe(df_ratios_arabic)
     else:
         st.write('No data available for the selected sector')
+
+# Add a hyperlink to your Twitter account
+st.markdown('[تابعني على تويتر](https://twitter.com/telmisany)')
+
+# Buy me a coffee AD
+image_url = 'https://i.ibb.co/dM0tT0f/buy-me-coffee.png'
+link_url = 'https://www.buymeacoffee.com/y7iia'
+st.markdown(f'<a href="{link_url}"><img src="{image_url}" alt="Buy me a coffee" width="200"/></a>', unsafe_allow_html=True)
