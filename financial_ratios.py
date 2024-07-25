@@ -471,6 +471,7 @@ def calculate_sector_ratios(tickers):
             df_ratios[col] = df_ratios[col].apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "-")
 
     df_ratios = pd.concat([sector_avg, df_ratios], ignore_index=True)
+    df_ratios.columns = df.columns.fillna('Sector Average')
 
     return df_ratios
 
