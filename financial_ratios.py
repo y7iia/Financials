@@ -499,6 +499,6 @@ if st.button('Submit'):
 st.markdown('[تابعني على تويتر](https://twitter.com/telmisany)')
 
 # Buy me a coffee AD
-image_url = 'https://i.ibb.co/WkHT8HP/buy-me-coffee.png'
+image_url = 'https://i.ibb.co/WkHT8HP/buy-me-coffee_2.png'
 link_url = 'https://www.buymeacoffee.com/y7iia'
 st.markdown(f'<a href="{link_url}"><img src="{image_url}" alt="Buy me a coffee" width="200"/></a>', unsafe_allow_html=True)
