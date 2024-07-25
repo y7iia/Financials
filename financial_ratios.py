@@ -490,8 +490,9 @@ if st.button('Submit'):
         styled_df_ratios_arabic = df_ratios_arabic.style.apply(highlight_cells, axis=None)
         
         st.dataframe(styled_df_ratios_arabic)
-        else:
-            st.write('No data available for the selected sector')
+    else:
+        st.write('No data available for the selected sector')
+     
  
  
 # Add a hyperlink to your Twitter account
