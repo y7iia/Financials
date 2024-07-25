@@ -466,9 +466,9 @@ if st.button('Submit'):
             val = float(val.replace(',', ''))
             avg = float(avg.replace(',', ''))
             if is_better_when_lower:
-                return 'background-color: green' if val < avg else 'background-color: red'
+                return 'background-color: #90EE90' if val < avg else 'background-color: #FF69B4'
             else:
-                return 'background-color: green' if val > avg else 'background-color: red'
+                return 'background-color: #90EE90' if val > avg else 'background-color: #FF69B4'
         except:
             return ''
 
