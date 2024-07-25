@@ -456,7 +456,8 @@ def calculate_sector_ratios(tickers):
     sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
 
     # Add the sector average to the DataFrame
-    df_ratios['Sector Avg'] = sector_avg
+    sector_avg.name = 'Sector Avg'
+    df_ratios = pd.concat([sector_avg.to_frame().T, df_ratios], ignore_index=True)
 
     return df_ratios
 
