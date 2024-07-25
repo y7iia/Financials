@@ -458,38 +458,41 @@ if st.button('Submit'):
         
     
     # Define the financial ratios that are better when lower
-    better_when_lower = ['P/E Ratio', 'Debt-to-Equity Ratio', 'PEG Ratio']
+better_when_lower = ['P/E Ratio', 'Debt-to-Equity Ratio', 'PEG Ratio']
 
-    # Function to apply conditional formatting
-    def color_cells(val, avg, is_better_when_lower):
-        try:
-            val = float(val.replace(',', ''))
-            avg = float(avg.replace(',', ''))
-            if is_better_when_lower:
-                return 'background-color: #90EE90' if val < avg else 'background-color: #FF69B4'
-            else:
-                return 'background-color: #90EE90' if val > avg else 'background-color: #FF69B4'
-        except:
+# Function to apply conditional formatting
+def color_cells(val, avg, is_better_when_lower):
+    try:
+        # Handle non-numeric values and nan
+        if pd.isna(val) or pd.isna(avg):
             return ''
+        val = float(val.replace(',', ''))
+        avg = float(avg.replace(',', ''))
+        if is_better_when_lower:
+            return 'background-color: #90EE90' if val < avg else 'background-color: #FF69B4'
+        else:
+            return 'background-color: #90EE90' if val > avg else 'background-color: #FF69B4'
+    except:
+        return ''
 
-    # Apply conditional formatting to the DataFrame
-    def highlight_cells(data):
-        styled_df = pd.DataFrame('', index=data.index, columns=data.columns)
-        for column in data.columns:
-            if column != 'معدل القطاع':
-                for index in data.index:
-                    avg = data.at[index, 'معدل القطاع']
-                    is_better_when_lower = index in better_when_lower
-                    styled_df.at[index, column] = color_cells(data.at[index, column], avg, is_better_when_lower)
-        return styled_df
+# Apply conditional formatting to the DataFrame
+def highlight_cells(data):
+    styled_df = pd.DataFrame('', index=data.index, columns=data.columns)
+    for column in data.columns:
+        if column != 'معدل القطاع':
+            for index in data.index:
+                avg = data.at[index, 'معدل القطاع']
+                is_better_when_lower = index in better_when_lower
+                styled_df.at[index, column] = color_cells(data.at[index, column], avg, is_better_when_lower)
+    return styled_df
 
-    # Apply the styling
-    styled_df_ratios_arabic = df_ratios_arabic.style.apply(highlight_cells, axis=None)
+# Apply the styling
+styled_df_ratios_arabic = df_ratios_arabic.style.apply(highlight_cells, axis=None)
 
-    st.dataframe(styled_df_ratios_arabic)
+st.dataframe(styled_df_ratios_arabic)
 else:
-    st.write('No data available for the selected sector')
-
+    st.write('تعذر جلب البيانات')
+ 
 # Add a hyperlink to your Twitter account
 st.markdown('[تابعني على تويتر](https://twitter.com/telmisany)')
 
