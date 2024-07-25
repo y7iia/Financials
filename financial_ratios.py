@@ -445,10 +445,10 @@ if st.button('Submit'):
         ratio_translation = {
             'Stock Price': 'سعر السهم', 'Current Ratio': 'نسبة التداول', 'Quick Ratio': 'نسبة السيولة السريعة',
             'Debt-to-Equity Ratio': 'نسبة الدين إلى حقوق الملكية', 'ROE': 'العائد على حقوق الملكية', 'P/E Ratio': 'مكرر الأرباح',
-            'Book Value, M$': 'حقوق المساهمين، مليون دولار', 'BV Multiple': 'مضاعف القيمة الدفترية',
-            'Number of Shares, M': 'عدد الأسهم، مليون', 'Market Cap, B$': 'القيمة السوقية، مليار دولار',
+            'Book Value, M$': 'حقوق المساهمين، مليون ريال', 'BV Multiple': 'مضاعف القيمة الدفترية',
+            'Number of Shares, M': 'عدد الأسهم، مليون', 'Market Cap, B$': 'القيمة السوقية، مليار ريال',
             'Book Value per Share': 'القيمة الدفترية لكل سهم', 'EPS': 'ربحية السهم', 'Dividend Payout Ratio': 'نسبة توزيع الأرباح',
-            'Operating Cash Flow Ratio': 'نسبة التدفق النقدي التشغيلي', 'Free Cash Flow, M$': 'التدفق النقدي الحر، مليون دولار',
+            'Operating Cash Flow Ratio': 'نسبة التدفق النقدي التشغيلي', 'Free Cash Flow, M$': 'التدفق النقدي الحر، مليون ريال',
             'Profit Margins': 'هامش الربحية', 'PEG Ratio': 'نسبة PEG', 'Float Shares, M': 'الأسهم الحرة، مليون'
         }
         
