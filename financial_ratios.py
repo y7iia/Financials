@@ -449,9 +449,13 @@ def calculate_sector_ratios(tickers):
     # Convert the list of dictionaries to a DataFrame
     df_ratios = pd.DataFrame(sector_ratios)
 
+    # Convert string values to numeric, coercing errors to NaN
+    for col in df_ratios.columns:
+        if col != 'Ticker':
+            df_ratios[col] = pd.to_numeric(df_ratios[col].replace('-', np.nan), errors='coerce')
+
     # Calculate the sector average for each financial ratio
-    numeric_cols = df_ratios.select_dtypes(include='number').columns
-    sector_avg = df_ratios[numeric_cols].apply(pd.to_numeric, errors='coerce').mean(axis=0).round(2)
+    sector_avg = df_ratios.select_dtypes(include='number').mean().round(2)
 
     # Convert the sector averages to string with comma separator
     sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "-")
@@ -459,6 +463,11 @@ def calculate_sector_ratios(tickers):
     # Add the sector average to the DataFrame
     sector_avg = pd.DataFrame(sector_avg).T
     sector_avg.insert(0, 'Ticker', 'Sector Avg')
+
+    # Convert numeric columns back to formatted strings
+    for col in df_ratios.columns:
+        if col != 'Ticker':
+            df_ratios[col] = df_ratios[col].apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "-")
 
     df_ratios = pd.concat([sector_avg, df_ratios], ignore_index=True)
 
