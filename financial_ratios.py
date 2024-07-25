@@ -457,7 +457,7 @@ if st.button('Submit'):
         df_ratios_arabic = df_ratios_arabic.rename(columns={'Sector Avg': 'معدل القطاع'})
         
         
-       # Define the financial ratios that are better when lower
+# Define the financial ratios that are better when lower
 better_when_lower = ['P/E Ratio', 'Debt-to-Equity Ratio', 'PEG Ratio']
 
 # Function to apply conditional formatting
@@ -491,7 +491,8 @@ styled_df_ratios_arabic = df_ratios_arabic.style.apply(highlight_cells, axis=Non
 
 st.dataframe(styled_df_ratios_arabic)
 else:
-    st.write('تعذر جلب البيانات')
+    st.write('No data available for the selected sector')
+ 
  
 # Add a hyperlink to your Twitter account
 st.markdown('[تابعني على تويتر](https://twitter.com/telmisany)')
