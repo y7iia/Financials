@@ -462,7 +462,7 @@ def calculate_sector_ratios(tickers):
     sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "-")
 
     # Add the sector average to the DataFrame
-    sector_avg = pd.DataFrame(sector_avg, columns=['Sector Average']).T
+    sector_avg = pd.DataFrame(sector_avg).T
     sector_avg.insert(0, 'Ticker', 'Sector Avg')
 
     # Convert numeric columns back to formatted strings
@@ -471,7 +471,9 @@ def calculate_sector_ratios(tickers):
             df_ratios[col] = df_ratios[col].apply(lambda x: f"{x:,.2f}" if pd.notnull(x) else "-")
 
     df_ratios = pd.concat([sector_avg, df_ratios], ignore_index=True)
-    df_ratios.columns = df.columns.fillna('Sector Average')
+    
+    # Ensure all columns have names
+    df_ratios.columns = df_ratios.columns.fillna('Sector Average')
 
     return df_ratios
 
