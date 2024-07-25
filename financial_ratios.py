@@ -458,7 +458,7 @@ def calculate_sector_ratios(tickers):
 
     # Add the sector average to the DataFrame
     sector_avg = pd.DataFrame(sector_avg).T
-    sector_avg['Ticker'] = 'Sector Avg'
+    sector_avg.insert(0, 'Ticker', 'Sector Avg')
 
     df_ratios = pd.concat([sector_avg, df_ratios], ignore_index=True)
 
