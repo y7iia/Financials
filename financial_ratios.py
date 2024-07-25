@@ -458,7 +458,7 @@ if st.button('Submit'):
         
         
         # Define the financial ratios that are better when lower
-        better_when_lower = ['P/E Ratio', 'Debt-to-Equity Ratio', 'PEG Ratio']
+        better_when_lower = ['مكرر الأرباح', 'نسبة الدين إلى حقوق الملكية', 'نسبة PEG']
         
         # Function to apply conditional formatting
         def color_cells(val, avg, is_better_when_lower):
