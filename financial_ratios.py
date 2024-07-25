@@ -426,6 +426,8 @@ if st.button('Submit'):
     
     if sector_ratios:
         df_ratios = pd.DataFrame(sector_ratios)
+        # Exclude 'Stock Price' from sector average calculation
+        ratios_for_avg = df_ratios.drop('Stock Price', errors='ignore')
         sector_avg = df_ratios.apply(pd.to_numeric, errors='coerce').mean(axis=1).fillna("-")
         sector_avg = sector_avg.apply(lambda x: f"{x:,.2f}" if isinstance(x, (int, float)) else x)
         df_ratios['Sector Avg'] = sector_avg
