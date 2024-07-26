@@ -62,11 +62,12 @@ app_links = [
     ("التوزيعات النقدية", "https://tasi-dividents.streamlit.app/"),
     ("نسبة تغير أسعار الأسهم من قاع كورونا 2020", "https://corona-return.streamlit.app/"),
     ("تقييم توصيات المحللين", "https://analyst-metric.streamlit.app/"),
+    ("النسب المالية", "https://financial-ratios.streamlit.app/"),
     ("المحلل الرقمي (قريبا)", ""),
 ]
 
 # Indicate new apps (separated by ,)
-new_apps = ["تقييم توصيات المحللين"]
+new_apps = ["النسب المالية"]
 
 # Create a 2x5 grid using Streamlit's columns
 columns = st.columns(2)
