@@ -411,7 +411,7 @@ st.title('النسب المالية لشركات سوق الأسهم السعو�
 st.markdown('@telmisany - برمجة يحيى التلمساني')
 
 # Sector selection
-sector = st.selectbox('اختار القطاع', list(tasi.keys()))
+sector = st.selectbox('اختار القطاع', [''] + list(tasi.keys()))
 
 # Submit button
 if st.button('Submit'):
