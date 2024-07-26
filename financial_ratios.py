@@ -382,7 +382,7 @@ def calculate_financial_ratios(ticker):
             ratios['Free Cash Flow, M$'] = "-"
         
         try:
-            ratios['Profit Margins'] = stock_info.get('profitMargins', "-")
+            ratios['Profit Margins'] = stock_info.get('profitMargins', "-") * 100 
         except Exception as e:
             ratios['Profit Margins'] = "-"
         
