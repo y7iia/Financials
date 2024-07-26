@@ -61,7 +61,7 @@ app_links = [
     ("النتائج المالية", "https://net-income.streamlit.app/"),
     ("التوزيعات النقدية", "https://tasi-dividents.streamlit.app/"),
     ("نسبة تغير أسعار الأسهم من قاع كورونا 2020", "https://corona-return.streamlit.app/"),
-    ("تقييم توصيات المحللين", "https://corona-return.streamlit.app/"),
+    ("تقييم توصيات المحللين", "https://analyst-metric.streamlit.app/"),
     ("المحلل الرقمي (قريبا)", ""),
 ]
 
