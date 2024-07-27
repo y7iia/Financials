@@ -104,8 +104,7 @@ tasi = {'الطاقة': ['2222.SR',	'4030.SR',	'4200.SR',	'2030.SR',	'2381.SR'],
 'تجزئة السلع الكمالية': ['4003.SR',  '4190.SR',  '4191.SR',  '1214.SR',  '4008.SR','4240.SR',  '4050.SR',  '4051.SR',  '4192.SR'],
 }
 
-
-# Streamlit code
+# Title and subtitle
 st.title('القوائم المالية لقطاعات سوق الأسهم السعودي')
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
@@ -134,7 +133,6 @@ frequency_ARABIC = st.selectbox('اختر الفترة', [''] + list(dic_frq.val
 # Find the corresponding English term
 frequency = [k for k, v in dic_frq.items() if v == frequency_ARABIC][0] if frequency_ARABIC else ""
 
-
 # Button for submitting the input
 if st.button("Submit"):
     # Get the list of tickers for the selected sector
@@ -146,11 +144,11 @@ if st.button("Submit"):
     # Display data
     if df is not None:
         df.index.names = ['Ticker']
-        df = df.rename(index=companies)
+        df = df.rename(index=companies)  # Rename index using the companies dictionary
+        df = df.rename(columns=companies)  # Rename columns using the companies dictionary
         df = df.round(2)  # Round all numbers in the DataFrame to 2 decimal places
         df = df.div(1000000)  # Divide all numbers in the DataFrame by 1,000,000
         st.write(df.T)
-             
     else:
         st.error("تعذر جلب البيانات")
 
