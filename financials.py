@@ -144,7 +144,6 @@ if st.button("Submit"):
     # Display data
     if df is not None:
         df.index.names = ['Ticker']
-        df = df.rename(index=companies)  # Rename index using the companies dictionary
         df = df.rename(columns=companies)  # Rename columns using the companies dictionary
         df = df.round(2)  # Round all numbers in the DataFrame to 2 decimal places
         df = df.div(1000000)  # Divide all numbers in the DataFrame by 1,000,000
