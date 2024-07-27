@@ -3,8 +3,6 @@ import pandas as pd
 import yfinance as yf
 import logging
 
-
-
 # Create a dictionary of sector to ticker symbols
 
 tasi = {
@@ -299,6 +297,7 @@ def fetch_financial_data(ticker, financial_type, frequency):
         logging.error(f"Error fetching data for {ticker}: {str(e)}")
         return None
 
+# Function to aggregate financial data
 def aggregate_financial_data(tickers, financial_type, frequency):
     # Empty dictionary to store data
     data = {}
@@ -318,8 +317,6 @@ def aggregate_financial_data(tickers, financial_type, frequency):
         return None
 
     return df
-
-import streamlit as st
 
 # Title and subtitle
 st.title('القوائم المالية لقطاعات سوق الأسهم السعودي')
@@ -352,22 +349,25 @@ frequency = [k for k, v in dic_frq.items() if v == frequency_ARABIC][0] if frequ
 
 # Button for submitting the input
 if st.button("Submit"):
-    # Get the list of tickers for the selected sector
-    tickers = tasi[selected_sector]
+    if selected_sector and financial_type and frequency:
+        # Get the list of tickers for the selected sector
+        tickers = tasi[selected_sector]
 
-    # Fetch data
-    df = aggregate_financial_data(tickers, financial_type, frequency)
+        # Fetch data
+        df = aggregate_financial_data(tickers, financial_type, frequency)
 
-    # Display data
-    if df is not None:
-        df.index.names = ['Ticker']
-        df = df.rename(index=companies)  # Rename index using the companies dictionary
-        df = df.rename(columns=companies)  # Rename columns using the companies dictionary
-        df = df.round(2)  # Round all numbers in the DataFrame to 2 decimal places
-        df = df.div(1000000)  # Divide all numbers in the DataFrame by 1,000,000
-        st.write(df.T)
+        # Display data
+        if df is not None:
+            df.index.names = ['Ticker']
+            df = df.rename(index=companies)  # Rename index using the companies dictionary
+            df = df.rename(columns=companies)  # Rename columns using the companies dictionary
+            df = df.round(2)  # Round all numbers in the DataFrame to 2 decimal places
+            df = df.div(1000000)  # Divide all numbers in the DataFrame by 1,000,000
+            st.write(df.T)
+        else:
+            st.error("تعذر جلب البيانات")
     else:
-        st.error("تعذر جلب البيانات")
+        st.error("يرجى اختيار جميع الخيارات")
 
 # Add a statement
 st.write("> **ملاحظة: جميع الأرقام بالمليون ريال سعودي** ")
