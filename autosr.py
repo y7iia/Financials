@@ -48,12 +48,18 @@ except ValueError:
 method = st.selectbox("اختر طريقة الحساب Choose the calculation method:", ('standard', 'woodie', 'camarilla'))
 
 if st.button('أحسب Calculate Pivot Points'):
-    # get historical market data
-    data = yf.download(ticker, period="1d")
+
+    # Create a Ticker object for the stock
+    ticker_obj = yf.Ticker(ticker)
+
+    # Get historical market data using the history method
+    data = ticker_obj.history(period="1d")
+
+    # Retrieve the most recent 'High' and 'Low' prices
     high = data['High'][-1]
     low = data['Low'][-1]
-    
-   #currently info method is not working. so, use download method to get the close prices
+
+    #currently info method is not working. so, use download method to get the close prices
     close = data['Close'][-1]
     
     # Fetch accurate close prices [use this way whenever, info method is working]
@@ -78,6 +84,7 @@ st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmi
 st.write('\n\n\n')
 # Add a hyperlink to your Twitter account
 st.markdown('[X تابعني في منصة](https://twitter.com/telmisany)')
+
 
 # Buy me coffee AD:
 image_url = 'https://i.ibb.co/WkHT8HP/buy-me-coffee_2.png'
