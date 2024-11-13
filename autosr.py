@@ -70,13 +70,13 @@ if st.button('أحسب Calculate Pivot Points'):
     P, R1, R2, R3, S1, S2, S3 = calculate_pivot_points(high, low, close, method)
 
     st.write(f"Ticker: {ticker}")
-    st.write(f"===============R3 is: {R3:.2f}")
-    st.write(f"==========R2 is: {R2:.2f}")
-    st.write(f"=====R1 is: {R1:.2f}")
-    st.write(f"Close is: {close:.2f}")
-    st.write(f"=====S1 is: {S1:.2f}")
-    st.write(f"==========S2 is: {S2:.2f}")
-    st.write(f"===============S3 is: {S3:.2f}")
+    st.write(f"===============المقاومة الثالثة  {R3:.2f} :")
+    st.write(f"==========المقاومة الثانية: {R2:.2f}")
+    st.write(f"=====المقاومة الأولى: {R1:.2f}")
+    st.write(f"آخر اغلاق: {close:.2f}")
+    st.write(f"=====الدعم الأول: {S1:.2f}")
+    st.write(f"==========الدعم الثاني: {S2:.2f}")
+    st.write(f"===============الدعم الثالث: {S3:.2f}")
 
 
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
