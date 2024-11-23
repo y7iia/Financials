@@ -276,59 +276,81 @@ companies = {'1010.SR': 'الرياض',
 '^TASI.SR': 'تاسي'}
 
 
+import yfinance as yf
+import pandas as pd
+import streamlit as st
+
+
 def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date):
     result_rows = []
     tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
-            if start_date == end_date:
-                end_date = (pd.to_datetime(start_date) + pd.DateOffset(days=7)).strftime('%Y-%m-%d')
+            # Create a Ticker object
+            stock = yf.Ticker(ticker)
 
-            data = yf.download(ticker, start=start_date, end=end_date)
+            # Fetch historical data for the given period
+            
 
-            if data.empty:
+            historical_data = stock.history(start=start_date, end=end_date)
+
+            if historical_data.empty:
                 st.write(f"No data available for ticker {ticker} for the selected period. The stock may have been enlisted after this date.")
                 continue
 
-            min_low_date = data['Low'].idxmin()
-            min_low = data.loc[min_low_date, 'Low']
+            # Find the lowest closing price and its date
+            min_close_date = historical_data['Close'].idxmin()
+            min_close = historical_data.loc[min_close_date, 'Close']
 
-            latest_data = yf.download(ticker, period="1d")
+            # Fetch the latest available data
+            latest_data = stock.history(period="1d")
 
             if latest_data.empty:
                 st.write(f"No latest data available for ticker {ticker}.")
                 continue
 
-            latest_close = latest_data.loc[latest_data.index.max(), 'Close']
-            perc_increase = (latest_close / min_low - 1) * 100
+            latest_close = latest_data['Close'].iloc[-1]
 
+            # Calculate percentage increase
+            perc_increase = ((latest_close - min_close) / min_close) * 100
+
+            # Append data to the results list
             result_rows.append({
                 'القطاع': sector,
                 'الرمز': ticker,
-                'الشركة': ticker_names.get(ticker, "Unknown"),
-                'التاريخ': min_low_date,
-                'قاع الفترة المحددة': round(min_low,2),
-                'آخر اغلاق': round(latest_close,2),
-                'التغيير%': round(perc_increase, 2),
+                'الشركة': ticker_names.get(ticker, "غير معروف"),
+                'التاريخ': min_close_date.date(),
+                'قاع الفترة المحددة': round(min_close, 2),
+                'آخر اغلاق': round(latest_close, 2),
+                'التغيير%': f"{perc_increase:.2f}%",
+                'chg%': perc_increase  # For sorting
             })
         except Exception as e:
             st.write(f"An error occurred while fetching data for ticker {ticker}. Error: {e}")
             continue
 
+    # Convert the results list to a Pandas DataFrame
     result_df = pd.DataFrame(result_rows)
-    # Sort the dataframe by 'التغيير%' in descending order
-    result_df = result_df.sort_values(by='التغيير%', ascending=False)
-    # Format the 'التغيير%' column as percentage with 2 decimals
-    result_df['التغيير%'] = result_df['التغيير%'].apply(lambda x: f'{x}%')
+
+    # Sort the DataFrame by the numeric percentage increase in descending order
+    result_df = result_df.sort_values(by='chg%', ascending=False).reset_index(drop=True)
+
+    # Drop the 'chg%' column (numeric percentage) from the user-facing output
+    if not result_df.empty:
+        result_df = result_df.drop(columns=['chg%'])
 
     return result_df
- 
 
+
+# Streamlit app interface
 st.title("نسب ارتفاع وانخفاض الأسهم من تاريخ محدد")
 st.markdown(' @telmisany - برمجة يحيى التلمساني')
 
+# Select a sector
 sector = st.selectbox("أختار قطاع", [''] + list(tasi.keys()))
+
+# Select a date range
 date_option = st.selectbox("اختر الفترة", ["قاع كورونا", "تاريخ آخر"])
 
 if date_option == "تاريخ آخر":
@@ -339,13 +361,16 @@ else:
     start_date = "2020-03-01"
     end_date = "2020-04-01"
 
+# Submit button
 if st.button('Submit'):
-    df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
-    # Apply formatting when displaying the dataframe
-    with pd.option_context('display.float_format', '{:.2%}'.format):
-        st.dataframe(df)
-
-
+    if sector:
+        df = fetch_ticker_data(tasi, companies, sector, start_date, end_date)
+        if not df.empty:
+            st.dataframe(df)
+        else:
+            st.write("No data found for the selected sector and time period.")
+    else:
+        st.write("Please select a sector.")
 
 st.write('\n')
 st.markdown('[تطبيقات أخرى قد تعجبك](https://twitter.com/telmisany/status/1702641486792159334)')
