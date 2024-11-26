@@ -295,7 +295,7 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
             # Fetch historical data for the given period
             
 
-            historical_data = stock.history(start=start_date, end=end_date,auto_adjust=True)
+            historical_data = stock.history(start=start_date, end=end_date,auto_adjust=False)
 
             if historical_data.empty:
                 st.write(f"No data available for ticker {ticker} for the selected period. The stock may have been enlisted after this date.")
