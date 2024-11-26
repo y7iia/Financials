@@ -295,15 +295,15 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
             # Fetch historical data for the given period
             
 
-            historical_data = stock.history(start=start_date, end=end_date)
+            historical_data = stock.history(start=start_date, end=end_date,auto_adjust=True)
 
             if historical_data.empty:
                 st.write(f"No data available for ticker {ticker} for the selected period. The stock may have been enlisted after this date.")
                 continue
 
             # Find the lowest closing price and its date
-            min_close_date = historical_data['Close'].idxmin()
-            min_close = historical_data.loc[min_close_date, 'Close']
+            min_close_date = historical_data['Low'].idxmin()
+            min_close = historical_data.loc[min_close_date, 'Low']
 
             # Fetch the latest available data
             latest_data = stock.history(period="1d")
