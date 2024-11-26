@@ -283,19 +283,22 @@ import pandas as pd
 import streamlit as st
 
 
+import yfinance as yf
+import pandas as pd
+import streamlit as st
+
 def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date):
     result_rows = []
     tickers = sector_tickers.get(sector, [])
 
     for ticker in tickers:
         try:
-            # Create a Ticker object
-            stock = yf.Ticker(ticker)
+            # Fetch historical data using the download method
+            historical_data = yf.download(ticker, start=start_date, end=end_date, auto_adjust=False)
 
-            # Fetch historical data for the given period
-            
-
-            historical_data = stock.history(start=start_date, end=end_date,auto_adjust=False)
+            # Flatten MultiIndex columns if they exist
+            if isinstance(historical_data.columns, pd.MultiIndex):
+                historical_data.columns = historical_data.columns.get_level_values(0)
 
             if historical_data.empty:
                 st.write(f"No data available for ticker {ticker} for the selected period. The stock may have been enlisted after this date.")
@@ -305,8 +308,12 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
             min_close_date = historical_data['Low'].idxmin()
             min_close = historical_data.loc[min_close_date, 'Low']
 
-            # Fetch the latest available data
-            latest_data = stock.history(period="1d")
+            # Fetch the latest available data using the download method
+            latest_data = yf.download(ticker, period="1d", auto_adjust=False)
+
+            # Flatten MultiIndex for the latest data
+            if isinstance(latest_data.columns, pd.MultiIndex):
+                latest_data.columns = latest_data.columns.get_level_values(0)
 
             if latest_data.empty:
                 st.write(f"No latest data available for ticker {ticker}.")
@@ -343,7 +350,6 @@ def fetch_ticker_data(sector_tickers, ticker_names, sector, start_date, end_date
         result_df = result_df.drop(columns=['chg%'])
 
     return result_df
-
 
 # Streamlit app interface
 st.title("نسب ارتفاع وانخفاض الأسهم من تاريخ محدد")
