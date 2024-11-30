@@ -1,4 +1,15 @@
 streamlit
+mplfinance
+pyyaml
+plotly
+altair
+scikit-learn
+openpyxl
+xlsxwriter
+requests
+beautifulsoup4
+sqlalchemy
+seaborn
 numpy
 pandas
 yfinance
@@ -6,3 +17,6 @@ matplotlib
 yahooquery
 datetime
 ta
+pandas
+numpy
+matplotlib
