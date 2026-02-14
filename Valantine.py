@@ -5,50 +5,64 @@ import plotly.graph_objects as go
 # 1. إعداد الصفحة
 st.set_page_config(page_title="For Umm Al-Baraa", page_icon="❤️", layout="centered")
 
-# 2. تخصيص الـ CSS (الجانب الجمالي)
+# 2. تخصيص الـ CSS (الجماليات والخطوط)
 st.markdown("""
     <style>
-    /* استيراد خط عربي جميل */
+    /* استيراد الخط العربي */
     @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@1,400;1,700&display=swap');
     
-    /* خلفية التطبيق */
     .stApp {
         background-color: #0e1117;
     }
     
-    /* تنسيق العنوان */
     h1 {
         font-family: 'Amiri', serif;
         color: #ff4b4b;
         text-align: center;
-        font-size: 3rem !important;
         margin-bottom: 5px;
     }
     
-    /* تنسيق الإهداء الخاص - تم التكبير والتحسين */
+    /* تنسيق الإهداء الفاخر */
     .dedication {
         font-family: 'Amiri', serif;
-        color: #D4AF37; /* ذهبي */
+        color: #D4AF37; /* Gold */
         text-align: center;
-        font-size: 4rem !important; /* حجم ضخم */
+        font-size: 3.8rem !important;
         font-weight: bold;
-        margin-top: -10px;
-        margin-bottom: 30px;
-        text-shadow: 0px 0px 10px rgba(212, 175, 55, 0.5); /* توهج خفيف */
+        margin-top: -15px;
+        margin-bottom: 20px;
+        text-shadow: 0px 0px 15px rgba(212, 175, 55, 0.6);
     }
     
-    /* تنسيق صندوق المعادلة */
-    .equation-container {
-        background-color: #1E1E1E;
-        padding: 20px;
-        border-radius: 15px;
-        border: 1px solid #333;
+    /* تنسيق صندوق المعادلة ليظهر بشكل احترافي */
+    .equation-box {
+        background-color: #1a1c24;
+        border: 1px solid #444;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
         text-align: center;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
     
-    .katex { font-size: 1.5em !important; } /* تكبير رموز الرياضيات */
+    .equation-label {
+        color: #aaa;
+        font-family: 'Amiri', serif;
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+    
+    /* إجبار رموز الرياضيات على اللون الأبيض والحجم الكبير */
+    .katex {
+        font-size: 2.2rem !important;
+        color: white !important;
+        font-family: 'Times New Roman', serif;
+    }
+    
+    /* تحسين شكل السلايدر */
+    .stSlider > div > div > div > div {
+        color: #ff4b4b;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -56,56 +70,48 @@ st.markdown("""
 st.title("Happy Valentine's Day")
 st.markdown('<div class="dedication">إهداء إلى أم البراء</div>', unsafe_allow_html=True)
 
-# 4. الجانب التقني (عرض المعادلة بشكل صحيح داخل HTML)
-# نستخدم $$ ... $$ داخل Markdown ليتم معالجتها كـ LaTeX
-st.markdown(r"""
-<div class="equation-container">
-    <p style="color: #bbb; font-family: 'Amiri'; font-size: 1.2rem; margin-bottom: 10px;">
-        السر الرياضي (The Mathematical Heart):
-    </p>
-    <div style="color: white;">
-        $$
-        y = x^{\frac{2}{3}} + 0.9 \sin(\textcolor{#ff4b4b}{k} x) \sqrt{3 - x^2}
-        $$
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# 4. المعادلة (الآن مفصولة لتظهر بشكل صحيح)
+st.markdown('<p class="equation-label">السر الرياضي (The Math):</p>', unsafe_allow_html=True)
+
+# استخدام st.latex مباشرة يضمن ظهورها بشكل صحيح
+# \color{color_name} تستخدم لتلوين أجزاء من المعادلة
+st.latex(r"""
+y = \underbrace{x^{\frac{2}{3}}}_{\text{Shape}} + 0.9 \sin(\textcolor{#ff4b4b}{k} x) \sqrt{3 - x^2}
+""")
 
 # 5. التحكم (Slider)
-k = st.slider("مستوى الحب (Frequency k)", 0.0, 200.0, 5.0, 0.5)
+k = st.slider("اضبطي التردد (k) ليكتمل الرسم:", 0.0, 200.0, 5.0, 0.5)
 
-# 6. الحسابات الرياضية
-x = np.linspace(-1.75, 1.75, 7000)
-# معادلة القلب
+# 6. الحسابات
+x = np.linspace(-1.75, 1.75, 8000)
 y = np.cbrt(x**2) + 0.9 * np.sin(k * x) * np.sqrt(3 - x**2)
 
-# 7. الرسم باستخدام Plotly
+# 7. الرسم (Plotly)
 fig = go.Figure()
-
 fig.add_trace(go.Scatter(
     x=x, y=y,
     mode='lines',
     line=dict(color='#ff1744', width=1.5),
-    name='Heart Wave',
+    name='Heart',
     hoverinfo='none'
 ))
 
 fig.update_layout(
     plot_bgcolor='rgba(0,0,0,0)',
     paper_bgcolor='rgba(0,0,0,0)',
-    xaxis=dict(showgrid=False, zeroline=False, visible=False, range=[-2.5, 2.5]),
-    yaxis=dict(showgrid=False, zeroline=False, visible=False, range=[-1.5, 2.5]),
+    xaxis=dict(showgrid=False, visible=False, range=[-2.5, 2.5]),
+    yaxis=dict(showgrid=False, visible=False, range=[-1.5, 2.5]),
     margin=dict(l=0, r=0, t=0, b=0),
     height=450,
 )
 
 st.plotly_chart(fig, use_container_width=True)
 
-# 8. رسالة الختام
+# 8. مفاجأة الختام
 if k > 150:
     st.balloons()
     st.markdown("""
-    <div style='text-align: center; color: white; font-family: Amiri; font-size: 2rem;'>
-    اكتملت المعادلة.. واكتمل القلب! ❤️
+    <div style='text-align: center; color: white; font-family: Amiri; font-size: 1.8rem; margin-top: 10px;'>
+    كل عام وأنتِ قلبي ومعادلتي الثابتة ❤️
     </div>
     """, unsafe_allow_html=True)
