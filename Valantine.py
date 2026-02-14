@@ -55,7 +55,7 @@ st.markdown("""
 
 # 3. العناوين والإهداء (تمت إضافة القلب هنا)
 st.title("Happy Valentine's Day") 
-st.markdown('<div class="dedication">إهداء إلى أم البراء ❤️</div>', unsafe_allow_html=True)
+st.markdown('<div class="dedication">❤️إهداء إلى أم البراء❤️</div>', unsafe_allow_html=True)
 
 # 4. المعادلة (استخدام st.latex المباشر لحل مشكلة العرض)
 st.markdown('<p class="math-label">السر الرياضي (The Equation):</p>', unsafe_allow_html=True)
